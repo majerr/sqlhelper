@@ -11,5 +11,5 @@ Imports: odbc,
 License: None. Not to be released outside the MHCLG.
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.0.2
+RoxygenNote: 7.1.1
 Suggests: testthat

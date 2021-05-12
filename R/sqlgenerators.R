@@ -27,6 +27,6 @@ nthofk <- function(n,k){
 #' @export
 vinnthoffk <- function(v,n,f,k){
   return(
-    glue::glue("{v} in (select {k} from {f} where abs(hash({k})) % {n} < 1)")
+    glue::glue("{v} in (select {k} from {f} where abs(binary_checksum({k})) % {n} < 1)")
   )
 }

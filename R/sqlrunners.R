@@ -3,20 +3,18 @@
 #' Accepts a character vector of SQL queries and runs each one
 #' on either hive or postgresql.
 #'
-#' @param db Which database do you want to query? One of <'hive' or 'h'> for Hive
-#'    or <'pg', 'postgres', postgresql', or 'p'> for PostgreSQL.
+#' @param db Defaults to 'cds', which is the only option on the DAP
 #' @param queries A list or character vector containing your sql commands
 #' @param interpolate Should the SQL be parameterized from R? Defaults to the
 #'   value of \code{parent.frame()}. May be set to \code{FALSE} if interpolation is
 #'   to be avoided, or to another environment to control the source of the used.
-#'   This can be useful if UC SQL Helper is used to run SQL from within another
-#'   package, and you don't want to interfere with \code{.GlobalEnv}. The
-#'   \code{\link[uccaseload]{UC Caseload package}} contains examples of this.
+#'   This can be useful if \code{sqlhelper} is used to run SQL from within another
+#'   package, and you don't want to interfere with \code{.GlobalEnv}.
 #' @return A list containing the results of each query
 #' @family SQL runners
-#' @seealso \code{\link{runfiles}} \code{\link{rundirs}}
+#' @seealso \code{\link{runfiles}}
 #' @export
-runqueries <- function(db, queries, interpolate=parent.frame()){
+runqueries <- function(db='cds', queries, interpolate=parent.frame()){
 
   if(not.connected(db)){
     # This grep checks whether db is enclosed in quotes
@@ -89,13 +87,12 @@ runfile <- function(fn,db=NA,interpolate=parent.frame()){
 #'
 #' @param filenames A character vector containing your sql file names, including
 #'   paths if they are not in the working directory
-#' @param db Which database do you want to query? One of <'hive' or 'h'> for Hive
-#'   or <'pg', 'postgres', postgresql', or 'p'> for PostgreSQL.
+#' @param db Defaults to 'cds' which is the only option on the DAP
 #'   Although you \emph{can} specify `db` as a parameter, the preferred way is
 #'   to include a `-- db=<dbname>` comment in your sql file. See details.
 #' @param interpolate defaults to the value of \code{parent.frame()}. May be set
 #'   to \code{FALSE} if interpolation to be avoided, or to another environment
-#'   to control the source of the used. This can be useful if UC SQL Helper is
+#'   to control the source of the used. This can be useful if \code{sqlhelper} is
 #'   used to run SQL from within another package, and you don't want to
 #'   interfere with \code{.GlobalEnv}. See details.
 #' @details Before queries are sent to the database for execution,
@@ -103,15 +100,16 @@ runfile <- function(fn,db=NA,interpolate=parent.frame()){
 #'
 #'   \strong{Comment interpretation:}
 #'
-#'   UC SQL Helper can extract parameters from two kinds of SQL comments. Both
+#'   \code{sqlhelper} can extract parameters from two kinds of SQL comments. Both
 #'   must occur on a line by themselves.
 #'
 #'   \describe{
 #'
-#'   \item{\code{-- db=<hive|h|postgres|postgresql|pg|p>}}{The \code{db} parameter indicates whether
-#'   these queries are to be run on hive or postgresql. Case insensitive. Use this
+#'   \item{\code{-- db=cds}}{The \code{db} parameter is legacy from previous versions of the package,
+#'   where multiple databases were available.
+#'   For use on the DAP, 'cds' is the only accepted value. Case insensitive. Use this
 #'   once before the first query in the file. Don't quote the parameter! For example,
-#'   if you want hive, use \code{-- db=hive}, NOT \code{-- db="hive"}.}
+#'   use \code{-- db=cds}, NOT \code{-- db="cds"}.}
 #'
 #'   \item{\code{-- qname=<a_name_for_this_query>}}{The \code{qname} parameter
 #'   assigns a name to each query, which can then be used to access the result
@@ -129,14 +127,14 @@ runfile <- function(fn,db=NA,interpolate=parent.frame()){
 #'
 #'   \code{max_rows <- 10}
 #'
-#'   You might use it in your SQL as part of a limit clause to get 10 rows of a
+#'   You might use it in your SQLServer code as part of a TOP clause to get 10 rows of a
 #'   table:
 #'
-#'   \code{SELECT * FROM uc.contract_dim_v LIMIT {max_rows}}
+#'   \code{SELECT TOP {max_rows} * FROM mytable}
 #'
 #'   Before your query is submitted to the server, it will be parameterized to:
 #'
-#'   \code{SELECT * FROM uc.contract_dim_v LIMIT 10}
+#'   \code{SELECT TOP 10 * FROM mytable}
 #'
 #'   By default, parameters are searched for from the package up to the global
 #'   environment, so if you have defined your parameters globally, they will be
@@ -153,39 +151,7 @@ runfile <- function(fn,db=NA,interpolate=parent.frame()){
 #'   }
 #'
 #'   If you want to avoid parameterization from R altogether, set the
-#'   \code{interpolate} parameter to \code{FALSE}. This option may be useful if
-#'   you have set variables in Hive. See the section on Hivevars, below.
-#'
-#'   \strong{Hivevars:}
-#'
-#'   Hive itself offers an option to set parameters on a connection, e.g. in
-#'   your SQL file you might have a line like this:
-#'
-#'   \preformatted{
-#'   SET hivevar:max_date = '2018-01-01';
-#'   }
-#'
-#'   You might then use this \code{max_date} SQL variable in your code like this:
-#'
-#'   \preformatted{
-#'   SELECT *
-#'   FROM uc.contract_dim_v
-#'   WHERE start_date <= ${hivevar:max_date};
-#'
-#'   THIS CODE WILL FAIL IN UCSQLHELPER!
-#'   }
-#'
-#'   To avoid conflicts with \code{runfiles()}' query parameterization, you need an extra
-#'   set of curly braces if you want to use hivevars, like this:
-#'
-#'   \preformatted{
-#'   SELECT *
-#'   FROM uc.contract_dim_v
-#'   WHERE start_date <= ${{hivevar:max_date}};
-#'   }
-#'
-#'   This will make \code{runfiles()} pass your hivevar through to Hive, instead
-#'   of trying (and failing) to set it as a parameter.
+#'   \code{interpolate} parameter to \code{FALSE}.
 #'
 #' @return Depending on the input, \code{runfiles} returns one of:
 #'

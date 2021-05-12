@@ -2,10 +2,10 @@
 % Please edit documentation in R/connections.R
 \name{reconnect}
 \alias{reconnect}
-\title{Re-establish connections to Hive and PostgreSQL}
+\title{Re-establish connections to all configured databases}
 \usage{
 reconnect()
 }
 \description{
-Closes and then re-opens connections to Hive and PostgreSQL
+Closes and then re-opens connections all configured connections
 }

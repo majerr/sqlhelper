@@ -4,20 +4,18 @@
 \alias{runqueries}
 \title{Execute a sequence of SQL queries}
 \usage{
-runqueries(db, queries, interpolate = parent.frame())
+runqueries(db = "cds", queries, interpolate = parent.frame())
 }
 \arguments{
-\item{db}{Which database do you want to query? One of <'hive' or 'h'> for Hive
-or <'pg', 'postgres', postgresql', or 'p'> for PostgreSQL.}
+\item{db}{Defaults to 'cds', which is the only option on the DAP}
 
 \item{queries}{A list or character vector containing your sql commands}
 
 \item{interpolate}{Should the SQL be parameterized from R? Defaults to the
 value of \code{parent.frame()}. May be set to \code{FALSE} if interpolation is
 to be avoided, or to another environment to control the source of the used.
-This can be useful if UC SQL Helper is used to run SQL from within another
-package, and you don't want to interfere with \code{.GlobalEnv}. The
-\code{\link[uccaseload]{UC Caseload package}} contains examples of this.}
+This can be useful if \code{sqlhelper} is used to run SQL from within another
+package, and you don't want to interfere with \code{.GlobalEnv}.}
 }
 \value{
 A list containing the results of each query
@@ -27,7 +25,7 @@ Accepts a character vector of SQL queries and runs each one
 on either hive or postgresql.
 }
 \seealso{
-\code{\link{runfiles}} \code{\link{rundirs}}
+\code{\link{runfiles}}
 
 Other SQL runners: 
 \code{\link{runfiles}()},
