@@ -12,7 +12,7 @@
 #' @export
 nthofk <- function(n,k){
   return(
-    glue::glue("abs(hash({k})) % {n} < 1")
+    glue::glue("abs(binary_checksum({k})) % {n} < 1")
   )
 }
 

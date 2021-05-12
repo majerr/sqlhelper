@@ -1,15 +1,14 @@
-Package: ucsqlhelper
-Title: Easier SQL interaction with Universal Credit data
-Version: 2.1
-Authors: person("Matthew", "Roberts", email = "matthew.roberts7@dwp.gsi.gov.uk", role = c("aut", "cre"))
-Description: Provides connections and SQL helper functions to the PDM in Hive and PostgreSQL.
+Package: sqlhelper
+Title: Easier SQL interaction with CDS data
+Version: 2.2
+Authors: person("Matthew", "Roberts", email = "matthew.roberts@communities.gov.uk", role = c("aut", "cre"))
+Description: Provides connections and SQL helper functions to the CDS.
 Depends: R (>= 3.4.2)
-Imports: RODBC, 
-         RPostgreSQL, 
+Imports: odbc,
          DBI,
          stringr,
          glue
-License: None. Not to be released outside the DWP.
+License: None. Not to be released outside the MHCLG.
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.0.2

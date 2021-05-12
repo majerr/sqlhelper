@@ -1,12 +1,11 @@
-# ucsqlhelper
-Easier SQL interaction with Universal Credit data
+# sqlhelper
+Easier SQL interaction with data
 
 ## Summary
-`ucsqlhelper` does three things:
+`sqlhelper` does two things:
 
-1. It **manages connections to the Hive and PostgreSQL databases**. They are opened automatically when the package is loaded.
+1. It **manages your connection to the CDS database**. It is opened automatically when the package is loaded.
 1. It **provides functions for running sql queries and files of sql queries**. You simply provide a query or filename (or list of queries or filenames).
-1. It **provides functions which return useful sql snippets**, such as a `where` clauses to extract an _n_ percent sample from a table.
 
 ## Quickstart
 
@@ -15,16 +14,16 @@ Easier SQL interaction with Universal Credit data
 For data wrangling, you probably want to write your queries in their own files. Then you will want to use `runfiles()`:
 
 ```R
-# load ucsqlhelper
-library(ucsqlhelper)
+# load sqlhelper
+library(sqlhelper)
 
 # write some queries
-files_to_run_on_postgres <- list("path/to/create_temporary_dataset.sql",
-                                 "path/containing/final_merge.sql",
-                                 "folder/enclosing/extract_subsets.sql")
+files_to_run <- list("path/to/create_temporary_dataset.sql",
+                     "path/containing/final_merge.sql",
+                     "folder/enclosing/extract_subsets.sql")
 
 # Run the queries and save the results
-results <- runfiles("pg",files_to_run_on_postgres)
+results <- runfiles("cds",files_to_run)
 
 # Inspect the results. runfiles() returns a list of lists.
 # Names in the outer list are the filenames, stripped of path and extension:
@@ -39,14 +38,14 @@ head(my_subsets[[1]])
 But sometimes you just want to run some short queries; in this case `runqueries()` is for you:
 
 ```R
-# load ucsqlhelper
-library(ucsqlhelper)
+# load sqlhelper
+library(sqlhelper)
 
 # write some queries
-my_hive_queries <- list("use uc", showtabs="show tables")
+my_queries <- list("use COVID19", showtabs="select * from INFORMATION_SCHEMA.TABLES")
 
 # Run the queries and save the results
-results <- runqueries("hive",my_hive_queries)
+results <- runqueries("hive",my_queries)
 
 # Inspect the results. runqueries() returns a list with one element per query.
 # You can access them using the names of the queries:

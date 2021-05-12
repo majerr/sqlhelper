@@ -42,15 +42,9 @@ runqueries <- function(db, queries, interpolate=parent.frame()){
   }
 
   # Submit with the appropriate connection and return the result
-  if(identical(dbparms$runner, RODBC::sqlQuery)==TRUE){
-    results <- lapply(queries, dbparms$runner, channel=dbparms$conn)
-  }
-  else if(identical(dbparms$runner, RPostgreSQL::dbGetQuery)==TRUE){
-    results <- lapply(queries, dbparms$runner, conn=dbparms$conn)
-  }
-  else{
-    stop("Unrecognized run function, neither RODBC::sqlQuery nor RPostgreSQL::dbGetQuery")
-  }
+  results <- lapply(queries, dbparms$runner, conn=dbparms$conn)
+
+  #Flatten the result, if there's only one
   if(length(results) == 1){
     results <- results[[1]]
   }
