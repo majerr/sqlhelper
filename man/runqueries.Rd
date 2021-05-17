@@ -4,12 +4,12 @@
 \alias{runqueries}
 \title{Execute a sequence of SQL queries}
 \usage{
-runqueries(db = "cds", queries, interpolate = parent.frame())
+runqueries(queries, db = "cds", interpolate = parent.frame())
 }
 \arguments{
-\item{db}{Defaults to 'cds', which is the only option on the DAP}
-
 \item{queries}{A list or character vector containing your sql commands}
+
+\item{db}{Defaults to 'cds', which is the only option on the DAP}
 
 \item{interpolate}{Should the SQL be parameterized from R? Defaults to the
 value of \code{parent.frame()}. May be set to \code{FALSE} if interpolation is
