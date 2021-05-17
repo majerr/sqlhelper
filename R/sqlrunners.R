@@ -3,8 +3,8 @@
 #' Accepts a character vector of SQL queries and runs each one
 #' on either hive or postgresql.
 #'
-#' @param db Defaults to 'cds', which is the only option on the DAP
 #' @param queries A list or character vector containing your sql commands
+#' @param db Defaults to 'cds', which is the only option on the DAP
 #' @param interpolate Should the SQL be parameterized from R? Defaults to the
 #'   value of \code{parent.frame()}. May be set to \code{FALSE} if interpolation is
 #'   to be avoided, or to another environment to control the source of the used.
@@ -14,7 +14,7 @@
 #' @family SQL runners
 #' @seealso \code{\link{runfiles}}
 #' @export
-runqueries <- function(db='cds', queries, interpolate=parent.frame()){
+runqueries <- function(queries, db='cds', interpolate=parent.frame()){
 
   if(not.connected(db)){
     # This grep checks whether db is enclosed in quotes
@@ -76,7 +76,7 @@ runfile <- function(fn,db=NA,interpolate=parent.frame()){
     db <- db
   }
 
-  return(runqueries(db,sql$queries,interpolate=interpolate))
+  return(runqueries(sql$queries, db=db, interpolate=interpolate))
 }
 
 

@@ -1,11 +1,12 @@
 # sqlhelper
-Easier SQL interaction with data
+Easier SQL interaction with CDS data
 
 ## Summary
-`sqlhelper` does two things:
+`sqlhelper` does three things:
 
-1. It **manages your connection to the CDS database**. It is opened automatically when the package is loaded.
+1. It **manages your connection to the CDS database**. A connection is opened automatically when the package is loaded.
 1. It **provides functions for running sql queries and files of sql queries**. You simply provide a query or filename (or list of queries or filenames).
+1. It **provides functions that generate resusable sql snippets**, e.g. for getting a sample of rows from a large table.
 
 ## Quickstart
 
