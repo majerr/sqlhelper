@@ -6,10 +6,10 @@ foofn <- "../../sql/test_foo.sql"
 
 test_that("interpret_comments obtains the correct parameters", {
 
-  interpreted_comments <- interpret_comments(readLines(cdsfn))
+  interpreted_comments <- interpret_comments(readLines(foofn))
   expect_is(interpreted_comments,"list")
   expect_equal(interpreted_comments$db,"cDs")
-  expect_equal(interpreted_comments$qnames,c("usedb","showtabs","sample"))
+  expect_equal(interpreted_comments$qnames,c("usedb"))
 
 })
 

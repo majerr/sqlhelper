@@ -24,7 +24,7 @@ files_to_run <- list("path/to/create_temporary_dataset.sql",
                      "folder/enclosing/extract_subsets.sql")
 
 # Run the queries and save the results
-results <- runfiles("cds",files_to_run)
+results <- runfiles(files_to_run)
 
 # Inspect the results. runfiles() returns a list of lists.
 # Names in the outer list are the filenames, stripped of path and extension:
@@ -43,10 +43,10 @@ But sometimes you just want to run some short queries; in this case `runqueries(
 library(sqlhelper)
 
 # write some queries
-my_queries <- list("use COVID19", showtabs="select * from INFORMATION_SCHEMA.TABLES")
+my_queries <- list(usedb="use COVID19", showtabs="select * from INFORMATION_SCHEMA.TABLES")
 
 # Run the queries and save the results
-results <- runqueries("cds",my_queries)
+results <- runqueries(my_queries)
 
 # Inspect the results. runqueries() returns a list with one element per query.
 # You can access them using the names of the queries:
