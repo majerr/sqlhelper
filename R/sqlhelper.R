@@ -1,12 +1,12 @@
-#' UC SQL Helper
+#' SQL Helper
 #'
-#' Easier SQL interaction with Universal Credit data.
+#' Easier SQL interaction with data.
 #'
-#' The \code{ucsqlhelper} package does three things:
+#' The \code{sqlhelper} package does three things:
 #'
 #' \describe{
 #'
-#' \item{\strong{It manages connections to the Hive and PostgreSQ
+#' \item{\strong{It manages connections to
 #' databases}.}{They are opened automatically when the package is loaded, and
 #' closed when it is unloaded.}
 #'
@@ -20,7 +20,7 @@
 #'
 #' }
 #'
-#' @author Matthew Roberts, \email{matthew.roberts7@@dwp.gsi.gov.uk}
+#' @author Matthew Roberts, \email{matthew.roberts@@communities.gov.uk}
 #'
 #' @section Quickstart - running sql files and queries:
 #'
@@ -30,7 +30,7 @@
 #'   \preformatted{
 #'
 #'   # load ucsqlhelper
-#'   library(ucsqlhelper)
+#'   library(sqlhelper)
 #'
 #'   # write some queries
 #'   files_to_run_on_postgres <- list("path/to/create_temporary_dataset.sql",
@@ -38,7 +38,7 @@
 #'                                    "folder/enclosing/extract_subsets.sql")
 #'
 #'   # Run the queries and save the results
-#'   results <- runfiles("pg",files_to_run_on_postgres)
+#'   results <- runfiles(files_to_run)
 #'
 #'   # Inspect the results.
 #'   # runfiles() returns a list of lists.
@@ -60,22 +60,21 @@
 #'   \preformatted{
 #'
 #'   # load ucsqlhelper
-#'   library(ucsqlhelper)
+#'   library(sqlhelper)
 #'
 #'   # write some queries
-#'   my_hive_queries <- list("use uc", showtabs="show tables")
+#'   my_queries <- list(usedb="use COVID19", showtabs="select * from INFORMATION_SCHEMA.TABLES")
 #'
 #'   # Run the queries and save the results
-#'   results <- runqueries("hive",my_hive_queries)
+#'   results <- runqueries(my_queries)
 #'
-#'   # Inspect the results.
-#'   # runqueries() returns a list with one element per query.
+#'   # Inspect the results. runqueries() returns a list with one element per query.
 #'   # You can access them using the names of the queries:
 #'   head(results$showtabs)
 #'
-#'   # or you can use indices:
-#'   head(results[[2]]) }
+#'   # or you can use indices (see below for comments on indexing lists in R):
+#'   head(results[[2]])
 #'
 #' @docType package
-#' @name ucsqlhelper
+#' @name sqlhelper
 NULL
