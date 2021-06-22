@@ -1,6 +1,6 @@
 Package: sqlhelper
 Title: Easier SQL interaction with CDS data
-Version: 2.2
+Version: 2.3
 Authors: person("Matthew", "Roberts", email = "matthew.roberts@communities.gov.uk", role = c("aut", "cre"))
 Description: Provides connections and SQL helper functions to the CDS.
 Depends: R (>= 3.4.2)

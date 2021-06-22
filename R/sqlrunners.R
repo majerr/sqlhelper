@@ -15,9 +15,9 @@
 #' @seealso \code{\link{runfiles}}
 #' @export
 runqueries <- function(queries, db=default_conn_name, interpolate=parent.frame()){
-  # If runqueries is called from runfiles with no parameter set and no db spec'ed
-  # the sql, the db parameter can be set to NA. If that happens, we want it reset
-  # to the default before proceeding.
+  # If runqueries is called from runfiles with no parameter set and no db
+  # spec'ed in the sql, the db parameter can be set to NA. If that happens, we
+  # want it reset to the default before proceeding.
   if(is.na(db)){db <- default_conn_name}
 
   if(not.connected(db)){
