@@ -125,23 +125,31 @@ reconnect <- function(){
 #'
 #' @value A list of connections maintained by this sqlhelper instance that are
 #'   currently live.
+#'
+#' @export
 connections_list <- function(){
   live_cons <- lapply(names(connections),is.connected)
   return(names(connections)[live_cons != FALSE])
 }
 
-#' Return the named connection or NULL
+#'Return the named connection or NULL
 #'
-#' @param con_name Then name of the live connection you want (use connections_list)
+#'@param con_name Then name of the live connection you want (use
+#'  connections_list)
+#'
+#'@value A live connection to a database, or NULL
+#'
+#'  If \code{con_name} is not the name of a live connection to a database, a
+#'  warning is issued and NULL is returned.
+#'
+#' @export
 live_connection <- function(con_name) {
   live_cons <- lapply(names(connections),is.connected)
   if (con_name %in% names(connections)[live_cons != FALSE]) {
     return(connections[[con_name]])
 
   } else {
-    if (interactive()){
-      print(glue::glue("There is no live connection named '{con_name}'"))
-    }
+    warning(glue::glue("There is no live connection named '{con_name}'"))
     return(NULL)
   }
 }

@@ -19,5 +19,7 @@ test_that("connections_list returns a list of live connections", {
 
 test_that("live_connection returns the named connection or null",{
   expect_equal(live_connection("cds"), connections$cds)
-  expect_null(live_connection("foo"))
+  expect_warning(
+    expect_null(live_connection("foo"))
+  )
 })
