@@ -1,20 +1,18 @@
-# This file contains several (mainly) internal functions
-# used either by exported functions (e.g. those in defined in sqlrunners.R)
-# or called by .onLoad()
-
+# This file contains several (mainly) internal functions used either by exported
+# functions (e.g. those in defined in sqlrunners.R) or called by .onLoad()
+#
 # set_connections() is called by .onLoad()
 #
-# Connections is a predefined list, loaded from R/sysdata.rda, with two
-# elements:
+# Connections is a predefined list, loaded from R/sysdata.rda, with one element:
 #
-# > names(connections)
-# [1] "hive" "pg"
+# > names(connections) [1] "cds"
 #
-# set_connections() sets hive to an open RODBC connection and
-# pg to an open RPostgresSQL connection.
+# set_connections() sets cds to an open ODBC connection.
 #
-# To add more in the future, first add the name of the new connection in R/sysdata.rda
-# and then specify the connection in this function
+# For version 3, this will change to user or site defineable connections.
+#
+# To add more in the future, first add the name of the new connection in
+# R/sysdata.rda and then specify the connection in this function
 set_connections <- function(){
 
   # CDS SQLServer
@@ -123,3 +121,27 @@ reconnect <- function(){
   set_connections()
 }
 
+#' Return a list of available connections
+#'
+#' @value A list of connections maintained by this sqlhelper instance that are
+#'   currently live.
+connections_list <- function(){
+  live_cons <- lapply(names(connections),is.connected)
+  return(names(connections)[live_cons != FALSE])
+}
+
+#' Return the named connection or NULL
+#'
+#' @param con_name Then name of the live connection you want (use connections_list)
+live_connection <- function(con_name) {
+  live_cons <- lapply(names(connections),is.connected)
+  if (con_name %in% names(connections)[live_cons != FALSE]) {
+    return(connections[[con_name]])
+
+  } else {
+    if (interactive()){
+      print(glue::glue("There is no live connection named '{con_name}'"))
+    }
+    return(NULL)
+  }
+}
