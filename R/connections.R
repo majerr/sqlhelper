@@ -123,7 +123,7 @@ reconnect <- function(){
 
 #' Return a list of available connections
 #'
-#' @value A list of connections maintained by this sqlhelper instance that are
+#' @return A list of connections maintained by the loaded sqlhelper that are
 #'   currently live.
 #'
 #' @export
@@ -132,15 +132,15 @@ connections_list <- function(){
   return(names(connections)[live_cons != FALSE])
 }
 
-#'Return the named connection or NULL
+#' Return the named connection or NULL
 #'
-#'@param con_name Then name of the live connection you want (use
-#'  connections_list)
+#' @param con_name Then name of the live connection you want (use
+#'   connections_list)
 #'
-#'@value A live connection to a database, or NULL
+#' @return A live connection to a database, or NULL
 #'
-#'  If \code{con_name} is not the name of a live connection to a database, a
-#'  warning is issued and NULL is returned.
+#'   If \code{con_name} is not the name of a live connection to a database, a
+#'   warning is issued and NULL is returned.
 #'
 #' @export
 live_connection <- function(con_name) {

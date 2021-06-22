@@ -6,6 +6,10 @@
 \usage{
 connections_list()
 }
+\value{
+A list of connections maintained by the loaded sqlhelper that are
+  currently live.
+}
 \description{
 Return a list of available connections
 }

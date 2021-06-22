@@ -10,6 +10,12 @@ live_connection(con_name)
 \item{con_name}{Then name of the live connection you want (use
 connections_list)}
 }
+\value{
+A live connection to a database, or NULL
+
+  If \code{con_name} is not the name of a live connection to a database, a
+  warning is issued and NULL is returned.
+}
 \description{
 Return the named connection or NULL
 }

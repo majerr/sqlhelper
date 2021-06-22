@@ -12,22 +12,65 @@ The \code{sqlhelper} package does three things:
 
 \describe{
 
-\item{\strong{It manages connections to
-databases}.}{They are opened automatically when the package is loaded, and
-closed when it is unloaded.}
+\item{\strong{It manages connections to databases}.}{They are opened
+automatically when the package is loaded, and closed when it is unloaded.}
 
 \item{\strong{It provides functions for running sql queries and files of sql
 queries}.}{You simply provide a query or filename (or list of queries or
 filenames). See \code{\link{runfiles}}.}
 
-\item{\strong{It provides functions which return useful sql snippets}.}{For example,
-for use in a SQL \code{WHERE} clause to extract an \code{n} percent sample
-from a table. See, \code{\link{nthofk}}.}
+\item{\strong{It provides functions which return useful sql snippets}.}{For
+example, for use in a SQL \code{WHERE} clause to extract an \code{n} percent
+sample from a table. See, \code{\link{nthofk}}.}
 
 }
 }
-\section{}{
-NA
+\section{Quickstart - running sql files and queries}{
+
+
+ For data wrangling, you probably want to write your SQL queries in their own
+ files. Then you will want to use \code{runfiles}:
+
+ \preformatted{
+
+ # load ucsqlhelper library(sqlhelper)
+
+ # write some queries files_to_run_on_postgres <-
+ list("path/to/create_temporary_dataset.sql",
+ "path/containing/final_merge.sql", "folder/enclosing/extract_subsets.sql")
+
+ # Run the queries and save the results results <- runfiles(files_to_run)
+
+ # Inspect the results. # runfiles() returns a list of lists. # Names in the
+ outer list are the # filenames, stripped of path and extension: my_subsets
+ <- results$extract_subsets
+
+ # the results of each query in the file can be accessed by it's index:
+ head(my_subsets[[1]])
+
+ # (or by name - see the runfiles documentation)
+
+ # queries that do not return a result (e.g. # CREATE TABLE) will result in
+ an empty list. }
+
+ But sometimes you just want to run some short queries - then
+ \code{runqueries} is for you:
+
+ \preformatted{
+
+ # load ucsqlhelper library(sqlhelper)
+
+ # write some queries my_queries <- list(usedb="use COVID19",
+ showtabs="select * from INFORMATION_SCHEMA.TABLES")
+
+ # Run the queries and save the results results <- runqueries(my_queries)
+
+ # Inspect the results. runqueries() returns a list with one element per
+ query. # You can access them using the names of the queries:
+ head(results$showtabs)
+
+ # or you can use indices (see below for comments on indexing lists in R):
+ head(results[[2]]) }
 }
 
 \author{
