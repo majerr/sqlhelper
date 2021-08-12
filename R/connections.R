@@ -1,6 +1,60 @@
 # This file contains several (mainly) internal functions used either by exported
 # functions (e.g. those in defined in sqlrunners.R) or called by .onLoad()
+
+# yml2str converts a list object returned by read_yaml() to a connection string.
 #
+# YAML values need to be double quoted in the YAML file.
+#
+# For internal use.
+yml2str <- function(.conparms){
+  paste0(
+    paste0(
+      names(.conparms),
+      "=",
+      unlist(.conparms)
+      ),
+    collapse="; ")
+}
+
+# get_conf_filename identifies the right conf file to use
+#
+# 4 possible files are listed, the first one that is found is used.
+# A filename supplied as an arg is preferred, then a conf file in
+# the pwd, then in the users config dir, as identified by rappdirs,
+# then in the site config dir, also identified by rappdirs.
+get_conf_filename <- function(.fn=NA){
+  file_names <- na.omit(
+    unlist(
+      list( # list of possible conf filenames
+      .fn, # arg
+      file.path(
+        getwd(),
+        ".sqlhelper_db_conf.yaml"),
+      file.path(
+        rappdirs::user_config_dir(),
+        ".sqlhelper_db_conf.yaml"),
+      file.path(
+        rappdirs::site_config_dir(),
+        ".sqlhelper_db_conf.yaml")
+      )
+    )
+  )
+
+  existing_file_names <- na.omit( # list of existing conf filenames
+    unlist(
+      lapply(file_names,function(.fn){
+        if(file.exists(.fn)){
+            .fn
+          } else {
+            NA
+          }
+      })
+    )
+  )
+
+  dplyr::first(existing_file_names)
+}
+
 # set_connections() is called by .onLoad()
 #
 # Connections is a predefined list, loaded from R/sysdata.rda, with one element:
@@ -135,7 +189,7 @@ connections_list <- function(){
 #' Return the named connection or NULL
 #'
 #' @param con_name Then name of the live connection you want (use
-#'   connections_list)
+#'   connections_list to get names of available connetions)
 #'
 #' @return A live connection to a database, or NULL
 #'

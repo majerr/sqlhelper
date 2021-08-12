@@ -1,10 +1,10 @@
 ---
 cds:
-  Driver: ODBC Driver 17 for SQL Server
-  Server: Dap-sql01\\cds
-  Trusted_Connection: yes
+  Driver: "{ODBC Driver 17 for SQL Server}"
+  Server: "Dap-sql01\\cds"
+  Trusted_Connection: "yes"
 
 redsa:
-  Driver: ODBC Driver 17 for SQL Server
-  Server: Dap-sql01\\RED_SA
+  Driver: "{ODBC Driver 17 for SQL Server}"
+  Server: "Dap-sql01\\RED_SA"
 ---

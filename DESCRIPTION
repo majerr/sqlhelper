@@ -1,11 +1,13 @@
 Package: sqlhelper
-Title: Easier SQL interaction with CDS data
-Version: 2.3
+Title: Easier SQL interaction databases
+Version: 3.0
 Authors: person("Matthew", "Roberts", email = "matthew.roberts@communities.gov.uk", role = c("aut", "cre"))
-Description: Provides connections and SQL helper functions to the CDS.
+Description: Provides connections and SQL helper functions.
 Depends: R (>= 3.4.2)
 Imports: odbc,
          DBI,
+         yaml,
+         rappdirs,
          stringr,
          glue
 License: None. Not to be released outside the MHCLG.
