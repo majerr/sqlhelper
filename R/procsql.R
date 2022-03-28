@@ -36,7 +36,6 @@ remove_block_comments <- function(lines){
   linetok <- paste(sample(c(letters,LETTERS,0:9),100,replace=TRUE),collapse="")
   all_code <- paste(lines,collapse=linetok)
   no_comments <- gsub(pattern = "/\\*.*?\\*/", replacement = linetok, x=all_code)
-  #no_comments <- gsub(pattern = "/\\*.*\\*/", replacement = linetok, x=all_code)
   unlist(strsplit(no_comments,split=linetok))
 }
 
