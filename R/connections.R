@@ -23,35 +23,33 @@ yml2str <- function(.conparms){
 # the pwd, then in the users config dir, as identified by rappdirs,
 # then in the site config dir, also identified by rappdirs.
 get_conf_filename <- function(.fn=NA){
-  file_names <- na.omit(
-    unlist(
-      list( # list of possible conf filenames
+  basefn <- ".sqlhelper_db_conf.yml"
+  file_names <- c( # list of possible conf filenames
       .fn, # arg
       file.path(
         getwd(),
-        ".sqlhelper_db_conf.yaml"),
+        basefn),
       file.path(
         rappdirs::user_config_dir(),
-        ".sqlhelper_db_conf.yaml"),
+        basefn),
       file.path(
         rappdirs::site_config_dir(),
-        ".sqlhelper_db_conf.yaml")
+        basefn)
       )
-    )
-  )
 
   existing_file_names <- na.omit( # list of existing conf filenames
     unlist(
       lapply(file_names,function(.fn){
-        if(file.exists(.fn)){
-            .fn
-          } else {
+        if(is.na(.fn)){
             NA
+          } else if(!file.exists(.fn)) { # This needs a seperate clause to avoid 'invalid arg' errors
+            NA
+          } else {
+            .fn
           }
       })
     )
   )
-
   dplyr::first(existing_file_names)
 }
 
@@ -67,35 +65,42 @@ get_conf_filename <- function(.fn=NA){
 #
 # To add more in the future, first add the name of the new connection in
 # R/sysdata.rda and then specify the connection in this function
-set_connections <- function(){
+set_connections <- function(config_filename=NA){
 
-  # CDS SQLServer
-  tryCatch({
-    suppressWarnings({
-      connections$cds <<- DBI::dbConnect(odbc::odbc(),
-                                         .connection_string="
-                                          Driver={ODBC Driver 17 for SQL Server};
-                                          Server=Dap-sql01\\cds;
-                                          Trusted_Connection=yes")
+  fn <- get_conf_filename(.fn=config_filename)
+  conf <- yaml::read_yaml(fn)
+  con_strs <- lapply(conf,yml2str)
+
+  default_conn_name <<- names(con_strs)[1]
+  for(con_name in names(con_strs)){
+    tryCatch({
+      suppressWarnings({
+        connections[[con_name]] <<- DBI::dbConnect(odbc::odbc(),
+                                                  .connection_string=con_strs[[con_name]])
+      })
+
+    },
+    error = function(c){
+      connections[[con_name]] <- NA
+      warning(glue::glue("{con_name} is not available"))
     })
-  },
-  error = function(c) {
-    warning("CDS is not available")
-  })
-
-  # Add more connections here. Use the <<- assignment to access the connections list.
+  }
 }
 
 #
 
 # Returns a connection and a sql runnner for the db parameter.
 # For internal use only!
+#
+# For now, qlhelpr only uses DBI, so this isn't really necessary,
+# but if in the future we need runners or is.live functions from
+# other packages we can add them here without needing to mess about
+# with the sqlrunners code.
 getrunparams <- function(db){
-  db <- tolower(db)
-  if(db == "cds"){
+  if(db %in% names(connections)){
     return(
       list(
-        conn = connections$cds,
+        conn = connections[[db]],
         runner = DBI::dbGetQuery,
         is.live = DBI::dbIsValid)
     )
@@ -150,6 +155,7 @@ not.connected <- function(db){
   out <- NA
   tryCatch({out <- runparms$is.live(runparms$conn)},
            error = function(e){
+           print(runparms$is.live(runparms$conn))
              out<<-FALSE
            })
   return(!out)
@@ -159,10 +165,12 @@ not.connected <- function(db){
 #'
 #' This function is run when the library is unloaded
 close_connections <- function(){
-  if(is.connected('cds')){
-    suppressWarnings(DBI::dbDisconnect(connections$cds))
+  for(conn_name in names(connections)){
+    if(is.connected(conn_name)){
+      suppressWarnings(DBI::dbDisconnect(connections[[conn_name]]))
+    }
+    connections[[conn_name]] <- NA
   }
-  connections$cds <- NA
 }
 
 #' Re-establish connections to all configured databases
@@ -170,12 +178,12 @@ close_connections <- function(){
 #' Closes and then re-opens connections all configured connections
 #'
 #' @export
-reconnect <- function(){
+reconnect <- function(.fn=NA){
   close_connections()
-  set_connections()
+  set_connections(.fn)
 }
 
-#' Return a list of available connections
+#' Return a list of available connection names
 #'
 #' @return A list of connections maintained by the loaded sqlhelper that are
 #'   currently live.

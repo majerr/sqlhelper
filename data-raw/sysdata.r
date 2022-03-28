@@ -1,5 +1,4 @@
 connections <- list()
-connections$hive <- NA
-connections$pg <- NA
+default_conn_name <- NA
 
 save(connections,file="R/sysdata.rda")

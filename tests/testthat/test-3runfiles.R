@@ -8,7 +8,7 @@ test_that("interpret_comments obtains the correct parameters", {
 
   interpreted_comments <- interpret_comments(readLines(foofn))
   expect_is(interpreted_comments,"list")
-  expect_equal(interpreted_comments$db,"cDs")
+  expect_equal(interpreted_comments$db,"cds")
   expect_equal(interpreted_comments$qnames,c("usedb"))
 
 })
@@ -22,7 +22,7 @@ test_that("runfiles() will name elements of the returned list with their corresp
 
 test_that("runfiles() will run sequential queries on CDS and return a list of results", {
   if(not.connected('cds')){
-    skip("CDS is not available")
+    skip("cds is not available")
   }
   expect_is(results$test_cds,"list")
   expect_equal(length(results$test_cds), 3)

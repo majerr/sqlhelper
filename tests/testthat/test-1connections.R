@@ -11,7 +11,7 @@ test_that("reconnections are live", {
 })
 
 test_that("connections_list returns a list of live connections", {
-  expect_equal(connections_list(), c("cds"))
+  expect_equal(connections_list(), c("cds", "dap"))
   close_connections()
   expect_equal(connections_list(),as.character(c()))
   set_connections()
