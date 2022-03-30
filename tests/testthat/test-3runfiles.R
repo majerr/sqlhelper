@@ -25,9 +25,11 @@ test_that("runfiles() will run sequential queries on CDS and return a list of re
     skip("cds is not available")
   }
   expect_is(results$test_cds,"list")
-  expect_equal(length(results$test_cds), 3)
+  expect_equal(length(results$test_cds), 4)
   expect_is(results$test_cds$showtabs,"data.frame")
   expect_is(results$test_cds$sample,"data.frame")
+  expect_equal(nrow(results$test_cds$quoted_comment), 0)
+
 })
 
 

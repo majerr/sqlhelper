@@ -4,19 +4,16 @@
 # read_sql_file and split_sql originated with Tony Breyal's sql processing functions
 # and were refactored by Matthew Roberts to allow comment interpretation
 read_sql_file <- function(file_path)  {
-
   # read lines in file.
   lines <- readLines(file_path, warn=FALSE)
   # Extract the comments
   interpreted_comments <- interpret_comments(lines)
+  lines <- remove_block_comments(lines)
+  lines <- remove_inline_comments(lines)
 
   #remove blanks lines
   lines <- trimws(lines)
   lines <- lines[nchar(lines) > 0] # Drop blank lines
-
-  # Remove comments
-  lines <- gsub(pattern = "(.*?)--.*", replacement = "\\1", x = lines )
-  lines <- remove_block_comments(lines)
 
   # Collpase lines into a single character vector.
   sql_code <- paste0(lines, collapse = " ")
@@ -31,12 +28,81 @@ read_sql_file <- function(file_path)  {
   return(list("db"=interpreted_comments$db,"queries"=queries))
 }
 
+
+# Generate a low entropy token to temporarily replace newlines
+tok <- function(){
+  paste(sample(c(letters,LETTERS,0:9),100,replace=TRUE),collapse="")
+}
+
 remove_block_comments <- function(lines){
-  ## linetok is a low entropy token to temporarily replace newlines
-  linetok <- paste(sample(c(letters,LETTERS,0:9),100,replace=TRUE),collapse="")
-  all_code <- paste(lines,collapse=linetok)
-  no_comments <- gsub(pattern = "/\\*.*?\\*/", replacement = linetok, x=all_code)
-  unlist(strsplit(no_comments,split=linetok))
+  linetok <- tok()
+  all_sql <- paste(lines,collapse=linetok)
+  block_pattern <- "/\\*.*?\\*/"
+  unlist(
+    strsplit(
+      stringr::str_replace_all(string = all_sql,
+                               pattern = block_pattern,
+                               replacement = linetok),
+      split=linetok
+    )
+  )
+}
+
+remove_inline_comments <- function(lines){
+  linetok <- tok()
+  all_ql <- paste(lines,collapse=linetok)
+  string_pattern <- "\\'.*?\\'"
+  n <- stringr::str_count(all_ql,
+                          string_pattern)
+
+  if(n>0){
+    str_replacements <- replicate(
+      n,
+      tok()
+    )
+    names(str_replacements) <- unlist(
+      stringr::str_extract_all(
+        string = all_ql,
+        pattern = string_pattern)
+    )
+
+    no_strs <- stringr::str_replace_all(
+      string = all_ql,
+      str_replacements)
+  } else {
+    no_strs <- all_ql
+  }
+
+  no_str_lines <- unlist(
+    strsplit(
+      no_strs,
+      split=linetok)
+  )
+
+  inline_pattern = "(.*?)--.*"
+  no_inlines <- paste(
+    gsub(
+      pattern = inline_pattern,
+      replacement = "\\1",
+      x = no_str_lines),
+    collapse = linetok)
+
+  if(n>0){
+    reinstatements <- names(str_replacements)
+    names(reinstatements) <- str_replacements
+    no_comments <- stringr::str_replace_all(
+      string = no_inlines,
+      reinstatements)
+  } else {
+    no_comments <- no_inlines
+  }
+
+  unlist(
+    strsplit(
+      no_comments,
+      split=linetok
+    )
+  )
 }
 
 # take a bunch of lines and extract any actionable comments.
@@ -58,9 +124,9 @@ interpret_comments <- function(lines){
   # linetok is a low entropy token to temporarily replace newlines
   # this is to allow spliting into blocks on ';'
   linetok <- paste(sample(c(letters,LETTERS,0:9),100,replace=TRUE),collapse="")
-  all_code <- paste(lines,collapse=linetok)
+  all_ql <- paste(lines,collapse=linetok)
 
-  blocks <- unlist(strsplit(all_code,split=";"))
+  blocks <- unlist(strsplit(all_ql,split=";"))
 
   # Drop comment-only blocks.
   # Zero length queries are dropped before running (to avoid the overhead)

@@ -32,6 +32,16 @@ line comment at
 the end of the
 block*/
 
+
+-- ------------------------------------------------------------
+
+-- make sure comments with double dashes survive the comment strip
+-- qname=quoted_comment
+select
+'stringvar' as myString
+from [Analyse].[vw_COVIDKPI_LRFCDR_Latest]
+where 'foo' = '-- oops';
+
 -- ------------------------------------------------------------
 
 

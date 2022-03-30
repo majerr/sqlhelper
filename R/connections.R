@@ -42,7 +42,7 @@ get_conf_filename <- function(.fn=NA){
       lapply(file_names,function(.fn){
         if(is.na(.fn)){
             NA
-          } else if(!file.exists(.fn)) { # This needs a seperate clause to avoid 'invalid arg' errors
+          } else if(!file.exists(.fn)) { # This needs a separate clause to avoid 'invalid arg' errors
             NA
           } else {
             .fn
@@ -175,7 +175,7 @@ close_connections <- function(){
 
 #' Re-establish connections to all configured databases
 #'
-#' Closes and then re-opens connections all configured connections
+#' Closes and then re-opens all configured connections
 #'
 #' @export
 reconnect <- function(.fn=NA){
