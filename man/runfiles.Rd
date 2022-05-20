@@ -47,7 +47,7 @@ or postgresql.
 }
 \details{
 Before queries are sent to the database for execution,
-  \code{runfiles} does comment interpretation and query parameterization.
+  \code{runfiles} interprets comments and parameterizes queries.
 
   \strong{Comment interpretation:}
 

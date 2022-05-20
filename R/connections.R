@@ -16,12 +16,104 @@ yml2str <- function(.conparms){
     collapse="; ")
 }
 
-# get_conf_filename identifies the right conf file to use
+#' Return the contents of a config file
+#'
+#' @param conf A string. either the full path and name of a config file, or one
+#'   of 'site' or 'user', or \code{NA} (the default). If \code{NA},
+#'   \code{get_config} will search the current directory for a config file.
+#'
+#' @return optionally nested named list or vector as returned by
+#'   \code{yaml::read_yaml}
+#'
+#' @export
+read_config_file <- function(conf=NA){
+  confdirs <- list(
+    "site" = rappdirs::site_config_dir,
+    "user" = rappdirs::user_config_dir
+  )
+
+  fn <- NA
+  if(file.exists(as.character(conf))) {
+    fn <- as.character(conf)
+  } else if(!is.null(confdirs[[conf]])) {
+    path <- confdirs[[conf]]()
+  } else {
+    path <- "./"
+  }
+  if(is.na(fn)){
+    fn <- file.path(path,
+                    conf_fn) # conf_fn is defined in data-raw/sysdata.r
+  }
+  fexists <- file.exists(fn)
+
+  if(interactive()){
+    if(fexists){
+      msg <- fn
+    } else {
+      msg <- glue::glue("{fn} does not exist")
+    }
+    message(msg)
+  }
+
+  if(fexists){
+    yml <- yaml::read_yaml(fn)
+  } else {
+    yml <- NA
+  }
+  yml
+}
+
+#' Return the combined available configurations
+#'
+#' @param .fn String. The full name and path of a configuration file.
+#' @param exclusive Boolean. If TRUE, the file named by the .fn parameter is
+#'   treated as the only config file. Site and user level files are not read.
+#'   This parameter is ignored if .fn is missing.
+#' @return optionally nested named list or vector as returned by
+#'   \code{yaml::read_yaml}
+get_all_configs <- function(.fn=NA,exclusive=FALSE){
+  ## If it's just the named file, we can take a shortcut
+  if(!is.na(.fn) && exclusive){
+    return(read_config_file(.fn))
+  }
+
+  all_configs <- list(
+    "site" = read_config_file("site"),
+    "user" = read_config_file("user"),
+    "pwd"  = read_config_file(),
+    "fn"   = read_config_file(.fn)
+  )
+  all_configs <- all_configs[!is.na(all_configs)]
+
+  combined <- all_configs[[1]]
+  for(conf in all_configs[2:length(all_configs)]){
+    combined <- combine_configs(combined,conf)
+  }
+  combined
+}
+
+#' Combine the optionally nested lists root and new.
+#' Elements that exists in new but not root will be added to root
+#' Elements that exists in root but not new will be retained in root
+#' Elements that exist in both will be replaced in root by the contents of new
+combine_configs <- function(root,new){
+  combined <- root
+  for(name in names(new)){
+    if(!(name %in% names(root))) {
+      combined[[name]] <- new[[name]]
+    } else if(!is.list(root[[name]])){
+      combined[[name]] <- new[[name]]
+    } else if(!is.list(new[[name]]))
+      combined[[name]] <- new[[name]]
+    else {
+      combined[[name]] <- combine_configs(root[[name]],new[[name]])
+    }
+  }
+  combined
+}
+
+# get_conf_filenames returns the names of configuration files to be read
 #
-# 4 possible files are listed, the first one that is found is used.
-# A filename supplied as an arg is preferred, then a conf file in
-# the pwd, then in the users config dir, as identified by rappdirs,
-# then in the site config dir, also identified by rappdirs.
 get_conf_filename <- function(.fn=NA){
   basefn <- ".sqlhelper_db_conf.yml"
   file_names <- c( # list of possible conf filenames
@@ -65,7 +157,7 @@ get_conf_filename <- function(.fn=NA){
 #
 # To add more in the future, first add the name of the new connection in
 # R/sysdata.rda and then specify the connection in this function
-set_connections <- function(config_filename=NA){
+set_connections <- function(config_filename=NA, exclusive=FALSE){
 
   fn <- get_conf_filename(.fn=config_filename)
   conf <- yaml::read_yaml(fn)
@@ -178,9 +270,9 @@ close_connections <- function(){
 #' Closes and then re-opens all configured connections
 #'
 #' @export
-reconnect <- function(.fn=NA){
+reconnect <- function(.fn=NA,exclusive=NA){
   close_connections()
-  set_connections(.fn)
+  set_connections(.fn, exclusive)
 }
 
 #' Return a list of available connection names

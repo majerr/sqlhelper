@@ -2,7 +2,7 @@
 % Please edit documentation in R/connections.R
 \name{connections_list}
 \alias{connections_list}
-\title{Return a list of available connections}
+\title{Return a list of available connection names}
 \usage{
 connections_list()
 }
@@ -11,5 +11,5 @@ A list of connections maintained by the loaded sqlhelper that are
   currently live.
 }
 \description{
-Return a list of available connections
+Return a list of available connection names
 }

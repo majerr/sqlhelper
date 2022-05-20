@@ -8,7 +8,7 @@ live_connection(con_name)
 }
 \arguments{
 \item{con_name}{Then name of the live connection you want (use
-connections_list)}
+connections_list to get names of available connetions)}
 }
 \value{
 A live connection to a database, or NULL

@@ -4,8 +4,8 @@
 \alias{reconnect}
 \title{Re-establish connections to all configured databases}
 \usage{
-reconnect()
+reconnect(.fn = NA)
 }
 \description{
-Closes and then re-opens connections all configured connections
+Closes and then re-opens all configured connections
 }
