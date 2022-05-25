@@ -1,13 +1,15 @@
 # Local folder
 
-cds:
-  Driver: "{ODBC Driver 17 for SQL Server}"
-  Server: "Dap-sql01\\cds"
-  Trusted_Connection: "yes"
 
 dap:
   Driver: "{ODBC Driver 17 for SQL Server}"
   Server: "Dap-sql01"
   Trusted_Connection: "yes"
+
+foo:
+  Driver: "{ODBC Driver 17 for SQL Server}"
+  Server: "Dap-sql01"
+  Trusted_Connection: "yes"
+
 
 

@@ -1,4 +1,4 @@
 library(testthat)
-library(ucsqlhelper)
+library(sqlhelper)
 
-test_check("ucsqlhelper")
+test_check("sqlhelper")

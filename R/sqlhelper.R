@@ -28,7 +28,7 @@
 #'
 #'  \preformatted{
 #'
-#'  # load ucsqlhelper library(sqlhelper)
+#'  # load sqlhelper library(sqlhelper)
 #'
 #'  # write some queries files_to_run_on_postgres <-
 #'  list("path/to/create_temporary_dataset.sql",
@@ -53,7 +53,7 @@
 #'
 #'  \preformatted{
 #'
-#'  # load ucsqlhelper library(sqlhelper)
+#'  # load sqlhelper library(sqlhelper)
 #'
 #'  # write some queries my_queries <- list(usedb="use COVID19",
 #'  showtabs="select * from INFORMATION_SCHEMA.TABLES")

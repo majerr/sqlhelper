@@ -10,6 +10,8 @@ showsql(sql, is.queries = FALSE, interpolate = parent.frame())
 \item{sql}{A character vector containing either sql file names or queries}
 
 \item{is.queries}{Are these queries or filenames? defaults to FALSE (i.e. filenames)}
+
+\item{interpolate}{An env containing parameters to interpolate into the sql, or NULL}
 }
 \value{
 \code{showsql} returns one of:

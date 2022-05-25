@@ -4,8 +4,15 @@
 \alias{reconnect}
 \title{Re-establish connections to all configured databases}
 \usage{
-reconnect(.fn = NA)
+reconnect(.fn = NA, exclusive = FALSE)
+}
+\arguments{
+\item{.fn}{String, the name of a config file}
+
+\item{exclusive}{if .fn is present, should it be used exclusively (TRUE) or
+  combined with user and site configs (FALSE)?
+Closes and then re-opens all configured connections}
 }
 \description{
-Closes and then re-opens all configured connections
+Re-establish connections to all configured databases
 }

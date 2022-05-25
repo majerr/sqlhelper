@@ -1,8 +1,11 @@
 context("runfiles")
 library(sqlhelper)
 
-cdsfn <- "../../sql/test_cds.sql"
-foofn <- "../../sql/test_foo.sql"
+# cdsfn <- "../../sql/test_cds.sql"
+# foofn <- "../../sql/test_foo.sql"
+
+cdsfn <- "test_cds.sql"
+foofn <- "test_foo.sql"
 
 test_that("interpret_comments obtains the correct parameters", {
 

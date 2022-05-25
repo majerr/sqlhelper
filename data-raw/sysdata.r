@@ -7,7 +7,7 @@
 vars <- list(
   "connections" = list(),
   "default_conn_name" = '',
-  "conf_fn" = ".sqlhelper_db_conf.yml"
+  "conf_fn" = "sqlhelper_db_conf.yml"
 )
 
 list2env(vars,.GlobalEnv)

@@ -14,9 +14,8 @@ is to use an interpreted comment inside the sql file.}
 
 \item{interpolate}{defaults to the value of \code{parent.frame()}. May be set to \code{FALSE} if
 interpolation to be avoided, or to another environment to control the source of the used. This
-can be useful if UC SQL Helper is used to run SQL from within another package, and you don't want
-to interfere with \code{.GlobalEnv}. The \code{\link[uccaseload]{UC Caseload package}} contains
-examples of this.}
+can be useful if sqlhelper is used to run SQL from within another package, and you don't want
+to interfere with \code{.GlobalEnv}.}
 }
 \value{
 If the file contains more than one query, a list. Each element contains the results of

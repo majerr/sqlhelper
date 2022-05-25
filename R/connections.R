@@ -1,11 +1,15 @@
 # This file contains several (mainly) internal functions used either by exported
 # functions (e.g. those in defined in sqlrunners.R) or called by .onLoad()
 
-# yml2str converts a list object returned by read_yaml() to a connection string.
-#
-# YAML values need to be double quoted in the YAML file.
-#
-# For internal use.
+#' yml2str converts a list object returned by read_yaml() to a connection string.
+#'
+#' @param .conparms Connection parameters
+#'
+#' @return Connection string
+#'
+#' YAML values need to be double quoted in the YAML file.
+#'
+#' For internal use.
 yml2str <- function(.conparms){
   paste0(
     paste0(
@@ -85,14 +89,25 @@ get_all_configs <- function(.fn=NA,exclusive=FALSE){
   )
   all_configs <- all_configs[!is.na(all_configs)]
 
-  combined <- all_configs[[1]]
-  for(conf in all_configs[2:length(all_configs)]){
-    combined <- combine_configs(combined,conf)
+  if(length(all_configs) == 0){
+    combined = NA
+  } else {
+    combined <- all_configs[[1]]
+    for(conf in all_configs[2:length(all_configs)]){
+      combined <- combine_configs(combined,conf)
+    }
   }
-  combined
+
+  return(combined)
 }
 
 #' Combine the optionally nested lists root and new.
+#'
+#' @param root The existing yml config
+#' @param new The yml to be added
+#'
+#' @return Combined yml config
+#'
 #' Elements that exists in new but not root will be added to root
 #' Elements that exists in root but not new will be retained in root
 #' Elements that exist in both will be replaced in root by the contents of new
@@ -111,40 +126,6 @@ combine_configs <- function(root,new){
   }
   combined
 }
-
-# get_conf_filenames returns the names of configuration files to be read
-#
-get_conf_filename <- function(.fn=NA){
-  basefn <- ".sqlhelper_db_conf.yml"
-  file_names <- c( # list of possible conf filenames
-      .fn, # arg
-      file.path(
-        getwd(),
-        basefn),
-      file.path(
-        rappdirs::user_config_dir(),
-        basefn),
-      file.path(
-        rappdirs::site_config_dir(),
-        basefn)
-      )
-
-  existing_file_names <- na.omit( # list of existing conf filenames
-    unlist(
-      lapply(file_names,function(.fn){
-        if(is.na(.fn)){
-            NA
-          } else if(!file.exists(.fn)) { # This needs a separate clause to avoid 'invalid arg' errors
-            NA
-          } else {
-            .fn
-          }
-      })
-    )
-  )
-  dplyr::first(existing_file_names)
-}
-
 # set_connections() is called by .onLoad()
 #
 # Connections is a predefined list, loaded from R/sysdata.rda, with one element:
@@ -159,11 +140,11 @@ get_conf_filename <- function(.fn=NA){
 # R/sysdata.rda and then specify the connection in this function
 set_connections <- function(config_filename=NA, exclusive=FALSE){
 
-  fn <- get_conf_filename(.fn=config_filename)
-  conf <- yaml::read_yaml(fn)
-  con_strs <- lapply(conf,yml2str)
+  conf <- get_all_configs(.fn=config_filename, exclusive = exclusive)
+  con_strs <- lapply(conf, yml2str)
 
   default_conn_name <<- names(con_strs)[1]
+  print(default_conn_name)
   for(con_name in names(con_strs)){
     tryCatch({
       suppressWarnings({
@@ -184,7 +165,7 @@ set_connections <- function(config_filename=NA, exclusive=FALSE){
 # Returns a connection and a sql runnner for the db parameter.
 # For internal use only!
 #
-# For now, qlhelpr only uses DBI, so this isn't really necessary,
+# For now, sqlhelpr only uses DBI, so this isn't really necessary,
 # but if in the future we need runners or is.live functions from
 # other packages we can add them here without needing to mess about
 # with the sqlrunners code.
@@ -267,10 +248,13 @@ close_connections <- function(){
 
 #' Re-establish connections to all configured databases
 #'
+#' @param .fn String, the name of a config file
+#' @param exclusive if .fn is present, should it be used exclusively (TRUE) or
+#'   combined with user and site configs (FALSE)?
 #' Closes and then re-opens all configured connections
 #'
 #' @export
-reconnect <- function(.fn=NA,exclusive=NA){
+reconnect <- function(.fn=NA, exclusive=FALSE){
   close_connections()
   set_connections(.fn, exclusive)
 }
