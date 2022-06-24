@@ -1,44 +1,54 @@
-context("connections")
 library(sqlhelper)
 
-test_that("get_config reads appropriate config files", {
-  # Site wide
-  expect_true(is.na(read_config_file("site")))
+test_that("get_config reads appropriate config file", {
 
-  # User conf
-  expect_equal(names(read_config_file("user")),c("cds","dap"))
+  expect_equal(
+    names(
+      read_config_file(
+        testthat::test_path("testfiles",
+                            "sqlhelper_db_conf.yml")
+      )
+    ),
+    c("mem")
+  )
 
-  # Named file
-  expect_equal(names(read_config_file("conf/sqlhelper_db_conf.yml")), c("cds","dap","foo"))
-
-  # Default name in current dir
-  expect_equal(names(read_config_file()), c("dap", "foo"))
 })
 
 test_that("get_all_configs appropriately combines config files", {
-  conf <- get_all_configs()
-  expect_true("Driver" %in% names(conf$dap))
-})
-
-test_that("connections are live", {
-  expect_true(is.connected('cds'))
+  skip_on_cran()
+  conf <- get_all_configs(testthat::test_path("testfiles",
+                                              "sqlhelper_db_conf.yml"))
+  expect_equal(
+    names(conf),
+    c("mem","dap","cds")
+  )
+  expect_true("Driver" %in% names(conf$dap$connection))
 })
 
 test_that("reconnections are live", {
-  reconnect()
-  expect_true(is.connected('cds'))
+  reconnect(.fn = test_path("testfiles","sqlhelper_db_conf.yml"),
+            exclusive = TRUE)
+  expect_true(is.connected('mem'))
 })
 
 test_that("connections_list returns a list of live connections", {
-  expect_equal(connections_list(), c("cds", "dap", "foo"))
+  expect_equal(connections_list(), c("mem"))
   close_connections()
   expect_equal(connections_list(),as.character(c()))
-  set_connections()
-  expect_equal(connections_list(), c("cds", "dap", "foo"))
+  set_connections(config_filename = test_path("testfiles","sqlhelper_db_conf.yml"),
+                  exclusive = TRUE)
+  expect_equal(connections_list(), c("mem"))
+  close_connections()
+  expect_equal(connections_list(),as.character(c()))
+  set_connections(config_filename = test_path("testfiles","sqlhelper_db_conf.yml"))
+  expect_equal(connections_list(), c("mem","dap","cds"))
 })
 
 test_that("live_connection returns the named connection or null",{
-  expect_equal(live_connection("cds"), connections$cds)
+
+  expect_equal(is(live_connection("mem")),
+               c("SQLiteConnection","DBIConnection","DBIObject")
+  )
   expect_warning(
     expect_null(live_connection("bar"))
   )

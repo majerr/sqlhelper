@@ -1,35 +1,42 @@
 # This file contains several (mainly) internal functions used either by exported
 # functions (e.g. those in defined in sqlrunners.R) or called by .onLoad()
 
-#' yml2str converts a list object returned by read_yaml() to a connection string.
+#' yml2conn_str converts a list object returned by read_yaml() to a db connection string.
 #'
-#' @param .conparms Connection parameters
+#' @param parms Connection parameters
 #'
 #' @return Connection string
 #'
 #' YAML values need to be double quoted in the YAML file.
 #'
 #' For internal use.
-yml2str <- function(.conparms){
+yml2conn_str <- function(parms){
+  conparms <- parms$connection
   paste0(
     paste0(
-      names(.conparms),
+      names(conparms),
       "=",
-      unlist(.conparms)
+      unlist(conparms)
       ),
     collapse="; ")
 }
 
 #' Return the contents of a config file
 #'
-#' @param conf A string. either the full path and name of a config file, or one
+#' @param conf String. Either the path and name of a config file, or one
 #'   of 'site' or 'user', or \code{NA} (the default). If \code{NA},
 #'   \code{get_config} will search the current directory for a config file.
 #'
-#' @return optionally nested named list or vector as returned by
-#'   \code{yaml::read_yaml}
+#' @details The default search name for config files is "sqlhelper_db_conf.yml".
+#'   If \code{conf} is 'site', 'user' or \code{NA}, a file with this name will
+#'   be sought in \code{rappdirs::site_config_dir},
+#'   \code{rappdirs::user_config_dir} or the current working directory,
+#'   respectively. In an interactive context, a warning will be issued if the
+#'   sought file does not exist.
 #'
-#' @export
+#' @return optionally nested named list or vector as returned by
+#'   \code{yaml::read_yaml}, or \code{NA} if the appropriate file does not
+#'   exist.
 read_config_file <- function(conf=NA){
   confdirs <- list(
     "site" = rappdirs::site_config_dir,
@@ -44,19 +51,16 @@ read_config_file <- function(conf=NA){
   } else {
     path <- "./"
   }
+
   if(is.na(fn)){
     fn <- file.path(path,
                     conf_fn) # conf_fn is defined in data-raw/sysdata.r
   }
+
   fexists <- file.exists(fn)
 
-  if(interactive()){
-    if(fexists){
-      msg <- fn
-    } else {
-      msg <- glue::glue("{fn} does not exist")
-    }
-    message(msg)
+  if(interactive() & !fexists){
+      message(glue::glue("{fn} does not exist"))
   }
 
   if(fexists){
@@ -114,41 +118,83 @@ get_all_configs <- function(.fn=NA,exclusive=FALSE){
 combine_configs <- function(root,new){
   combined <- root
   for(name in names(new)){
+
     if(!(name %in% names(root))) {
-      combined[[name]] <- new[[name]]
+      # New name does not yet exist in the combined list- insert it at the first
+      # position to enable use of the first as default.
+      combined <- c(new, combined)
+      names(combined)[1] <- name
+
     } else if(!is.list(root[[name]])){
+      # New name already exists but the existing element is not a list (i.e. it
+      # is a leaf in the tree) - so overwrite
       combined[[name]] <- new[[name]]
+
     } else if(!is.list(new[[name]]))
+      # New name already exists but the new element is not a list (i.e. when
+      # inserted it will be a leaf in the tree) - so overwrite
       combined[[name]] <- new[[name]]
+
     else {
+      # New name already exists and the existing and replacement elements are
+      # both lists, so we need to recurse into them.
       combined[[name]] <- combine_configs(root[[name]],new[[name]])
     }
   }
   combined
 }
-# set_connections() is called by .onLoad()
-#
-# Connections is a predefined list, loaded from R/sysdata.rda, with one element:
-#
-# > names(connections) [1] "cds"
-#
-# set_connections() sets cds to an open ODBC connection.
-#
-# For version 3, this will change to user or site defineable connections.
-#
-# To add more in the future, first add the name of the new connection in
-# R/sysdata.rda and then specify the connection in this function
+
+#' Determine the connection driver
+#'
+#' @param conf A named list representing a single connection returned by
+#'   \code{\link{get_all_configs}}.
+#'
+#' @details Search for an element named "database_type" and return a driver
+#'   function appropriate for that database. For example, "database_type:
+#'   sqlite" in your config will case \code{driver()} to return
+#'   \code{\link[RSQLite]{SQLite}}.
+#' @return A driver function. Defaults to \code{\link[odbc]{odbc}} if no
+#'   "database_type" element is found.
+#' @import dplyr RSQLite odbc stringr
+driver <- function(conf){
+  if(!("database_type" %in% stringr::str_to_lower(names(conf)))){
+    drv <- odbc::odbc
+  } else {
+
+    drv <- dplyr::case_when(
+      stringr::str_to_lower(conf$database_type) == "sqlite" ~ list(RSQLite::SQLite),
+
+      ### ...More patterns and drivers can be added here as needed... ###
+
+      TRUE ~ list(odbc::odbc)
+    )[[1]] # The list wrappers and this de-listing subset are to avoid a 'not subsettable' error.
+           # see https://github.com/tidyverse/dplyr/issues/5916
+  }
+  return(drv)
+}
+
+#' Populate the list of available connections
+#'
+#' @param config_filename String. Name of a config file. Defaults to NA. See
+#'   \code{\link{read_config_file}} and \code{\link{get_all_configs}} for
+#'   options.
+#'
+#' @param exclusive Boolean. Should this file be used exclusively to define
+#'   connections? Defaults to \code{FALSE}. See \code{\link{get_all_configs}}.
+#'
+#' @Details This function is called by \code{.onLoad()} and may be re-called
 set_connections <- function(config_filename=NA, exclusive=FALSE){
 
   conf <- get_all_configs(.fn=config_filename, exclusive = exclusive)
-  con_strs <- lapply(conf, yml2str)
+
+  con_strs <- lapply(conf, yml2conn_str)
 
   default_conn_name <<- names(con_strs)[1]
-  print(default_conn_name)
   for(con_name in names(con_strs)){
+    drv <- driver(conf[con_name][[1]])
     tryCatch({
-      suppressWarnings({
-        connections[[con_name]] <<- DBI::dbConnect(odbc::odbc(),
+     suppressWarnings({
+        connections[[con_name]] <<- DBI::dbConnect(drv(),
                                                   .connection_string=con_strs[[con_name]])
       })
 
@@ -160,7 +206,6 @@ set_connections <- function(config_filename=NA, exclusive=FALSE){
   }
 }
 
-#
 
 # Returns a connection and a sql runnner for the db parameter.
 # For internal use only!
@@ -234,7 +279,7 @@ not.connected <- function(db){
   return(!out)
 }
 
-#' Close connections to Hive and PostgreSQL
+#' Close all connections and remove them from the connections list
 #'
 #' This function is run when the library is unloaded
 close_connections <- function(){
@@ -242,8 +287,9 @@ close_connections <- function(){
     if(is.connected(conn_name)){
       suppressWarnings(DBI::dbDisconnect(connections[[conn_name]]))
     }
-    connections[[conn_name]] <- NA
+    connections[[conn_name]] <<- NA
   }
+  connections <<- list()
 }
 
 #' Re-establish connections to all configured databases
@@ -266,14 +312,17 @@ reconnect <- function(.fn=NA, exclusive=FALSE){
 #'
 #' @export
 connections_list <- function(){
+  if(length(connections)==0){
+    return(character())
+  }
   live_cons <- lapply(names(connections),is.connected)
   return(names(connections)[live_cons != FALSE])
 }
 
 #' Return the named connection or NULL
 #'
-#' @param con_name Then name of the live connection you want (use
-#'   connections_list to get names of available connetions)
+#' @param con_name The name of the live connection you want (use
+#'   connections_list to get names of available connections)
 #'
 #' @return A live connection to a database, or NULL
 #'

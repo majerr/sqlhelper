@@ -1,0 +1,10 @@
+# Local folder
+
+mem:
+  database_type: sqlite
+  connection:
+    Server: ":memory:"
+
+
+
+
