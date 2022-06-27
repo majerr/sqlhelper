@@ -9,7 +9,7 @@ test_that("get_config reads appropriate config file", {
                             "sqlhelper_db_conf.yml")
       )
     ),
-    c("mem")
+    c("single_mem","pool_mem")
   )
 
 })
@@ -20,7 +20,7 @@ test_that("get_all_configs appropriately combines config files", {
                                               "sqlhelper_db_conf.yml"))
   expect_equal(
     names(conf),
-    c("mem","dap","cds")
+    c("single_mem","pool_mem","dap","cds")
   )
   expect_true("Driver" %in% names(conf$dap$connection))
 })
@@ -28,25 +28,30 @@ test_that("get_all_configs appropriately combines config files", {
 test_that("reconnections are live", {
   reconnect(.fn = test_path("testfiles","sqlhelper_db_conf.yml"),
             exclusive = TRUE)
-  expect_true(is.connected('mem'))
+  expect_true(is.connected('single_mem'))
+  expect_true(is.connected('pool_mem'))
 })
 
 test_that("connections_list returns a list of live connections", {
-  expect_equal(connections_list(), c("mem"))
+  expect_equal(connections_list(), c("single_mem","pool_mem"))
   close_connections()
   expect_equal(connections_list(),as.character(c()))
   set_connections(config_filename = test_path("testfiles","sqlhelper_db_conf.yml"),
                   exclusive = TRUE)
-  expect_equal(connections_list(), c("mem"))
+  expect_equal(connections_list(), c("single_mem","pool_mem"))
   close_connections()
   expect_equal(connections_list(),as.character(c()))
   set_connections(config_filename = test_path("testfiles","sqlhelper_db_conf.yml"))
-  expect_equal(connections_list(), c("mem","dap","cds"))
+  expect_equal(connections_list(), c("single_mem","pool_mem","dap","cds"))
 })
 
 test_that("live_connection returns the named connection or null",{
 
   expect_equal(is(live_connection("mem")),
+               c("Pool")
+  )
+  reconnect(.fn = test_path("testfiles","sqlhelper_db_conf.yml"))
+  expect_equal(is(live_connection("single_mem")),
                c("SQLiteConnection","DBIConnection","DBIObject")
   )
   expect_warning(

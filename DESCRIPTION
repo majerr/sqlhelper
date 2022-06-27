@@ -12,7 +12,8 @@ Imports:
     stringr,
     glue,
     dplyr,
-    RSQLite
+    RSQLite,
+    pool
 License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true

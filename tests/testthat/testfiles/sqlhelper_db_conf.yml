@@ -1,10 +1,15 @@
 # Local folder
 
-mem:
+single_mem:
   database_type: sqlite
   connection:
     Server: ":memory:"
 
 
+pool_mem:
+  database_type: sqlite
+  pool: yes
+  connection:
+    Server: ":memory:"
 
 

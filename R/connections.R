@@ -1,15 +1,16 @@
 # This file contains several (mainly) internal functions used either by exported
 # functions (e.g. those in defined in sqlrunners.R) or called by .onLoad()
 
-#' yml2conn_str converts a list object returned by read_yaml() to a db connection string.
+#' yml2conn_str converts a list object returned by read_yaml() to a db
+#' connection string.
 #'
 #' @param parms Connection parameters
 #'
 #' @return Connection string
 #'
-#' YAML values need to be double quoted in the YAML file.
+#'   YAML values need to be double quoted in the YAML file.
 #'
-#' For internal use.
+#'   For internal use.
 yml2conn_str <- function(parms){
   conparms <- parms$connection
   paste0(
@@ -117,13 +118,13 @@ get_all_configs <- function(.fn=NA,exclusive=FALSE){
 #' Elements that exist in both will be replaced in root by the contents of new
 combine_configs <- function(root,new){
   combined <- root
-  for(name in names(new)){
-
+  for(name in rev(names(new))){
     if(!(name %in% names(root))) {
       # New name does not yet exist in the combined list- insert it at the first
       # position to enable use of the first as default.
-      combined <- c(new, combined)
-      names(combined)[1] <- name
+      existing_names <- names(combined)
+      combined <- c(new[name], combined)
+      names(combined) <- c(name, existing_names)
 
     } else if(!is.list(root[[name]])){
       # New name already exists but the existing element is not a list (i.e. it
@@ -157,6 +158,7 @@ combine_configs <- function(root,new){
 #'   "database_type" element is found.
 #' @import dplyr RSQLite odbc stringr
 driver <- function(conf){
+  # Default is odbc
   if(!("database_type" %in% stringr::str_to_lower(names(conf)))){
     drv <- odbc::odbc
   } else {
@@ -166,7 +168,7 @@ driver <- function(conf){
 
       ### ...More patterns and drivers can be added here as needed... ###
 
-      TRUE ~ list(odbc::odbc)
+      TRUE ~ list(odbc::odbc) # fallback is odbc if not recognized
     )[[1]] # The list wrappers and this de-listing subset are to avoid a 'not subsettable' error.
            # see https://github.com/tidyverse/dplyr/issues/5916
   }
@@ -192,14 +194,23 @@ set_connections <- function(config_filename=NA, exclusive=FALSE){
   default_conn_name <<- names(con_strs)[1]
   for(con_name in names(con_strs)){
     drv <- driver(conf[con_name][[1]])
+    print(con_strs[con_name])
+    print(str(drv()))
     tryCatch({
      suppressWarnings({
+       if(conf[con_name][[1]]$pool){
+         connections[[con_name]] <<- pool::dbPool(drv(),
+                                                   .connection_string=con_strs[[con_name]])
+       } else {
+         print("!")
         connections[[con_name]] <<- DBI::dbConnect(drv(),
                                                   .connection_string=con_strs[[con_name]])
+       }
       })
 
     },
     error = function(c){
+      message(c)
       connections[[con_name]] <- NA
       warning(glue::glue("{con_name} is not available"))
     })
@@ -244,8 +255,8 @@ getrunparams <- function(db){
 #' is.connected returns FALSE if the db connection returned by getrunparams is
 #' not valid.
 #' @export
-is.connected <- function(db){
-  runparms <- getrunparams(db)
+is.connected <- function(cname){
+  runparms <- getrunparams(cname)
   out <- NA
   tryCatch({out <- runparms$is.live(runparms$conn)},
            error = function(e){
@@ -284,8 +295,10 @@ not.connected <- function(db){
 #' This function is run when the library is unloaded
 close_connections <- function(){
   for(conn_name in names(connections)){
-    if(is.connected(conn_name)){
+    if(is.connected(conn_name) & !is(live_connection(conn_name),"Pool")){
       suppressWarnings(DBI::dbDisconnect(connections[[conn_name]]))
+    } else if(is.connected(conn_name) & is(live_connection(conn_name),"Pool")){
+      pool::poolClose(connections[[conn_name]])
     }
     connections[[conn_name]] <<- NA
   }
