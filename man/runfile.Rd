@@ -19,9 +19,8 @@ to interfere with \code{.GlobalEnv}.}
 }
 \value{
 If the file contains more than one query, a list. Each element contains the results of
-       each query.
-
-       If the file contains a single query, the result of that query is returned.
+each query.\preformatted{   If the file contains a single query, the result of that query is returned.
+}
 }
 \description{
 This function is used internally and not exported, use \code{\link{runfiles}} instead.

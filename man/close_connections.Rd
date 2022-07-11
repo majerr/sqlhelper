@@ -2,7 +2,7 @@
 % Please edit documentation in R/connections.R
 \name{close_connections}
 \alias{close_connections}
-\title{Close connections to Hive and PostgreSQL}
+\title{Close all connections and remove them from the connections list}
 \usage{
 close_connections()
 }

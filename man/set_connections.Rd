@@ -17,3 +17,8 @@ connections? Defaults to \code{FALSE}. See \code{\link{get_all_configs}}.}
 \description{
 Populate the list of available connections
 }
+\details{
+This function is called by \code{.onLoad()} and the exported
+\code{reconnect()} function (which closes existing connections before
+calling \code{set_connections()}).
+}

@@ -28,10 +28,10 @@ sample from a table. See, \code{\link{nthofk}}.}
 \section{Quickstart - running sql files and queries}{
 
 
- For data wrangling, you probably want to write your SQL queries in their own
- files. Then you will want to use \code{runfiles}:
+For data wrangling, you probably want to write your SQL queries in their own
+files. Then you will want to use \code{runfiles}:
 
- \preformatted{
+\preformatted{
 
  # load sqlhelper library(sqlhelper)
 
@@ -53,10 +53,10 @@ sample from a table. See, \code{\link{nthofk}}.}
  # queries that do not return a result (e.g. # CREATE TABLE) will result in
  an empty list. }
 
- But sometimes you just want to run some short queries - then
- \code{runqueries} is for you:
+But sometimes you just want to run some short queries - then
+\code{runqueries} is for you:
 
- \preformatted{
+\preformatted{
 
  # load sqlhelper library(sqlhelper)
 

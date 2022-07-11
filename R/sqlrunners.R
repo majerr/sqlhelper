@@ -1,6 +1,6 @@
 #' Execute a sequence of SQL queries
 #'
-#' Accepts a character vector of SQL queries and runs each one
+#' Accepts a character vector of SQL queries and runs each one on the
 #' on either hive or postgresql.
 #'
 #' @param queries A list or character vector containing your sql commands
@@ -14,33 +14,38 @@
 #' @family SQL runners
 #' @seealso \code{\link{runfiles}}
 #' @export
-runqueries <- function(queries, db=default_conn_name, interpolate=parent.frame()){
+runqueries <- function(queries, conn_name=default_conn_name, interpolate=parent.frame()){
   # If runqueries is called from runfiles with no parameter set and no db
   # spec'ed in the sql, the db parameter can be set to NA. If that happens, we
   # want it reset to the default before proceeding.
-  if(is.na(db)){db <- default_conn_name}
+  if(is.na(conn_name)){conn_name <- default_conn_name}
 
-  if(not.connected(db)){
+  if(not.connected(conn_name)){
+
     # This grep checks whether db is enclosed in quotes
-    if( grepl("^[\"\'][^\"\']*[\"\']$",db) == TRUE){
+    if( grepl("^[\"\'][^\"\']*[\"\']$",conn_name) == TRUE){
       quotewarn <- " Try removing the quotes."
     }
     else {quotewarn <- ""}
+
     message("There were connection errors. Please check your output carefully.")
+
     return(
       list(
-        error=stringr::str_interp("No connection to ${db}.${quotewarn}")
+        error=glue::glue("No connection to {conn_name}.{quotewarn}")
       )
     )
   }
   else{
     #runparams is an internal function. Definition is in R/connections.R
-    dbparms <- getrunparams(db)
+    dbparms <- getrunparams(conn_name)
   }
 
   # parameterize queries before submitting, if required
   if(is.environment(interpolate) == TRUE){
-    queries <- lapply(queries,glue::glue,.envir=interpolate)
+    queries <- lapply(queries,glue::glue_sql,
+                      .con = dbparms$conn,
+                      .envir=interpolate)
   }
 
   # Submit with the appropriate connection and return the result

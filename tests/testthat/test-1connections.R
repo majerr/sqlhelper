@@ -26,7 +26,8 @@ test_that("get_all_configs appropriately combines config files", {
 })
 
 test_that("reconnections are live", {
-  reconnect(.fn = test_path("testfiles","sqlhelper_db_conf.yml"),
+  fn <- testthat::test_path("testfiles","sqlhelper_db_conf.yml")
+  reconnect(.fn = fn,
             exclusive = TRUE)
   expect_true(is.connected('single_mem'))
   expect_true(is.connected('pool_mem'))
@@ -47,7 +48,7 @@ test_that("connections_list returns a list of live connections", {
 
 test_that("live_connection returns the named connection or null",{
 
-  expect_equal(is(live_connection("mem")),
+  expect_equal(is(live_connection("pool_mem")),
                c("Pool")
   )
   reconnect(.fn = test_path("testfiles","sqlhelper_db_conf.yml"))

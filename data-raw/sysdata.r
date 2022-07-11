@@ -5,6 +5,10 @@
 # this file
 
 vars <- list(
+  "connection_template" = list("conn"=NA,
+                               "driver"=NA,
+                               "pool"=FALSE,
+                               "close"=DBI::dbDisconnect),
   "connections" = list(),
   "default_conn_name" = '',
   "conf_fn" = "sqlhelper_db_conf.yml"

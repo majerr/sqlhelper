@@ -4,10 +4,10 @@
 \alias{is.connected}
 \title{Test whether a database is connected}
 \usage{
-is.connected(db)
+is.connected(conn_name)
 }
 \arguments{
-\item{db}{Which database do you want to test? (restricted to 'cds' in MHCLG)}
+\item{conn_name}{Which database do you want to test? (restricted to 'cds' in MHCLG)}
 }
 \value{
 Boolean

@@ -12,14 +12,14 @@ driver(conf)
 }
 \value{
 A driver function. Defaults to \code{\link[odbc]{odbc}} if no
-  "database_type" element is found.
+"server_type" element is found.
 }
 \description{
 Determine the connection driver
 }
 \details{
-Search for an element named "database_type" and return a driver
-  function appropriate for that database. For example, "database_type:
-  sqlite" in your config will case \code{driver()} to return
-  \code{\link[RSQLite]{SQLite}}.
+Search for an element named "server_type" and return a driver
+function appropriate for that database. For example, "server_type:
+sqlite" in your config will case \code{driver()} to return
+\code{\link[RSQLite]{SQLite}}.
 }

@@ -4,17 +4,17 @@
 \alias{live_connection}
 \title{Return the named connection or NULL}
 \usage{
-live_connection(con_name)
+live_connection(conn_name)
 }
 \arguments{
-\item{con_name}{Then name of the live connection you want (use
-connections_list to get names of available connetions)}
+\item{conn_name}{The name of the live connection you want (use
+connections_list to get names of available connections)}
 }
 \value{
 A live connection to a database, or NULL
 
-  If \code{con_name} is not the name of a live connection to a database, a
-  warning is issued and NULL is returned.
+If \code{conn_name} is not the name of a live connection to a database, a
+warning is issued and NULL is returned.
 }
 \description{
 Return the named connection or NULL

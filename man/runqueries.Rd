@@ -4,24 +4,28 @@
 \alias{runqueries}
 \title{Execute a sequence of SQL queries}
 \usage{
-runqueries(queries, db = default_conn_name, interpolate = parent.frame())
+runqueries(
+  queries,
+  conn_name = default_conn_name,
+  interpolate = parent.frame()
+)
 }
 \arguments{
 \item{queries}{A list or character vector containing your sql commands}
-
-\item{db}{Defaults to 'cds', which is the only option on the DAP}
 
 \item{interpolate}{Should the SQL be parameterized from R? Defaults to the
 value of \code{parent.frame()}. May be set to \code{FALSE} if interpolation is
 to be avoided, or to another environment to control the source of the used.
 This can be useful if \code{sqlhelper} is used to run SQL from within another
 package, and you don't want to interfere with \code{.GlobalEnv}.}
+
+\item{db}{Defaults to 'cds', which is the only option on the DAP}
 }
 \value{
 A list containing the results of each query
 }
 \description{
-Accepts a character vector of SQL queries and runs each one
+Accepts a character vector of SQL queries and runs each one on the
 on either hive or postgresql.
 }
 \seealso{

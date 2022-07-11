@@ -1,4 +1,3 @@
-context("runfiles")
 library(sqlhelper)
 
 # cdsfn <- "../../sql/test_cds.sql"
