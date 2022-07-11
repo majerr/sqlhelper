@@ -11,7 +11,7 @@ read_sql_file <- function(file_path)  {
   lines <- remove_block_comments(lines)
   lines <- remove_inline_comments(lines)
 
-  #remove blanks lines
+  #remove blanks
   lines <- trimws(lines)
   lines <- lines[nchar(lines) > 0] # Drop blank lines
 
@@ -25,7 +25,7 @@ read_sql_file <- function(file_path)  {
   names(queries) <- interpreted_comments$qnames
 
   # Return a list containing the db.
-  return(list("db"=interpreted_comments$db,"queries"=queries))
+  return(list("conn"=interpreted_comments$conn,"queries"=queries))
 }
 
 
@@ -106,8 +106,8 @@ remove_inline_comments <- function(lines){
 }
 
 # take a bunch of lines and extract any actionable comments.
-# returns list(db='hive'|'pg'|NA, names=c(...))
-# where db and names are extracted from comments
+# returns list(con=<string>, names=c(...))
+# where con and names are extracted from comments
 interpret_comments <- function(lines){
 
   lines <- remove_block_comments(lines[nchar(lines) > 0])
@@ -151,14 +151,14 @@ interpret_comments <- function(lines){
 
   # Extract db from comments
   # NB lazy regex evaluation required to avoid matching double newlines
-  db <-  gsub(pattern=stringr::str_interp(".*--\\s*db\\s*=\\s*(\\S+?)\\s*${linetok}.*"),
+  conn <-  gsub(pattern=stringr::str_interp(".*--\\s*conn\\s*=\\s*(\\S+?)\\s*${linetok}.*"),
               replacement="\\1",
                x=blocks[1])
-  if(db == blocks[1]){
-    db=NA
+  if(conn == blocks[1]){
+    conn=NA
   }
 
-  return(list("db"=db,"qnames"=qnames))
+  return(list("conn"=conn,"qnames"=qnames))
 }
 
 # Take a block of SQL and split into individual SQL queries by using ";" as the seperator.

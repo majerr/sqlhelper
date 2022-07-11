@@ -63,7 +63,7 @@ runqueries <- function(queries, conn_name=default_conn_name, interpolate=parent.
 #' This function is used internally and not exported, use \code{\link{runfiles}} instead.
 #'
 #' @param fn is a file name.
-#' @param db is passed from runfiles and defaults to NA - the preferred method, for transparency,
+#' @param conn is passed from runfiles and defaults to NA - the preferred method, for transparency,
 #'           is to use an interpreted comment inside the sql file.
 #' @param interpolate defaults to the value of \code{parent.frame()}. May be set to \code{FALSE} if
 #'        interpolation to be avoided, or to another environment to control the source of the used. This
@@ -73,18 +73,18 @@ runqueries <- function(queries, conn_name=default_conn_name, interpolate=parent.
 #'        each query.
 #'
 #'        If the file contains a single query, the result of that query is returned.
-runfile <- function(fn,db=NA,interpolate=parent.frame()){
+runfile <- function(fn,conn=NA,interpolate=parent.frame()){
   sql <- read_sql_file(fn)
 
-  # A dbname from the file takes priority over a parameter
-  if(is.na(sql$db)==FALSE){
-    db <- sql$db
+  # A  connection name from the file takes priority over a parameter
+  if(is.na(sql$conn)==FALSE){
+    conn <- sql$conn
   }
   else{
-    db <- db
+    conn <- conn
   }
 
-  return(runqueries(sql$queries, db=db, interpolate=interpolate))
+  return(runqueries(sql$queries, conn_name = conn, interpolate=interpolate))
 }
 
 

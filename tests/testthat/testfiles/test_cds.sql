@@ -11,12 +11,14 @@ use COVID19;
 
 -- what tables have we got?
 -- qname=showtabs
-select * from INFORMATION_SCHEMA.TABLES;
+select * from
 
 /* a multi-
 line comment in the
 middle of the
 block*/
+
+INFORMATION_SCHEMA.TABLES;
 
 -- ------------------------------------------------------------
 
@@ -35,8 +37,8 @@ block*/
 
 -- ------------------------------------------------------------
 
--- make sure comments with double dashes survive the comment strip
--- qname=quoted_comment
+-- make sure quoted double dashes survive the comment strip
+-- qname=quoted_doubledash
 select
 'stringvar' as myString
 from [Analyse].[vw_COVIDKPI_LRFCDR_Latest]
