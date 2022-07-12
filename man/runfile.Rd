@@ -4,12 +4,12 @@
 \alias{runfile}
 \title{execute a \strong{single} file of SQL queries and obtain a flat list of results.}
 \usage{
-runfile(fn, db = NA, interpolate = parent.frame())
+runfile(fn, conn = NA, interpolate = parent.frame())
 }
 \arguments{
 \item{fn}{is a file name.}
 
-\item{db}{is passed from runfiles and defaults to NA - the preferred method, for transparency,
+\item{conn}{is passed from runfiles and defaults to NA - the preferred method, for transparency,
 is to use an interpreted comment inside the sql file.}
 
 \item{interpolate}{defaults to the value of \code{parent.frame()}. May be set to \code{FALSE} if

@@ -26,3 +26,6 @@
 #' n <- 10
 #'
 #' tbl_sql <- interpolate_sql("select * from {`table_name`}")
+interpolate_sql <- function(sql, interpolate, quote){
+
+}
