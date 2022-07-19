@@ -1,8 +1,13 @@
--- Empty test file
---db =   cds
+-- test file
+-- conn =   pool_mem
 
--- ------------------------------------------------------------
+-- what tables have we got?
+-- qname=showtabs
+SELECT name FROM
 
--- switch to the COVID19 database
--- qname=usedb
-use COVID19;
+/* a multi-
+line comment in the
+middle of the
+block*/
+
+sqlite_schema WHERE type='table';

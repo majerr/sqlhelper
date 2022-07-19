@@ -48,8 +48,10 @@ runqueries <- function(queries, conn_name=default_conn_name, interpolate=parent.
                       .envir=interpolate)
   }
 
-  # Submit with the appropriate connection and return the result
-  results <- lapply(queries, dbparms$runner, conn=dbparms$conn)
+  suppressWarnings(
+    # Submit with the appropriate connection and return the result
+    results <- lapply(queries, dbparms$runner, conn=dbparms$conn)
+  )
 
   #Flatten the result, if there's only one
   if(length(results) == 1){
@@ -183,8 +185,8 @@ runfile <- function(fn,conn=NA,interpolate=parent.frame()){
 #'
 #' @family SQL runners
 #' @export
-runfiles <- function(filenames,db=NA,interpolate=parent.frame()){
-  results <- lapply(filenames,runfile,db=db, interpolate=interpolate)
+runfiles <- function(filenames,conn=NA,interpolate=parent.frame()){
+  results <- lapply(filenames,runfile,conn=conn, interpolate=interpolate)
   names(results) <- gsub("\\.\\S+","",basename(filenames))
   if(length(results)==1){
     results <- results[[1]]

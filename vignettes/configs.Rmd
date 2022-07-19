@@ -1,0 +1,19 @@
+---
+title: "How to configure connections"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{How to configure connections}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(sqlhelper)
+```

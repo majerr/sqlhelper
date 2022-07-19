@@ -4,21 +4,21 @@
 \alias{runfiles}
 \title{Execute a list of .sql files}
 \usage{
-runfiles(filenames, db = NA, interpolate = parent.frame())
+runfiles(filenames, conn = NA, interpolate = parent.frame())
 }
 \arguments{
 \item{filenames}{A character vector containing your sql file names, including
 paths if they are not in the working directory}
-
-\item{db}{Defaults to 'cds' which is the only option on the DAP
-Although you \emph{can} specify \code{db} as a parameter, the preferred way is
-to include a \verb{-- db=<dbname>} comment in your sql file. See details.}
 
 \item{interpolate}{defaults to the value of \code{parent.frame()}. May be set
 to \code{FALSE} if interpolation to be avoided, or to another environment
 to control the source of the used. This can be useful if \code{sqlhelper} is
 used to run SQL from within another package, and you don't want to
 interfere with \code{.GlobalEnv}. See details.}
+
+\item{db}{Defaults to 'cds' which is the only option on the DAP
+Although you \emph{can} specify \code{db} as a parameter, the preferred way is
+to include a \verb{-- db=<dbname>} comment in your sql file. See details.}
 }
 \value{
 Depending on the input, \code{runfiles} returns one of:

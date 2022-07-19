@@ -4,10 +4,11 @@
 \alias{interpolate_sql}
 \title{Parameterize SQL queries}
 \usage{
-interpolate_sql(sql, interpolate, quote)
+interpolate_sql(sql, interpolate = parent.env(), quote = default_conn_name)
 }
 \arguments{
-\item{sql}{A list or character vector of sql queries or file names.}
+\item{sql}{A list or character vector of sql queries or file names. If any
+elements do not name an existing file, all are treated as sql queries.}
 
 \item{interpolate}{An environment containing values for interpolation, or
 \code{FALSE.} If \code{FALSE}, no interpolation is done. Defaults to

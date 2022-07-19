@@ -144,21 +144,22 @@ interpret_comments <- function(lines){
 
   # Extract names from comments
   # NB lazy regex evaluation required to avoid matching double newlines
-  qnames <- gsub(pattern=stringr::str_interp(".*--\\s*qname\\s*=\\s*(\\S+?)${linetok}.*"),
+  qnames <- gsub(pattern=glue::glue(".*--\\s*qname\\s*=\\s*(\\S+?){linetok}.*"),
                 replacement="\\1",
                 x=blocks)
   qnames[qnames == blocks] = ""
 
-  # Extract db from comments
+  # Extract connection from comments
   # NB lazy regex evaluation required to avoid matching double newlines
-  conn <-  gsub(pattern=stringr::str_interp(".*--\\s*conn\\s*=\\s*(\\S+?)\\s*${linetok}.*"),
+  conn_name <-  gsub(pattern=glue::glue(".*--\\s*conn\\s*=\\s*(\\S+?)\\s*{linetok}.*"),
               replacement="\\1",
                x=blocks[1])
-  if(conn == blocks[1]){
-    conn=NA
+
+  if(conn_name == blocks[1]){
+    conn_name=NA
   }
 
-  return(list("conn"=conn,"qnames"=qnames))
+  return(list("conn"=conn_name,"qnames"=qnames))
 }
 
 # Take a block of SQL and split into individual SQL queries by using ";" as the seperator.

@@ -1,33 +1,24 @@
--- Run some queries on cds
-
-
--- ------------------------------------------------------------
-
--- switch to the COVID19 database
--- qname=usedb
-use COVID19;
+-- Run some queries against the newly-created iris table
 
 -- ------------------------------------------------------------
 
 -- what tables have we got?
 -- qname=showtabs
-select * from
+SELECT name FROM
 
 /* a multi-
 line comment in the
 middle of the
 block*/
 
-INFORMATION_SCHEMA.TABLES;
+sqlite_schema WHERE type='table';
 
 -- ------------------------------------------------------------
 
--- try out a generator
 -- qname=sample
 select * -- with a comment on a code line
 -- and another on a line by itself in the middle of a block
--- from [COVID19].[Analyse].[vw_COVIDKPI_LRFCDR_Latest] where {nthofk(1000,"[document.id]")};
-from [Analyse].[vw_COVIDKPI_LRFCDR_Latest] where {nthofk(1000,"[document.id]")};
+from iris limit 10;
 
 /* a multi-
 line comment at
@@ -41,7 +32,7 @@ block*/
 -- qname=quoted_doubledash
 select
 'stringvar' as myString
-from [Analyse].[vw_COVIDKPI_LRFCDR_Latest]
+from iris
 where 'foo' = '-- oops';
 
 -- ------------------------------------------------------------

@@ -2,7 +2,8 @@
 #'
 #' Accepts a list or character vector of SQL queries and parameterizes each.
 #'
-#' @param sql A list or character vector of sql queries or file names.
+#' @param sql A list or character vector of sql queries or file names. If any
+#'   elements do not name an existing file, all are treated as sql queries.
 #'
 #' @param interpolate An environment containing values for interpolation, or
 #'   \code{FALSE.} If \code{FALSE}, no interpolation is done. Defaults to
@@ -12,7 +13,6 @@
 #'   \code{FALSE}. If \code{FALSE}, \code{glue::glue} is used. Defaults to
 #'   \code{default_conn_name}.
 #'
-#' @details
 #' @return A list or character vector of parameterized sql queries
 #' @export
 #' @examples
@@ -26,6 +26,50 @@
 #' n <- 10
 #'
 #' tbl_sql <- interpolate_sql("select * from {`table_name`}")
-interpolate_sql <- function(sql, interpolate, quote){
+interpolate_sql <- function(sql,
+                            interpolate=parent.env(),
+                            quote = default_conn_name){
 
+  is.files <- unlist(lapply(sql,file.exists))
+  is.files <- (sum(is.files) == length(is.files))
+
+  do.interpolate <- is.environment(interpolate)
+  do.quote <- c(quote) %in% connections
+
+  if(is.files){
+    sql <- lapply(
+      lapply(sql,read_sql_file),
+      function(sql){sql$queries}
+    )
+    names(sql) <- gsub("\\.\\S+","",basename(filenames))
+  }
+
+    if(do.interpolate){
+    sql <- dplyr::case_when(
+      # Interpolate and quote SQL from files
+      is.files & do.quote ~ lapply(
+        sql,
+        function(x){
+          lapply(x, glue::glue_sql, .envir=interpolate, .con=quote)
+        }
+      ),
+
+      # Just interpolate from files, no quoting
+      is.files ~ lapply(
+        sql,
+        function(x){
+          lapply(x, glue::glue, .envir=interpolate,)
+        }
+      ),
+
+      # Interpolate and quote SQL queries (not from files)
+      do.quote ~ sql <- lapply(sql,glue::glue_sql, .envir=interpolate, .con=quote),
+
+      # Just interpolate queries (not from files), no quoting
+      TRUE ~ sql <- lapply(sql,glue::glue, .envir=interpolate)
+    )
+  }
+
+  sql
 }
+
