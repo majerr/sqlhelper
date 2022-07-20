@@ -4,7 +4,7 @@
 \alias{interpolate_sql}
 \title{Parameterize SQL queries}
 \usage{
-interpolate_sql(sql, interpolate = parent.env(), quote = default_conn_name)
+interpolate_sql(sql, interpolate = parent.frame(), quote = default_conn_name)
 }
 \arguments{
 \item{sql}{A list or character vector of sql queries or file names. If any
@@ -23,16 +23,4 @@ A list or character vector of parameterized sql queries
 }
 \description{
 Accepts a list or character vector of SQL queries and parameterizes each.
-}
-\examples{
-con <- DBI::dbConnect(RSQLite::SQLite(),":memory:")
-iris2 <- iris
-colnames(iris2) <- gsub("[.]", "_", tolower(colnames(iris)))
-DBI::dbWriteTable(con, "iris", iris2)
-
-table_name <- "iris"
-var <- "Sepal_Length"
-n <- 10
-
-tbl_sql <- interpolate_sql("select * from {`table_name`}")
 }

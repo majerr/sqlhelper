@@ -156,14 +156,21 @@ not.connected <- function(conn_name){
 #' This function is run when the library is unloaded
 close_connections <- function(){
   for(conn_name in names(connections)){
-    if(is.connected(conn_name) & !is(live_connection(conn_name),"Pool")){
-      suppressWarnings(DBI::dbDisconnect(connections[[conn_name]]))
-    } else if(is.connected(conn_name) & is(live_connection(conn_name),"Pool")){
-      pool::poolClose(connections[[conn_name]])
+    if(not.connected(conn_name)){
+      next
     }
-    connections[[conn_name]] <<- NA
+    if(methods::is(live_connection(conn_name),"Pool")){
+      suppressWarnings(pool::poolClose(connections[[conn_name]]))
+    } else {
+      suppressWarnings(DBI::dbDisconnect(connections[[conn_name]]))
+    }
   }
-  connections <<- list()
+
+  if(environmentIsLocked(parent.frame())){
+    unlockBinding("connections", parent.frame())
+  }
+  assign("connections",list(),envir=parent.frame())
+  # connections <<- list()
 }
 
 #' Re-establish connections to all configured databases

@@ -25,10 +25,13 @@
 #' var <- "Sepal_Length"
 #' n <- 10
 #'
-#' tbl_sql <- interpolate_sql("select * from {`table_name`}")
+#' tbl_sql <- interpolate_sql("select {var} from {`table_name`} limit {n}")
 interpolate_sql <- function(sql,
-                            interpolate=parent.env(),
+                            interpolate=parent.frame(),
                             quote = default_conn_name){
+  if(!is.character(sql)){
+    stop(glue::glue("Expecting sql character vector, got {typeof(sql)}."))
+  }
 
   is.files <- unlist(lapply(sql,file.exists))
   is.files <- (sum(is.files) == length(is.files))
@@ -37,6 +40,7 @@ interpolate_sql <- function(sql,
   do.quote <- c(quote) %in% connections
 
   if(is.files){
+    filenames <- sql
     sql <- lapply(
       lapply(sql,read_sql_file),
       function(sql){sql$queries}
@@ -63,10 +67,10 @@ interpolate_sql <- function(sql,
       ),
 
       # Interpolate and quote SQL queries (not from files)
-      do.quote ~ sql <- lapply(sql,glue::glue_sql, .envir=interpolate, .con=quote),
+      do.quote ~ lapply(sql,glue::glue_sql, .envir=interpolate, .con=quote),
 
       # Just interpolate queries (not from files), no quoting
-      TRUE ~ sql <- lapply(sql,glue::glue, .envir=interpolate)
+      TRUE ~ lapply(sql,glue::glue, .envir=interpolate)
     )
   }
 

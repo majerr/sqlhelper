@@ -40,10 +40,10 @@ test_that("connections_list returns a list of live connections", {
   set_connections(config_filename = test_path("testfiles","sqlhelper_db_conf.yml"),
                   exclusive = TRUE)
   expect_equal(connections_list(), c("single_mem","pool_mem"))
-  close_connections()
-  expect_equal(connections_list(),as.character(c()))
-  set_connections(config_filename = test_path("testfiles","sqlhelper_db_conf.yml"))
-  expect_equal(connections_list(), c("single_mem","pool_mem","dap","cds"))
+  # close_connections()
+  # expect_equal(connections_list(),as.character(c()))
+  # set_connections(config_filename = test_path("testfiles","sqlhelper_db_conf.yml"))
+  # expect_equal(connections_list(), c("single_mem","pool_mem","dap","cds"))
 })
 
 test_that("live_connection returns the named connection or null",{
