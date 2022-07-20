@@ -80,6 +80,22 @@ set_connections <- function(config_filename=NA, exclusive=FALSE){
 
 }
 
+conn_cache <- function(){
+  encl <- parent.env(environment())
+  encl$c2 <- cachem::cache_mem()
+  encl$c2$set("con", 1)
+}
+
+conn_reset <- function(foo){
+  encl <- parent.env(environment())
+  encl$c2$set("con", foo)
+}
+
+conn_show <- function(){
+  encl <- parent.env(environment())
+  encl$c2$get("con")
+}
+
 # Returns a connection and a sql runnner for the db parameter. For internal use
 # only!
 #
