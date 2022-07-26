@@ -1,6 +1,34 @@
 # This file contains several (mainly) internal functions used either by exported
 # functions (e.g. those in defined in sqlrunners.R) or called by .onLoad()
 
+#' Create the connection cache
+#'
+#' @return The new connection cache, invisibly
+#' @import cachem
+new_connection_cache <- function(){
+  e <- parent.env(environment())
+  e$connections <- cachem::cache_mem()
+  invisible(e$connections)
+}
+
+
+
+conn_cache <- function(){
+  encl <- parent.env(environment())
+  encl$c2 <- cachem::cache_mem()
+  encl$c2$set("con", 1)
+}
+
+conn_reset <- function(foo){
+  encl <- parent.env(environment())
+  encl$c2$set("con", foo)
+}
+
+conn_show <- function(){
+  encl <- parent.env(environment())
+  encl$c2$get("con")
+}
+
 #' Determine the connection driver
 #'
 #' @param conf A named list representing a single connection returned by
@@ -80,21 +108,7 @@ set_connections <- function(config_filename=NA, exclusive=FALSE){
 
 }
 
-conn_cache <- function(){
-  encl <- parent.env(environment())
-  encl$c2 <- cachem::cache_mem()
-  encl$c2$set("con", 1)
-}
 
-conn_reset <- function(foo){
-  encl <- parent.env(environment())
-  encl$c2$set("con", foo)
-}
-
-conn_show <- function(){
-  encl <- parent.env(environment())
-  encl$c2$get("con")
-}
 
 # Returns a connection and a sql runnner for the db parameter. For internal use
 # only!
