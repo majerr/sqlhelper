@@ -18,10 +18,9 @@ test_that("interpret_comments obtains the correct parameters", {
 
 })
 
-
-
 test_that("runfiles() will name elements of the returned list with their corresponding filenames",{
   reconnect(test_path("testfiles","sqlhelper_db_conf.yml"))
+  message(connections_list())
   iris2 <- iris
   iris2$flower_id <- rownames(iris2)
   dbWriteTable(live_connection("single_mem"),"iris",iris2)

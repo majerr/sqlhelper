@@ -4,11 +4,7 @@
 \alias{runqueries}
 \title{Execute a sequence of SQL queries}
 \usage{
-runqueries(
-  queries,
-  conn_name = default_conn_name,
-  interpolate = parent.frame()
-)
+runqueries(queries, conn_name = NA, interpolate = parent.frame())
 }
 \arguments{
 \item{queries}{A list or character vector containing your sql commands}

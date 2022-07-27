@@ -8,9 +8,9 @@ vars <- list(
   "connection_template" = list("conn"=NA,
                                "driver"=NA,
                                "pool"=FALSE,
+                               "conn_str"=NA,
+                               "is_default" = FALSE,
                                "close"=DBI::dbDisconnect),
-  "connections" = list(),
-  "default_conn_name" = '',
   "conf_fn" = "sqlhelper_db_conf.yml"
 )
 

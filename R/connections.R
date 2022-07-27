@@ -1,32 +1,39 @@
 # This file contains several (mainly) internal functions used either by exported
 # functions (e.g. those in defined in sqlrunners.R) or called by .onLoad()
 
+set_cache_env <- function(){
+  e <- parent.env(
+    environment()
+  )
+  e$sqlhelper_conn_cache <- new.env(parent = emptyenv())
+}
+
+#' Access the environment containing the connections cache
+#'
+#' @return a sibling env to sqlhelper
+get_cache_env <- function(){
+
+  # e <- parent.env(
+  #   parent.env(
+  #     environment()
+  #   )
+  # )
+
+  e <- parent.env(
+        environment()
+      )
+  e$sqlhelper_conn_cache
+}
+
 #' Create the connection cache
 #'
-#' @return The new connection cache, invisibly
-#' @import cachem
+#' @return The new connection cache list, invisibly
 new_connection_cache <- function(){
-  e <- parent.env(environment())
-  e$connections <- cachem::cache_mem()
+  e <- get_cache_env()
+
+  e$connections <- list()
+
   invisible(e$connections)
-}
-
-
-
-conn_cache <- function(){
-  encl <- parent.env(environment())
-  encl$c2 <- cachem::cache_mem()
-  encl$c2$set("con", 1)
-}
-
-conn_reset <- function(foo){
-  encl <- parent.env(environment())
-  encl$c2$set("con", foo)
-}
-
-conn_show <- function(){
-  encl <- parent.env(environment())
-  encl$c2$get("con")
 }
 
 #' Determine the connection driver
@@ -63,6 +70,113 @@ driver <- function(conf){
   return(drv)
 }
 
+#' Get/Set the default connection name
+#'
+#' @param new_default_name The name of a connection
+set_default_conn_name <- function(new_default_name){
+
+  e <- get_cache_env()
+
+  # Can't set a default when there are no connections
+  if(length(e$connections) == 0){
+    return(invisible(FALSE))
+  }
+
+  if(!(new_default_name %in% names(e$connections))){
+
+    warning(
+      glue::glue("Could not set connection '{new_default_name}' as \\
+                       default: connection does not exist")
+    )
+
+    return(invisible(FALSE))
+
+  }
+
+  for(conn_name in names(e$connections)){
+    e$connections[[conn_name]]$is_default <- FALSE
+  }
+
+  e$connections[[new_default_name]]$is_default <- TRUE
+}
+
+get_default_conn_name <- function(){
+  e <- get_cache_env()
+
+  default_conn_name <- NA
+
+  for(conn_name in names(e$connections)){
+
+    if(e$connections[[conn_name]]$is_default) {
+      default_conn_name <- conn_name
+      break
+    }
+
+  }
+
+  return(default_conn_name)
+}
+
+#' Convert a (sub-list of a) list object returned by read_yaml() to a db
+#' connection string.
+#'
+#' @param params Connection parameters
+#'
+#' @return Connection string
+#'
+#'   YAML values need to be double quoted in the YAML file.
+#'
+#'
+yml2conn_str <- function(params){
+  conparms <- params$connection
+  paste0(
+    paste0(
+      names(conparms),
+      "=",
+      unlist(conparms)
+    ),
+    collapse="; ")
+}
+
+#' Add a new connection to the connections cache
+#'
+#' @param conn_name A name for the new connection
+#' @param params Connection parameters
+add_connection <- function(conn_name, params){
+  e <- get_cache_env()
+  tryCatch({
+
+    # The connection template is defined in data-raw/sysdata.R and loaded via
+    # R/sysdata.rda
+    new_conn <- connection_template
+
+    new_conn$driver <- driver(params)
+
+    if("pool" %in% names(params)){
+      new_conn$pool <- params$pool
+    } else {
+      new_conn$pool <- FALSE
+    }
+
+    new_conn$conn_str <- yml2conn_str(params)
+
+    if(new_conn$pool){
+      new_conn$conn <- pool::dbPool(new_conn$driver(),
+                                    .connection_string=new_conn$conn_str)
+    } else {
+      new_conn$conn <- DBI::dbConnect(new_conn$driver(),
+                                      .connection_string=new_conn$conn_str)
+    }
+
+    e$connections[[conn_name]] <- new_conn
+  },
+  error=function(c){
+    message(c)
+    warning(glue::glue("{conn_name} is not available"))
+  })
+
+}
+
 #' Populate the list of available connections
 #'
 #' @param config_filename String. Name of a config file. Defaults to NA. See
@@ -81,55 +195,58 @@ set_connections <- function(config_filename=NA, exclusive=FALSE){
     get_all_configs(.fn=config_filename, exclusive = exclusive)
   )
 
-  con_strs <- lapply(conf, yml2conn_str)
+  # create connections cache. On failure, issue a warning, pass on the error
+  # message and return FALSE invisibly, but do not stop.
+  tryCatch({
+    new_connection_cache()
+  },
+  error = function(c){
+    warning("Could not create connections cache because:")
+    message(c)
+    return(invisible(FALSE))
+  })
 
-  default_conn_name <<- names(con_strs)[1]
-  for(con_name in names(con_strs)){
-    drv <- driver(conf[[con_name]])
-
-    tryCatch({
-      suppressWarnings({
-        if(conf[[con_name]]$pool){
-          connections[[con_name]] <<- pool::dbPool(drv(),
-                                                   .connection_string=con_strs[[con_name]])
-        } else {
-          connections[[con_name]] <<- DBI::dbConnect(drv(),
-                                                     .connection_string=con_strs[[con_name]])
-        }
-      })
-
-    },
-    error = function(c){
-      message(c)
-      connections[[con_name]] <- NA
-      warning(glue::glue("{con_name} is not available"))
-    })
+  for(conn_name in names(conf)){
+    add_connection(conn_name, conf[[conn_name]])
   }
 
+  default_conn_name <- names(conf)[1]
+  set_default_conn_name(default_conn_name)
+  invisible(TRUE)
 }
 
 
-
-# Returns a connection and a sql runnner for the db parameter. For internal use
-# only!
-#
-# For now, sqlhelpr only uses DBI so this isn't really necessary, but if in the
-# future we need functions from other packages we can add them here without
-# needing to touch anything else.
+#' Returns a connection and a sql runnner for the db parameter. For internal use
+#' only!
+#'
+#' For now, sqlhelper only uses DBI so this isn't really necessary, but if in
+#' the future we need functions from other packages we can add them here without
+#' needing to touch anything else.
+#'
+#' @param conn_name the name of a connection
+#'
+#' @return A list, with elements 'conn' (the connection), 'runner' (the run
+#'   function), and 'is.live' (a validity test for conn), or NULL if conn_name
+#'   is not in the connections cache
 getrunparams <- function(conn_name){
-  if(conn_name %in% names(connections)){
-    return(
-      list(
-        conn = connections[[conn_name]],
+
+  e <- get_cache_env()
+
+  p <- NULL
+  if(conn_name %in% names(e$connections)){
+    p <- list(
+        conn = e$connections[[conn_name]]$conn,
         runner = DBI::dbGetQuery,
         is.live = DBI::dbIsValid)
-    )
   }
-  # Add more else if clauses here if more connections are required
+
+  # ... Add more else if clauses here if more connections are required
+
   else{
-    return(list(conn=NA,
-                runner=NA))
+    warning(glue::glue("No connection named '{conn_name}'."))
   }
+
+  return(p)
 }
 
 #' Test whether a database is connected
@@ -153,6 +270,7 @@ is.connected <- function(conn_name){
            error = function(e){
              out<<-TRUE
            })
+
   return(out)
 }
 
@@ -171,36 +289,46 @@ is.connected <- function(conn_name){
 #' not valid
 #' @export
 not.connected <- function(conn_name){
-  runparms <- getrunparams(conn_name)
-  out <- NA
-  tryCatch({out <- runparms$is.live(runparms$conn)},
-           error = function(e){
-           print(runparms$is.live(runparms$conn))
-             out<<-FALSE
-           })
-  return(!out)
+  return(!is.connected(conn_name))
+}
+
+#' remove a connection from the connections cache
+#'
+#' @param conn_name The name of the connection to be removed
+prune <- function(conn_name){
+
+  e <- get_cache_env()
+
+  if(is.connected(conn_name)){
+    if(e$connections[[conn_name]]$pool){
+
+      suppressWarnings(pool::poolClose(e$connections[[conn_name]]$conn))
+
+    } else {
+
+      suppressWarnings(DBI::dbDisconnect(e$connections[[conn_name]]$conn))
+
+    }
+  }
+
+  e$connections[conn_name] <- NULL
+
+  # reset the default in case it was the default that got pruned
+  default_conn_name <- names(e$connections)[1]
+  set_default_conn_name(default_conn_name)
 }
 
 #' Close all connections and remove them from the connections list
 #'
 #' This function is run when the library is unloaded
 close_connections <- function(){
-  for(conn_name in names(connections)){
-    if(not.connected(conn_name)){
-      next
-    }
-    if(methods::is(live_connection(conn_name),"Pool")){
-      suppressWarnings(pool::poolClose(connections[[conn_name]]))
-    } else {
-      suppressWarnings(DBI::dbDisconnect(connections[[conn_name]]))
-    }
+
+  e <- get_cache_env()
+
+  for(conn_name in names(e$connections)){
+    prune(conn_name)
   }
 
-  if(environmentIsLocked(parent.frame())){
-    unlockBinding("connections", parent.frame())
-  }
-  assign("connections",list(),envir=parent.frame())
-  # connections <<- list()
 }
 
 #' Re-establish connections to all configured databases
@@ -223,11 +351,17 @@ reconnect <- function(.fn=NA, exclusive=FALSE){
 #'
 #' @export
 connections_list <- function(){
-  if(length(connections)==0){
+  e <- get_cache_env()
+
+  conn_names <- names(e$connections)
+
+  if(length(conn_names)==0){
     return(character())
   }
-  live_cons <- lapply(names(connections),is.connected)
-  return(names(connections)[live_cons != FALSE])
+
+  live_cons <- lapply(conn_names,is.connected)
+
+  return(conn_names[live_cons != FALSE])
 }
 
 #' Return the named connection or NULL
@@ -238,16 +372,19 @@ connections_list <- function(){
 #' @return A live connection to a database, or NULL
 #'
 #'   If \code{conn_name} is not the name of a live connection to a database, a
-#'   warning is issued and NULL is returned.
+#'   warning is issued (by getrunparams via is.connected) and NULL is returned.
 #'
 #' @export
 live_connection <- function(conn_name) {
-  live_cons <- lapply(names(connections),is.connected)
-  if (conn_name %in% names(connections)[live_cons != FALSE]) {
-    return(connections[[conn_name]])
 
-  } else {
-    warning(glue::glue("There is no live connection named '{conn_name}'"))
-    return(NULL)
+  c <- NULL
+
+  if(is.connected(conn_name)){
+
+    c <- getrunparams(conn_name)$conn
+
   }
+
+  return(c)
+
 }

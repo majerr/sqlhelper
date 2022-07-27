@@ -14,7 +14,7 @@ connections_list to get names of available connections)}
 A live connection to a database, or NULL
 
 If \code{conn_name} is not the name of a live connection to a database, a
-warning is issued and NULL is returned.
+warning is issued (by getrunparams via is.connected) and NULL is returned.
 }
 \description{
 Return the named connection or NULL

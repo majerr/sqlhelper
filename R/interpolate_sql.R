@@ -25,7 +25,7 @@
 #' var <- "Sepal_Length"
 #' n <- 10
 #'
-#' tbl_sql <- interpolate_sql("select {var} from {`table_name`} limit {n}")
+#' # tbl_sql <- interpolate_sql("select {var} from {`table_name`} limit {n}")
 interpolate_sql <- function(sql,
                             interpolate=parent.frame(),
                             quote = default_conn_name){

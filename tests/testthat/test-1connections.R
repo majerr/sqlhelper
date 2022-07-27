@@ -40,10 +40,6 @@ test_that("connections_list returns a list of live connections", {
   set_connections(config_filename = test_path("testfiles","sqlhelper_db_conf.yml"),
                   exclusive = TRUE)
   expect_equal(connections_list(), c("single_mem","pool_mem"))
-  # close_connections()
-  # expect_equal(connections_list(),as.character(c()))
-  # set_connections(config_filename = test_path("testfiles","sqlhelper_db_conf.yml"))
-  # expect_equal(connections_list(), c("single_mem","pool_mem","dap","cds"))
 })
 
 test_that("live_connection returns the named connection or null",{
@@ -55,7 +51,8 @@ test_that("live_connection returns the named connection or null",{
   expect_equal(is(live_connection("single_mem")),
                c("SQLiteConnection","DBIConnection","DBIObject")
   )
-  expect_warning(
-    expect_null(live_connection("bar"))
-  )
+  #expect_warning(out <- live_connection("bar"), regexp = "No connection named")
+  out <- suppressWarnings(live_connection("bar"))
+  expect_null(out)
+
 })

@@ -1,26 +1,5 @@
 # configure.R - internal functions related to configuration
 
-#' yml2conn_str converts a list object returned by read_yaml() to a db
-#' connection string.
-#'
-#' @param parms Connection parameters
-#'
-#' @return Connection string
-#'
-#'   YAML values need to be double quoted in the YAML file.
-#'
-#'
-yml2conn_str <- function(parms){
-  conparms <- parms$connection
-  paste0(
-    paste0(
-      names(conparms),
-      "=",
-      unlist(conparms)
-    ),
-    collapse="; ")
-}
-
 #' Return the contents of a config file
 #'
 #' @param conf String. Either the path and name of a config file, or
@@ -217,9 +196,11 @@ validate_all_configs <- function(configs){
   validated_configs <- lapply(configs, validate_config)
 
   for(confname in names(validated_configs)){
+
     if(is.null(validated_configs[[confname]]) & interactive()){
       warning(glue::glue("Connection configuration for {confname} was invalid; {confname} will not be available"))
     }
+
   }
 
   validated_configs[!is.null(validated_configs)]
