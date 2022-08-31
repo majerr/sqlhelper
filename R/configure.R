@@ -4,7 +4,7 @@
 #'
 #' @param conf String. Either the path and name of a config file, or
 #'   'site', or 'user', or \code{NA} (the default). If \code{NA},
-#'   \code{get_config} will search the current directory for a config file.
+#'   \code{read_config_file} will search the current directory for a config file.
 #'
 #' @details The default search name for config files is "sqlhelper_db_conf.yml".
 #'   If \code{conf} is 'site', 'user' or \code{NA}, a file with this name will
@@ -42,7 +42,7 @@ read_config_file <- function(conf=NA){
   fexists <- file.exists(fn)
 
   if(interactive() & !fexists){
-    message(glue::glue("{fn} does not exist"))
+    warning(glue::glue("{fn} does not exist"))
   }
 
   if(fexists){

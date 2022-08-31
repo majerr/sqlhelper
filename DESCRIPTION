@@ -1,9 +1,9 @@
 Package: sqlhelper
 Title: Easier SQL interaction databases
-Version: 3.0
+Version: 3.0.1
 Authors@R: person("Matthew", "Roberts", email = "matthew.roberts@communities.gov.uk", role = c("aut", "cre"))
 Description: Provides connections and SQL helper functions.
-Depends: R (>= 3.6.1)
+Depends: R (>= 3.6.0)
 Imports: 
     odbc,
     DBI,

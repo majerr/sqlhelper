@@ -16,6 +16,7 @@
 #' @return A list or character vector of parameterized sql queries
 #' @export
 #' @examples
+#' library(sqlhelper)
 #' con <- DBI::dbConnect(RSQLite::SQLite(),":memory:")
 #' iris2 <- iris
 #' colnames(iris2) <- gsub("[.]", "_", tolower(colnames(iris)))
@@ -25,7 +26,7 @@
 #' var <- "Sepal_Length"
 #' n <- 10
 #'
-#' # tbl_sql <- interpolate_sql("select {var} from {`table_name`} limit {n}")
+#' \dontrun{tbl_sql <- interpolate_sql("select {var} from {`table_name`} limit {n}")}
 interpolate_sql <- function(sql,
                             interpolate=parent.frame(),
                             quote = default_conn_name){
@@ -33,10 +34,16 @@ interpolate_sql <- function(sql,
     stop(glue::glue("Expecting sql character vector, got {typeof(sql)}."))
   }
 
+
+  # Check whether sql is file names
   is.files <- unlist(lapply(sql,file.exists))
   is.files <- (sum(is.files) == length(is.files))
 
+  # User can supply something other than an env to prevent interpolation
   do.interpolate <- is.environment(interpolate)
+
+  ##THIS IS WRONG
+  #
   do.quote <- c(quote) %in% connections
 
   if(is.files){

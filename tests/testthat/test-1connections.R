@@ -1,4 +1,3 @@
-library(sqlhelper)
 
 test_that("get_config reads appropriate config file", {
 
@@ -56,3 +55,6 @@ test_that("live_connection returns the named connection or null",{
   expect_null(out)
 
 })
+
+
+

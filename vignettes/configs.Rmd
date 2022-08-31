@@ -17,3 +17,19 @@ knitr::opts_chunk$set(
 ```{r setup}
 library(sqlhelper)
 ```
+
+## Introduction 
+
+`sqlhelper` maintains a cache of database connections internally. The package
+initially attempts to populate the cache during loading but the cache is mutable
+(so may be altered subsequently). This article describes the processes by which
+`sqlhelper` populates the connections cache and the options for adjusting it
+after loading.
+
+The basic steps in the process are:
+
+#. Search for YAML config files
+#. Read and validate config files
+#. Combine connection definitions from separate config files into a single ordered list of unique definitions
+#. Set one connection definition as the default
+#. 

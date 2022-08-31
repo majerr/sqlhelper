@@ -1,10 +1,6 @@
 .onLoad <- function(libname,pkgname){
-  set_cache_env()
-
+  assign("connection_cache",
+         new.env(parent = emptyenv()),
+         parent.env(environment()))
   set_connections()
-}
-
-.onUnload <- function(libname,pkgname){
-  close_connections()
-  rm("sqlhelper_conn_cache", envir = get_cache_env())
 }

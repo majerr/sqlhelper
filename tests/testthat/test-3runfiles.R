@@ -1,4 +1,5 @@
-library(sqlhelper)
+#library(sqlhelper)
+#library(DBI)
 
 cdsfn <- testthat::test_path("testfiles","test_cds.sql")
 foofn <- testthat::test_path("testfiles","test_foo.sql")
@@ -23,7 +24,7 @@ test_that("runfiles() will name elements of the returned list with their corresp
   message(connections_list())
   iris2 <- iris
   iris2$flower_id <- rownames(iris2)
-  dbWriteTable(live_connection("single_mem"),"iris",iris2)
+  DBI::dbWriteTable(live_connection("single_mem"),"iris",iris2)
   results <- runfiles(c(cdsfn, foofn))
   expected_result_names <- c("test_cds", "test_foo")
   expect_equal(names(results), expected_result_names)
@@ -34,7 +35,7 @@ test_that("runfiles() will run sequential queries and return a list of results",
   reconnect(test_path("testfiles","sqlhelper_db_conf.yml"))
   iris2 <- iris
   iris2$flower_id <- rownames(iris2)
-  dbWriteTable(live_connection("single_mem"),"iris",iris2)
+  DBI::dbWriteTable(live_connection("single_mem"),"iris",iris2)
   results <- runfiles(c(cdsfn, foofn))
 
   expect_type(results$test_cds,"list")
@@ -46,5 +47,5 @@ test_that("runfiles() will run sequential queries and return a list of results",
 })
 
 
-
+#devtools::unload(package="sqlhelper")
 

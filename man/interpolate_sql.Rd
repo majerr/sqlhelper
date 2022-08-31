@@ -24,3 +24,16 @@ A list or character vector of parameterized sql queries
 \description{
 Accepts a list or character vector of SQL queries and parameterizes each.
 }
+\examples{
+library(sqlhelper)
+con <- DBI::dbConnect(RSQLite::SQLite(),":memory:")
+iris2 <- iris
+colnames(iris2) <- gsub("[.]", "_", tolower(colnames(iris)))
+DBI::dbWriteTable(con, "iris", iris2)
+
+table_name <- "iris"
+var <- "Sepal_Length"
+n <- 10
+
+\dontrun{tbl_sql <- interpolate_sql("select {var} from {`table_name`} limit {n}")}
+}

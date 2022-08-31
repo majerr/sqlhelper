@@ -13,12 +13,6 @@ set_cache_env <- function(){
 #' @return a sibling env to sqlhelper
 get_cache_env <- function(){
 
-  # e <- parent.env(
-  #   parent.env(
-  #     environment()
-  #   )
-  # )
-
   e <- parent.env(
         environment()
       )
@@ -79,6 +73,7 @@ set_default_conn_name <- function(new_default_name){
 
   # Can't set a default when there are no connections
   if(length(e$connections) == 0){
+    warning(glue::glue("Could not set {new_default_name} as connection - no connections"))
     return(invisible(FALSE))
   }
 
@@ -142,6 +137,8 @@ yml2conn_str <- function(params){
 #'
 #' @param conn_name A name for the new connection
 #' @param params Connection parameters
+#'
+#' @import pool DBI
 add_connection <- function(conn_name, params){
   e <- get_cache_env()
   tryCatch({
@@ -315,7 +312,10 @@ prune <- function(conn_name){
 
   # reset the default in case it was the default that got pruned
   default_conn_name <- names(e$connections)[1]
-  set_default_conn_name(default_conn_name)
+  if(!is.na(default_conn_name)){
+    set_default_conn_name(default_conn_name)
+  }
+
 }
 
 #' Close all connections and remove them from the connections list
