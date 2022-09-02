@@ -7,5 +7,5 @@
 close_connections()
 }
 \description{
-This function is run when the library is unloaded
+Close all connections and remove them from the connections list
 }

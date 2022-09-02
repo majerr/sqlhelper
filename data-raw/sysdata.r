@@ -1,16 +1,15 @@
 # Adding internal placeholder vars to R/sysdata.rda means that they are found in
 # the package env and don't get set in the user's global env.
 #
-# To extend the list of internal placeholders, add them to vars and source()
-# this file
+# To extend the list of internal placeholders, add to vars and source() this
+# file
 
 vars <- list(
   "connection_template" = list("conn"=NA,
                                "driver"=NA,
                                "pool"=FALSE,
                                "conn_str"=NA,
-                               "is_default" = FALSE,
-                               "close"=DBI::dbDisconnect),
+                               "description"=NA),
   "conf_fn" = "sqlhelper_db_conf.yml"
 )
 

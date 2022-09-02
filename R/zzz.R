@@ -2,5 +2,5 @@
   assign("connection_cache",
          new.env(parent = emptyenv()),
          parent.env(environment()))
-  set_connections()
+  create_connections()
 }
