@@ -9,7 +9,7 @@ read_config_file(conf = NA)
 \arguments{
 \item{conf}{String. Either the path and name of a config file, or
 'site', or 'user', or \code{NA} (the default). If \code{NA},
-\code{get_config} will search the current directory for a config file.}
+\code{read_config_file} will search the current directory for a config file.}
 }
 \value{
 optionally nested named list or vector as returned by

@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sqlhelper</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">3.0.1</span>
       </span>
     </div>
 
@@ -43,7 +43,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -79,12 +79,97 @@
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">sqlhelper</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co">#library(sqlhelper)</span></span></code></pre></div>
+<div class="section level2">
+<h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
+</h2>
+<p><code>sqlhelper</code> maintains a cache of database connections
+internally. The package initially attempts to populate the cache during
+loading but the cache is mutable (so may be altered subsequently). This
+article describes the processes by which <code>sqlhelper</code>
+populates the connections cache and the options for adjusting it after
+loading.</p>
+<p>The basic steps in the process are:</p>
+<ol>
+<li>Search for YAML config files</li>
+<li>Read and validate connection definitions from config files</li>
+<li>Combine the contents of separate config files</li>
+<li>Create connections from the read definitions and add them to the
+cache.</li>
+</ol>
+</div>
+<div class="section level2">
+<h2 id="searching-for-yaml-config-files-">Searching for YAML config files.<a class="anchor" aria-label="anchor" href="#searching-for-yaml-config-files-"></a>
+</h2>
+<div class="section level3">
+<h3 id="the-config-search-path-">The config search path.<a class="anchor" aria-label="anchor" href="#the-config-search-path-"></a>
+</h3>
+<p>To re-populate the cache after loading <code>sqlhelper</code>, use
+<code><a href="../reference/reconnect.html">reconnect()</a></code>. The parameter controlling the search path for
+configuration files is . This allows you to search for site-wide
+configuration, user-specific configuration, or a specific file
+(e.g. specific to the project you are working on).</p>
+<ul>
+<li>To search for a specific file simply supply the filename,
+e.g. .</li>
+<li>To search for your own user-specific file, supply ‘user’, e.g. </li>
+<li>To search for a site-wide configuration file, supply ‘site’
+e.g. </li>
+<li>To search the current directory for a configuration file, supply ,
+which is also the default: i.e. simply </li>
+</ul>
+<p>The default file name is ‘sqlhelper_db_conf.yml’, so if you use the
+last option, a file in the current directory with that name will be
+sought.</p>
+<p>In practice, you are most likely to want the first or last options;
+the site-wide and user-specific files are read when the package is
+loaded.</p>
+<p>The second parameter, , determines how many files will be sought. The
+default value, , means that will search first for a site-wide
+configuration, then for a user-specific configuration, then for a file
+in the current working directory, and finally for a supplied file name.
+Supplying will mean that only the named file will be sought; where no
+file is named (i.e. ), has no effect.</p>
+</div>
+<div class="section level3">
+<h3 id="validating-connection-definitions">Validating connection definitions<a class="anchor" aria-label="anchor" href="#validating-connection-definitions"></a>
+</h3>
+<p>Connection definitions are YAML. The following defines a connection
+called ‘dap’.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dap</span><span class="kw">:</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">server_type</span><span class="kw">:</span><span class="at"> sqlserver</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">pool</span><span class="kw">:</span><span class="at"> </span><span class="ch">yes</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">  description</span><span class="kw">: </span><span class="ch">&gt;</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    Databases managed by ADD teams on the Data and Analytics Platform</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">connection</span><span class="kw">:</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">Driver</span><span class="kw">:</span><span class="at"> </span><span class="st">"{ODBC Driver 17 for SQL Server}"</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">Server</span><span class="kw">:</span><span class="at"> </span><span class="st">"Dap-sql01"</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">Trusted_Connection</span><span class="kw">:</span><span class="at"> </span><span class="st">"yes"</span></span></code></pre></div>
+<p>The <strong>‘server_type’</strong> line defines the flavour of
+database, and hence the driver package that will be used. Current
+options are:</p>
+<ul>
+<li>‘sqlserver’ (odbc)</li>
+<li>‘sqlite’ (RSQLite)</li>
+<li>‘postgresql’ (RPostgres)</li>
+<li>‘mysql/mariadb’(RMariaDB)</li>
+<li>‘bigquery’ (bigquery)</li>
+</ul>
+<p>The <strong>‘pool’</strong> line determines whether a single
+connection is required (as returned by \code{[]) or a pool of
+connections (as returned by ) ### Combining configuration files</p>
+</div>
+<div class="section level3">
+<h3 id="section"></h3>
+</div>
+</div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
 
-      </div>
+        <nav id="toc" data-toggle="toc"><h2 data-toc-skip>Contents</h2>
+    </nav>
+</div>
 
 </div>
 
@@ -97,8 +182,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
-2.0.1.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>
