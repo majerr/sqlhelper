@@ -1,0 +1,83 @@
+---
+title: "How to configure connections"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{How to configure connections}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+#library(sqlhelper)
+```
+
+## Introduction 
+
+`sqlhelper` maintains a cache of database connections internally. The package
+initially attempts to populate the cache during loading but the cache is mutable
+(so may be altered subsequently). This article describes the processes by which
+`sqlhelper` populates the connections cache and the options for adjusting it
+after loading.
+
+The basic steps in the process are:
+
+#. Search for YAML config files
+#. Read and validate connection definitions from config files
+#. Combine the contents of separate config files
+#. Create connections from the read definitions and add them to the cache.
+
+## Searching for YAML config files.
+
+### The config search path.
+
+To re-populate the cache after loading `sqlhelper`, use `reconnect()`. The parameter controlling the search path for configuration files is \code{.config_filename}. This allows you to search for site-wide configuration, user-specific configuration, or a specific file (e.g. specific to the project you are working on).
+
+ * To search for a specific file simply supply the filename, e.g. \code{create_connections('my_config_file.yml')}.
+ * To search for your own user-specific file, supply 'user', e.g. \code{create_connections('user')}
+ * To search for a site-wide configuration file, supply 'site' e.g. \code{create_connections('site')}
+ * To search the current directory for a configuration file, supply \code{NA}, which is also the default:
+ i.e. simply \code{create_connections()}
+
+The default file name is 'sqlhelper_db_conf.yml', so if you use the last option, a file in the current directory with that name will be sought.
+
+In practice, you are most likely to want the first or last options; the site-wide and user-specific files are read when the package is loaded.
+
+The second parameter, \code{exclusive}, determines how many files will be sought. The default value, \code{FALSE}, means that \code{sqlhelper} will search first for a site-wide configuration, then for a user-specific configuration, then for a file in the current working directory, and finally for a supplied file name. Supplying \code{exclusive=TRUE} will mean that only the named file will be sought; where no file is named (i.e. \code{.config_filename=NA}), \code{exclusive} has no effect.
+
+### Validating connection definitions
+
+Connection definitions are YAML. The following defines a connection called 'dap'. 
+
+```yaml
+dap:
+  server_type: sqlserver
+  pool: yes
+  description: >
+    Databases managed by ADD teams on the Data and Analytics Platform
+  connection:
+    Driver: "{ODBC Driver 17 for SQL Server}"
+    Server: "Dap-sql01"
+    Trusted_Connection: "yes"
+```
+The **'server_type'** line defines the flavour of database, and hence the driver package that will be used. Current options are:
+
+* 'sqlserver' (odbc)
+* 'sqlite' (RSQLite)
+* 'postgresql' (RPostgres)
+* 'mysql/mariadb'(RMariaDB)
+* 'bigquery' (bigquery)
+
+The **'pool'** line determines whether a single connection is required (as
+returned by \code{\link{DBI::dbConnect}[]) or a pool of connections (as returned by
+\code{pool::dbPool})
+### Combining configuration files
+
+###
+ 
