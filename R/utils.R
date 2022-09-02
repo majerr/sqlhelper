@@ -197,7 +197,7 @@ add_connection <- function(conn_name, params){
 create_connections <- function(.config_filename=NA, exclusive=FALSE){
 
   conf <- validate_all_configs(
-    read_all_configs(.config_filename=.config_filename, exclusive = exclusive)
+    read_configs(config_name=.config_filename, exclusive = exclusive)
   )
 
   for(conn_name in names(conf)){
