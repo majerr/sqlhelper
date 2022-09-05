@@ -1,82 +1,3 @@
-###########################################################
-####### Internal functions related to configuration #######
-###########################################################
-
-#' Perform minimal sanity checks on a configuration
-#'
-#' @param conf a single connection configuration returned by [read_all_configs]
-#'
-#' @return A valid connection configuration, or NULL
-#'
-#' @details \code{validate_conf} attempts to ensure that connection
-#'   configurations contain at least the elements \code{c(pool=boolean(),
-#'   connection$Server=character())}, and that all child elements of
-#'   \code{connection} are character vectors of length 1.
-#'
-#'   If the \code{pool} element is not present, or not a logical of length 1, it
-#'   is inserted with the default value (FALSE).
-#'
-#'   If the \code{connection} element does not contain a \code{server} element,
-#'   or any child of \code{connection} is not a character vector of length 1,
-#'   NULL is returned.
-validate_config <- function(conf){
-  # conf is a list
-  if(!is.list(conf)){
-    return(NULL)
-  }
-
-  # conf contains a connection element
-  if(!("connection" %in% names(conf))){
-    return(NULL)
-  }
-
-  # all the children of conf$connection are strings of length 1
-  for(name in names(conf$connection)){
-    if(!(is.character(conf$connection[[name]])) |
-       length(conf$connection[[name]]) != 1){
-      return(NULL)
-    }
-    conf$connection[[name]] <- stringr::str_to_title(conf$connection[[name]])
-  }
-
-  if(!("Server" %in% names(conf$connection))){
-    return(NULL)
-  }
-
-  valid_conf <- conf
-  # conf has a pool element that is a logical and length 1
-  if(!("pool" %in% names(valid_conf))){
-    valid_conf$pool <- FALSE
-  } else if(!is.logical(valid_conf$pool) |
-            length(valid_conf$pool) != 1){
-
-    valid_conf$pool <- FALSE
-  }
-
-  valid_conf
-}
-
-#' Apply validate_config to all connection configurations
-#'
-#' @param configs a configuration object returned by [read_all_configs]
-#'
-#' @return A list of valid configs, similar to one returned by [read_all_configs]
-#'
-#' @details Each configuration is passed to [validate_config]; unfixable configs
-#'   are dropped with a warning
-validate_all_configs <- function(configs){
-  validated_configs <- lapply(configs, validate_config)
-
-  for(confname in names(validated_configs)){
-
-    if(is.null(validated_configs[[confname]]) & interactive()){
-      warning(glue::glue("Connection configuration for {confname} was invalid; {confname} will not be available"))
-    }
-
-  }
-
-  validated_configs[!is.null(validated_configs)]
-}
 
 #########################################################
 ####### Internal functions related to connections #######
@@ -85,12 +6,13 @@ validate_all_configs <- function(configs){
 #' Determine the connection driver
 #'
 #' @param conf A named list representing a single connection returned by
-#'   \code{\link{read_all_configs}}.
+#'   \code{\link{validate_configs}}.
 #'
 #' @details Search for an element named "server_type" and return a driver
 #'   function appropriate for that database. For example, "server_type:
-#'   sqlite" in your config will case \code{driver()} to return
+#'   sqlite" in your config will cause \code{driver()} to return
 #'   \code{\link[RSQLite]{SQLite}}.
+#'
 #' @return A driver function. Defaults to \code{\link[odbc]{odbc}} if no
 #'   "server_type" element is found.
 #' @import dplyr stringr
@@ -110,8 +32,10 @@ driver <- function(conf){
       ### ...More patterns and drivers can be added here as needed... ###
 
       TRUE ~ list(odbc::odbc) # fallback is odbc if not recognized
-    )[[1]] # The list wrappers and this de-listing subset are to avoid a 'not subsettable' error.
-    # see https://github.com/tidyverse/dplyr/issues/5916
+    )[[1]]
+    # The list wrappers inside case_when and this de-listing subset are to avoid
+    # a 'not subsettable' error. see
+    # https://github.com/tidyverse/dplyr/issues/5916
   }
   return(drv)
 }

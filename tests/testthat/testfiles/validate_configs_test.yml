@@ -1,0 +1,36 @@
+# Local folder
+
+no_connection:
+  server_type: sqlite
+
+conn_child_is_list:
+  connection:
+    server:
+      - foo
+      - bar
+
+no_server:
+  connection:
+    trusted_connection: "yes"
+
+no_pool:
+  server_type: sqlite
+  connection:
+    Server: ":memory:"
+
+pool_not_logical:
+  server_type: sqlite
+  pool: foo
+  connection:
+    Server: ":memory:"
+
+pool_too_long:
+  server_type: sqlite
+  pool:
+    - yes
+    - no
+  connection:
+    Server: ":memory:"
+
+
+
