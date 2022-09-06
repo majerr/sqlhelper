@@ -17,7 +17,8 @@ Imports:
     RPostgres,
     RMariaDB,
     bigrquery,
-    methods
+    methods,
+    tibble
 License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true

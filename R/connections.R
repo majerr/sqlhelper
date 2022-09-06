@@ -57,25 +57,7 @@ reconnect <- function(.config_filename=NA, exclusive=FALSE){
   create_connections(.config_filename, exclusive)
 }
 
-#' Return a list of available connection names
-#'
-#' @return A list of connections maintained by the loaded sqlhelper that are
-#'   currently live.
-#'
-#' @export
-connections_list <- function(){
-  e <- get_cache_env()
 
-  conn_names <- names(e$connections)
-
-  if(length(conn_names)==0){
-    return(character())
-  }
-
-  live_cons <- lapply(conn_names,is.connected)
-
-  return(conn_names[live_cons != FALSE])
-}
 
 #' Return the named connection or NULL
 #'
@@ -83,6 +65,7 @@ connections_list <- function(){
 #'   connections_list to get names of available connections)
 #'
 #' @return A live connection to a database, or NULL
+#'
 #'
 #'   If \code{conn_name} is not the name of a live connection to a database, a
 #'   warning is issued (by getrunparams via is.connected) and NULL is returned.

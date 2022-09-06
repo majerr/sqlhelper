@@ -1,9 +1,5 @@
 
-#########################################################
-####### Internal functions related to connections #######
-#########################################################
-
-#' Determine the connection driver
+#' Determine the connection driver to use
 #'
 #' @param conf A named list representing a single connection returned by
 #'   \code{\link{validate_configs}}.
@@ -17,17 +13,25 @@
 #'   "server_type" element is found.
 #' @import dplyr stringr
 driver <- function(conf){
+
   # Default is odbc
   if(!("server_type" %in% stringr::str_to_lower(names(conf)))){
     drv <- odbc::odbc
   } else {
 
     drv <- dplyr::case_when(
-      stringr::str_to_lower(conf$server_type) == "sqlite" ~ list(RSQLite::SQLite),
-      stringr::str_to_lower(conf$server_type) == "postgresql" ~ list(RPostgres::Postgres),
+      stringr::str_to_lower(conf$server_type) == "sqlite"
+        ~ list(RSQLite::SQLite),
+
+      stringr::str_to_lower(conf$server_type) == "postgresql"
+        ~ list(RPostgres::Postgres),
+
       stringr::str_to_lower(conf$server_type) == "mysql" |
-        stringr::str_to_lower(conf$server_type) == "mariadb" ~ list(RMariaDB::MariaDB),
-      stringr::str_to_lower(conf$server_type) == "bigquery" ~ list(bigrquery::bigquery),
+        stringr::str_to_lower(conf$server_type) == "mariadb"
+        ~ list(RMariaDB::MariaDB),
+
+      stringr::str_to_lower(conf$server_type) == "bigquery"
+        ~ list(bigrquery::bigquery),
 
       ### ...More patterns and drivers can be added here as needed... ###
 
@@ -63,10 +67,9 @@ yml2conn_str <- function(params){
 
 #' Add a new connection to the connections cache
 #'
-#' @param conn_name A name for the new connection
+#' @param conn_name A string identifier for the new connection
 #' @param params Connection parameters
 #'
-#' @import pool DBI
 add_connection <- function(conn_name, params){
   tryCatch({
 
@@ -74,7 +77,15 @@ add_connection <- function(conn_name, params){
     # R/sysdata.rda
     new_conn <- connection_template
 
-    new_conn$driver <- driver(params)
+    drv <- driver(params)
+    new_conn$driver <- case_when(
+      identical(drv, odbc::odbc) ~ "odbc::odbc",
+      identical(drv, RSQLite::SQLite) ~ "RSQLite::SQLite",
+      identical(drv, RPostgres::Postgres) ~ "RPostgres::Postgres",
+      identical(drv, RMariaDB::MariaDB) ~ "RMariaDB::MariaDB",
+      identical(drv, bigrquery::bigquery) ~ "bigrquery::bigquery",
+      TRUE ~ "" # This should never happen
+    )
 
     if("pool" %in% names(params)){
       new_conn$pool <- params$pool
@@ -89,15 +100,16 @@ add_connection <- function(conn_name, params){
     }
 
     if(new_conn$pool){
-      new_conn$conn <- pool::dbPool(new_conn$driver(),
+      new_conn$conn <- pool::dbPool(drv(),
                                     .connection_string=new_conn$conn_str)
       reg.finalizer(new_conn$conn,pool::poolClose)
 
     } else {
-      new_conn$conn <- DBI::dbConnect(new_conn$driver(),
+      new_conn$conn <- DBI::dbConnect(drv(),
                                       .connection_string=new_conn$conn_str)
     }
 
+    # connection_cache is an environment created during .onLoad()
     assign(conn_name, new_conn, envir=connection_cache)
   },
   error=function(c){
@@ -108,7 +120,7 @@ add_connection <- function(conn_name, params){
 
 #' Populate the list of available connections
 #'
-#' @param config_filename String. Name of a config file. Defaults to NA. See
+#' @param config_name String. Name of a config file. Defaults to NA. See
 #'   \code{\link{read_config_file}} and \code{\link{read_all_configs}} for
 #'   options.
 #'
@@ -118,10 +130,10 @@ add_connection <- function(conn_name, params){
 #' @details This function is called by \code{.onLoad()} and the exported
 #'   \code{reconnect()} function (which closes existing connections before
 #'   calling \code{set_connections()}).
-create_connections <- function(.config_filename=NA, exclusive=FALSE){
+create_connections <- function(config_name=NA, exclusive=FALSE){
 
-  conf <- validate_all_configs(
-    read_configs(config_name=.config_filename, exclusive = exclusive)
+  conf <- validate_configs(
+    read_configs(config_name=config_name, exclusive = exclusive)
   )
 
   for(conn_name in names(conf)){

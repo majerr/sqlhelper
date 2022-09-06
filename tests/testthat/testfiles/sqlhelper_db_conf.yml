@@ -12,4 +12,3 @@ pool_mem:
   connection:
     Server: ":memory:"
 
-
