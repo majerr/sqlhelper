@@ -13,3 +13,9 @@ test_that("yml2conn_str returns an appropriate string", {
   expect_equal(yml2conn_str(configs$cds$connection),
                "Driver={Odbc Driver 17 For Sql Server}; Server=Dap-Sql01\\Cds; Trusted_Connection=Yes")
 })
+
+# add_connection
+# create_connections
+# connection_info
+
+

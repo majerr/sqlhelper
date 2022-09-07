@@ -1,27 +1,28 @@
 
 #' Test whether a database is connected
 #'
-#' @param conn_name Which database do you want to test? (restricted to 'cds' in MHCLG)
+#' @param conn_name Which connection do you want to test? (run
+#'   \link{\code{connection_info}} for options)
 #'
-#' @return Boolean
+#' @return Logical
 #'
-#' is.connected and not.connected provide generic, semantically transparent
-#' methods of checking whether a connection is live, irrespective of whether it
-#' is through RODBC, RPostgreSQL, DBI etc. They depend on the is.live functions
-#' provided by getrunparams (see above).
-
-#' is.connected returns FALSE if the db connection returned by getrunparams is
-#' not valid.
+#'   is.connected and not.connected are syntactic sugar around connection_info().
+#'
 #' @export
 is.connected <- function(conn_name){
-  runparms <- getrunparams(conn_name)
-  out <- NA
-  tryCatch({out <- runparms$is.live(runparms$conn)},
-           error = function(e){
-             out<<-TRUE
-           })
+  conns <- connection_info(conn_name)
 
-  return(out)
+  if(nrow(conns) == 0){
+    stop(glue::glue("No connection named {conn_name}"))
+
+  } else if(nrow(conns) > 1){
+    stop(
+      glue::glue("\"{conn_name}\" matched multiple connection names:\\
+                 {\"\t\"}{paste0(conns$name, collapse=', ')}")
+      )
+  }
+
+  conns$live
 }
 
 #' Test whether a database is connected
@@ -61,8 +62,8 @@ reconnect <- function(.config_filename=NA, exclusive=FALSE){
 
 #' Return the named connection or NULL
 #'
-#' @param conn_name The name of the live connection you want (use
-#'   connections_list to get names of available connections)
+#' @param conn_name Chr. The name of the live connection you want (use
+#'   \link{\code{connection_info}} to get names of available connections).
 #'
 #' @return A live connection to a database, or NULL
 #'
@@ -72,15 +73,12 @@ reconnect <- function(.config_filename=NA, exclusive=FALSE){
 #'
 #' @export
 live_connection <- function(conn_name) {
-
-  c <- NULL
-
-  if(is.connected(conn_name)){
-
-    c <- getrunparams(conn_name)$conn
-
-  }
-
-  return(c)
-
+  tryCatch({
+    if(is.connected(conn_name)){
+      return(connection_cache[[conn_name]]$conn)
+    }
+  },
+  error = function(e){
+    return(NULL)
+  })
 }

@@ -37,7 +37,7 @@ connection_info <- function(name_str = ".*"){
     conn_data <- dplyr::relocate(
       tibble::as_tibble_row(conn_data),
         names(conn_table)
-    )[1:6] #Drop any cols not in this list
+    )[1:ncol(conn_table)] #Drop any cols not required
 
     conn_table <- tibble::add_row(conn_table,conn_data)
   }
