@@ -1,5 +1,5 @@
 
-#' Convert a (sub-list of a) list object returned by read_yaml() to a db
+#' Convert a list object returned by read_yaml() to a db
 #' connection string.
 #'
 #' @param params Connection parameters
@@ -10,7 +10,6 @@
 #'
 #'
 yml2conn_str <- function(params){
-  #conparms <- params$connection
   paste0(
     paste0(
       names(params),
@@ -156,9 +155,11 @@ getrunparams <- function(conn_name){
 prune <- function(conn_name){
 
   if(conn_name %in% names(connection_cache)){
+
     if(!connection_cache[[conn_name]]$pool){
       DBI::dbDisconnect(connection_cache[[conn_name]]$conn)
     }
+
     connection_cache[[conn_name]] <- NULL
     rm(list=c(conn_name), envir=connection_cache)
   }
