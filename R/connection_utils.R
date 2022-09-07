@@ -1,49 +1,4 @@
 
-#' Determine the connection driver to use
-#'
-#' @param conf A named list representing a single connection returned by
-#'   \code{\link{validate_configs}}.
-#'
-#' @details Search for an element named "server_type" and return a driver
-#'   function appropriate for that database. For example, "server_type:
-#'   sqlite" in your config will cause \code{driver()} to return
-#'   \code{\link[RSQLite]{SQLite}}.
-#'
-#' @return A driver function. Defaults to \code{\link[odbc]{odbc}} if no
-#'   "server_type" element is found.
-#' @import dplyr stringr
-driver <- function(conf){
-
-  # Default is odbc
-  if(!("server_type" %in% stringr::str_to_lower(names(conf)))){
-    drv <- odbc::odbc
-  } else {
-
-    drv <- dplyr::case_when(
-      stringr::str_to_lower(conf$server_type) == "sqlite"
-        ~ list(RSQLite::SQLite),
-
-      stringr::str_to_lower(conf$server_type) == "postgresql"
-        ~ list(RPostgres::Postgres),
-
-      stringr::str_to_lower(conf$server_type) == "mysql" |
-        stringr::str_to_lower(conf$server_type) == "mariadb"
-        ~ list(RMariaDB::MariaDB),
-
-      stringr::str_to_lower(conf$server_type) == "bigquery"
-        ~ list(bigrquery::bigquery),
-
-      ### ...More patterns and drivers can be added here as needed... ###
-
-      TRUE ~ list(odbc::odbc) # fallback is odbc if not recognized
-    )[[1]]
-    # The list wrappers inside case_when and this de-listing subset are to avoid
-    # a 'not subsettable' error. see
-    # https://github.com/tidyverse/dplyr/issues/5916
-  }
-  return(drv)
-}
-
 #' Convert a (sub-list of a) list object returned by read_yaml() to a db
 #' connection string.
 #'
@@ -55,12 +10,12 @@ driver <- function(conf){
 #'
 #'
 yml2conn_str <- function(params){
-  conparms <- params$connection
+  #conparms <- params$connection
   paste0(
     paste0(
-      names(conparms),
+      names(params),
       "=",
-      unlist(conparms)
+      unlist(params)
     ),
     collapse="; ")
 }
@@ -77,15 +32,34 @@ add_connection <- function(conn_name, params){
     # R/sysdata.rda
     new_conn <- connection_template
 
-    drv <- driver(params)
-    new_conn$driver <- case_when(
-      identical(drv, odbc::odbc) ~ "odbc::odbc",
-      identical(drv, RSQLite::SQLite) ~ "RSQLite::SQLite",
-      identical(drv, RPostgres::Postgres) ~ "RPostgres::Postgres",
-      identical(drv, RMariaDB::MariaDB) ~ "RMariaDB::MariaDB",
-      identical(drv, bigrquery::bigquery) ~ "bigrquery::bigquery",
-      TRUE ~ "" # This should never happen
-    )
+    # Default is odbc
+    if(!("server_type" %in% stringr::str_to_lower(names(params)))){
+      drv <- odbc::odbc
+      new_conn$driver <- "odbc::odbc"
+
+    } else if(stringr::str_to_lower(params$server_type) == "sqlite"){
+      drv <- RSQLite::SQLite
+      new_conn$driver <- "RSQLite::SQLite"
+
+    } else if(stringr::str_to_lower(params$server_type) == "postgresql"){
+        drv <- RPostgres::Postgres
+        new_conn$driver <- RPostgres::Postgres
+
+    } else if(stringr::str_to_lower(params$server_type) == "mysql" |
+              stringr::str_to_lower(params$server_type) == "mariadb"){
+      drv <- RMariaDB::MariaDB
+      new_conn$driver <- "RMariaDB::MariaDB"
+
+    } else if(stringr::str_to_lower(params$server_type) == "bigquery"){
+      drv <- bigrquery::bigquery
+      new_conn$driver <- "bigrquery::bigquery"
+
+    ### ...More patterns and drivers can be added here as needed... ###
+
+    } else {
+      drv <- odbc::odbc
+      new_conn$driver <- "odbc::odbc"
+    }
 
     if("pool" %in% names(params)){
       new_conn$pool <- params$pool
@@ -93,7 +67,7 @@ add_connection <- function(conn_name, params){
       new_conn$pool <- FALSE
     }
 
-    new_conn$conn_str <- yml2conn_str(params)
+    new_conn$conn_str <- yml2conn_str(params$connection)
 
     if("description" %in% names(params)){
       new_conn$description <- params$description
