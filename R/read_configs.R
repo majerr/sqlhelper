@@ -1,18 +1,17 @@
 #' Return the combined available configurations
 #'
-#' @param .config_filename String. The full name and path of a configuration
-#'   file.
-#' @param exclusive Boolean. If TRUE, the file named by the .config_filename
-#'   parameter is treated as the only config file. Site and user level files are
-#'   not read. This parameter is ignored if .config_filename is missing.
+#' Reads and combines configuration files for database connections. By default, configuration files are
+#' sought in user- and site-level config directories, and named by `config_filename`.
+#'
+#' @inheritParams connect
 #'
 #' @details Reads and combines all available config files. User- and Site-level
 #'   files are sought in [rappdirs::user_config_dir()] and
-#'   [rappdirs::site_config_dir()] respectively, unless \code{exclusive=TRUE}.
+#'   [rappdirs::site_config_dir()] respectively, unless `exclusive=TRUE`.
 #'
 #' @return optionally nested named list or vector as returned by
 #'   [yaml::read_yaml()]
-read_configs <- function(config_name=NA, exclusive=FALSE){
+read_configs <- function(config_filename=NA, exclusive=FALSE){
 
   missing_file <- FALSE
 
@@ -27,25 +26,25 @@ read_configs <- function(config_name=NA, exclusive=FALSE){
 
   # Read one file only
   if(exclusive == TRUE){
-    if(is.na(config_name)){
+    if(is.na(config_filename)){
       stop("A configuration filename is required when exclusive is TRUE")
 
-      # config_name is one of 'site' or 'user'
-    } else if(config_name %in% names(confdirs)){
+      # config_filename is one of 'site' or 'user'
+    } else if(config_filename %in% names(confdirs)){
 
       # conf_fn is defined in data-raw/sysdata.r
-      fn <- file.path(confdirs[[config_name]], conf_fn)
+      fn <- file.path(confdirs[[config_filename]], conf_fn)
 
-      # Assume config_name is intended to be the name of a file
+      # Assume config_filename is intended to be the name of a file
     } else {
-      fn <- config_name
-      config_name <- 'file'
+      fn <- config_filename
+      config_filename <- 'file'
     }
 
     if(!file.exists(fn)){
       stop(glue::glue("Configuration file {fn} does not exist"))
     } else {
-      configs[[config_name]] = yaml::read_yaml(fn)
+      configs[[config_filename]] = yaml::read_yaml(fn)
     }
 
   # exclusive is FALSE, so search the whole config search path
@@ -64,13 +63,13 @@ read_configs <- function(config_name=NA, exclusive=FALSE){
         }
 
       # conf_name is 'file' so use supplied filename (if not NA)
-      } else if(!is.na(config_name)){
+      } else if(!is.na(config_filename)){
 
-        if(file.exists(config_name)){
-          configs[[conf_name]] <- yaml::read_yaml(config_name)
+        if(file.exists(config_filename)){
+          configs[[conf_name]] <- yaml::read_yaml(config_filename)
 
         } else {
-          warning(glue::glue("Configuration file '{config_name}' does not exist"))
+          warning(glue::glue("Configuration file '{config_filename}' does not exist"))
         }
       }
 

@@ -4,22 +4,23 @@
 \alias{read_configs}
 \title{Return the combined available configurations}
 \usage{
-read_configs(config_name = NA, exclusive = FALSE)
+read_configs(config_filename = NA, exclusive = FALSE)
 }
 \arguments{
-\item{exclusive}{Boolean. If TRUE, the file named by the .config_filename
-parameter is treated as the only config file. Site and user level files are
-not read. This parameter is ignored if .config_filename is missing.}
+\item{config_filename}{String. The full name and path of a configuration
+file, or \code{NA} (the default).}
 
-\item{.config_filename}{String. The full name and path of a configuration
-file.}
+\item{exclusive}{Logical. If \code{TRUE}, the file named by \code{config_filename} is
+treated as the only config file. Site and user level files are not read.
+This parameter is ignored if \code{config_filename} is missing.}
 }
 \value{
 optionally nested named list or vector as returned by
 \code{\link[yaml:read_yaml]{yaml::read_yaml()}}
 }
 \description{
-Return the combined available configurations
+Reads and combines configuration files for database connections. By default, configuration files are
+sought in user- and site-level config directories, and named by \code{config_filename}.
 }
 \details{
 Reads and combines all available config files. User- and Site-level

@@ -4,15 +4,37 @@
 \alias{connect}
 \title{(Re-)Establish connections to databases}
 \usage{
-connect(.config_filename = NA, exclusive = FALSE)
+connect(config_filename = NA, exclusive = FALSE)
 }
 \arguments{
-\item{exclusive}{if .fn is present, should it be used exclusively (TRUE) or
-combined with user and site configs (FALSE)?
-Closes and then re-opens all configured connections}
+\item{config_filename}{String. The full name and path of a configuration
+file, or \code{NA} (the default).}
 
-\item{.fn}{String, the name of a config file}
+\item{exclusive}{Logical. If \code{TRUE}, the file named by \code{config_filename} is
+treated as the only config file. Site and user level files are not read.
+This parameter is ignored if \code{config_filename} is missing.}
 }
 \description{
 (Re-)Establish connections to databases
+}
+\details{
+Closes any open connections, reads config files as directed by
+\code{config_filename} and \code{exclusive}, and creates new connections from the
+descriptions in those files.
+}
+\examples{
+
+# Search for config files in rappdirs::site_config_dir() and
+# rappdirs::user_config_dir()
+connect()
+
+\dontrun{
+# Search for config files in rappdirs::site_config_dir(),
+# rappdirs::user_config_dir(), and read `my_connections.yml` in the current
+# working directory
+connect("my_connections.yml")
+
+# Read only `my_connections.yml` in the current working directory
+connect("my_connections.yml", exclusive=TRUE)
+}
 }

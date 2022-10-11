@@ -7,22 +7,20 @@
 validate_config(conf)
 }
 \arguments{
-\item{conf}{a single connection configuration returned by \link{read_all_configs}}
+\item{conf}{a single connection configuration returned by \link{read_configs}}
 }
 \value{
 A valid connection configuration, or NULL
 }
 \description{
-Perform minimal sanity checks on a configuration
+\code{validate_conf} attempts to ensure that connection configurations contain at
+least the elements \verb{c(pool=logical(), connection$Server=character())},
+and that all child elements of \code{connection} are character vectors of
+length 1.
 }
 \details{
-\code{validate_conf} attempts to ensure that connection
-configurations contain at least the elements \code{c(pool=boolean(),
-  connection$Server=character())}, and that all child elements of
-\code{connection} are character vectors of length 1.
-
 If the \code{pool} element is not present, or not a logical of length 1, it
-is inserted with the default value (FALSE).
+is inserted with the default value \code{FALSE}.
 
 If the \code{connection} element does not contain a \code{server} element,
 or any child of \code{connection} is not a character vector of length 1,

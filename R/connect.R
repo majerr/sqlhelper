@@ -10,28 +10,49 @@ assign("defaults",
 
 #' (Re-)Establish connections to databases
 #'
-#' @param .fn String, the name of a config file
-#' @param exclusive if .fn is present, should it be used exclusively (TRUE) or
-#'   combined with user and site configs (FALSE)?
+#' Closes any open connections, reads config files as directed by
+#' `config_filename` and `exclusive`, and creates new connections from the
+#' descriptions in those files.
 #'
-#' @details
-#' Closes all database connections, re-read config files and create new connections
+#' @param config_filename String. The full name and path of a configuration
+#'   file, or `NA` (the default).
+#' @param exclusive Logical. If `TRUE`, the file named by `config_filename` is
+#'   treated as the only config file. Site and user level files are not read.
+#'   This parameter is ignored if `config_filename` is missing.
 #'
 #' @export
-connect <- function(.config_filename=NA, exclusive=FALSE){
+#' @examples
+#'
+#' # Search for config files in rappdirs::site_config_dir() and
+#' # rappdirs::user_config_dir()
+#' connect()
+#'
+#' \dontrun{
+#' # Search for config files in rappdirs::site_config_dir(),
+#' # rappdirs::user_config_dir(), and read `my_connections.yml` in the current
+#' # working directory
+#' connect("my_connections.yml")
+#'
+#' # Read only `my_connections.yml` in the current working directory
+#' connect("my_connections.yml", exclusive=TRUE)
+#' }
+connect <- function(config_filename=NA, exclusive=FALSE){
   disconnect()
 
   conf <- validate_configs(
-    read_configs( config_name=config_name,
-                  exclusive = exclusive )
+    read_configs( config_filename,
+                  exclusive )
   )
 
-  for(conn_name in names(conf)){
-    add_connection( conn_name,
-                    conf[[conn_name]] )
-  }
+  if( length(conf) ){
 
-  set_default_conn_name( names(conf)[[1]] )
+    for(conn_name in names(conf) ){
+      add_connection( conn_name,
+                      conf[[conn_name]] )
+    }
+
+    set_default_conn_name( names(conf)[[1]] )
+  }
 }
 
 #' Add a new connection to the connections cache
@@ -68,7 +89,7 @@ add_connection <- function(conn_name, params){
       drv <- bigrquery::bigquery
       new_conn$driver <- "bigrquery::bigquery"
 
-      ### ...More patterns and drivers can be added here as needed... ###
+      ### ...more patterns and drivers can be added here as needed... ###
 
     } else {
       drv <- odbc::odbc

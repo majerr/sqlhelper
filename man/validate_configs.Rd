@@ -10,7 +10,7 @@ validate_configs(configs)
 \item{configs}{a configuration object returned by \link{read_all_configs}}
 }
 \value{
-A list of valid configs, similar to one returned by \link{read_all_configs}
+A list of valid configs, similar to one returned by \link{read_configs}
 }
 \description{
 Apply validate_config to all connection configurations
