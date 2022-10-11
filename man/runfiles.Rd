@@ -4,21 +4,29 @@
 \alias{runfiles}
 \title{Execute a list of .sql files}
 \usage{
-runfiles(filenames, conn = NA, interpolate = parent.frame())
+runfiles(
+  filenames,
+  quotesql = TRUE,
+  values = parent.frame(),
+  execmethod = "get",
+  geometry = NA,
+  default_conn = live_connection(get_default_conn_name()),
+  include_params = FALSE
+)
 }
 \arguments{
 \item{filenames}{A character vector containing your sql file names, including
 paths if they are not in the working directory}
+
+\item{db}{Defaults to 'cds' which is the only option on the DAP
+Although you \emph{can} specify \code{db} as a parameter, the preferred way is
+to include a \verb{-- db=<dbname>} comment in your sql file. See details.}
 
 \item{interpolate}{defaults to the value of \code{parent.frame()}. May be set
 to \code{FALSE} if interpolation to be avoided, or to another environment
 to control the source of the used. This can be useful if \code{sqlhelper} is
 used to run SQL from within another package, and you don't want to
 interfere with \code{.GlobalEnv}. See details.}
-
-\item{db}{Defaults to 'cds' which is the only option on the DAP
-Although you \emph{can} specify \code{db} as a parameter, the preferred way is
-to include a \verb{-- db=<dbname>} comment in your sql file. See details.}
 }
 \value{
 Depending on the input, \code{runfiles} returns one of:
@@ -34,7 +42,7 @@ element is the result of a query.}
 
 \item{\strong{An R object} (for files containing a single query).}{The
 result of the query, e.g. a dataframe for a \code{SELECT} statement, or a
-single element character vector for a \code{CREATE TABLE} statment.} }
+single element character vector for a \code{CREATE TABLE} statement.} }
 
 \code{runfiles()} will try to flatten the list intelligently so that you
 don't have to name lots of containers that contain only one element to
@@ -106,7 +114,6 @@ If you want to avoid parameterization from R altogether, set the
 }
 \seealso{
 Other SQL runners: 
-\code{\link{runqueries}()},
-\code{\link{showsql}()}
+\code{\link{runqueries}()}
 }
 \concept{SQL runners}

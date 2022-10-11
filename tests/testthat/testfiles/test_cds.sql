@@ -1,5 +1,7 @@
 -- Run some queries against the newly-created iris table
 
+
+-- conn_name=single_mem
 -- ------------------------------------------------------------
 
 -- what tables have we got?
@@ -25,9 +27,11 @@ line comment at
 the end of the
 block*/
 
-
 -- ------------------------------------------------------------
 
+-- conn_name = cds
+-- execmethod = spatial
+-- geometry = mystring
 -- make sure quoted double dashes survive the comment strip
 -- qname=quoted_doubledash
 select
@@ -35,11 +39,20 @@ select
 from iris
 where 'foo' = '-- oops';
 
+/* as single-line block comment */
+
 -- ------------------------------------------------------------
 
+-- make sure quoted block comments survive the comment strip
+-- qname=quoted_block
+select
+'stringvar' as myString
+from iris
+where 'foo' = ' /* KEEP ME! */ ';
+
+-- ------------------------------------------------------------
 
 
 -- a few single
 -- line comments at the
 -- very end
-

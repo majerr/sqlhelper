@@ -1,9 +1,9 @@
 Package: sqlhelper
-Title: Easier SQL interaction databases
-Version: 3.0.1
-Authors@R: person("Matthew", "Roberts", email = "matthew.roberts@communities.gov.uk", role = c("aut", "cre"))
-Description: Provides connections and SQL helper functions.
-Depends: R (>= 3.6.0)
+Title: Easier SQL integration
+Version: 0.1.1
+Authors@R: person("Matthew", "Roberts", email = "matthew.roberts@levellingup.gov.uk", role = c("aut", "cre"))
+Description: Manage database connections and SQL execution.
+Depends: R 
 Imports: 
     odbc,
     DBI,
@@ -18,7 +18,10 @@ Imports:
     RMariaDB,
     bigrquery,
     methods,
-    tibble
+    tibble,
+    tidyr,
+    purrr,
+    sf
 License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true

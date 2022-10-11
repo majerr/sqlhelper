@@ -1,5 +1,5 @@
 # sqlhelper
-Easier SQL interaction with CDS data
+Easier SQLing
 
 ## Summary
 `sqlhelper` does three things:

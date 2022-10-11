@@ -7,6 +7,9 @@
 #' @details Each configuration is passed to [validate_config]; invalid configs
 #'   are dropped with a warning
 validate_configs <- function(configs){
+  if(length(configs) == 0){
+    return(NULL)
+  }
   validated_configs <- lapply(configs, validate_config)
 
   for(confname in names(validated_configs)){

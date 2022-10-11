@@ -4,21 +4,26 @@
 \alias{connection_info}
 \title{Get information about available database connection}
 \usage{
-connection_info(search = ".*")
+connection_info(name_str = ".*")
 }
 \arguments{
-\item{search}{A regular expression to be used identify connection names to
+\item{name_str}{A regular expression to be used identify connection names to
 include. The default ('.*') returns all of them.}
 }
 \value{
-A tibble with the following columns:
+Null, or a tibble with 1 row per connection and the following fields:
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{* name - identifier (character)
-* description - a description of the connection, if found in the conf file (character)
-* driver - the name of the driver used (character)
-* conn_str - the string used to parameterize the connection (character)
-* pool - is this a pool connection? (boolean)
-}\if{html}{\out{</div>}}
+\describe{
+\item{name}{identifier (character)}
+\item{description}{a description of the connection, if found in the conf file (character)}
+\item{live}{is this connection valid and live? (logical)}
+\item{driver}{the name of the driver function (character)}
+\item{conn_str}{the string used to parameterize the connection (character)}
+\item{pool}{is this a pool connection? (logical)}
+}
+
+If no connection names matched \code{name_str}, the tibble will be empty. If
+no connections have been configured, \code{NULL} is returned.
 }
 \description{
 Get information about available database connection

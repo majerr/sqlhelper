@@ -8,7 +8,7 @@ combine_configs(root, new)
 }
 \arguments{
 \item{root}{An yml-derived config list, as returned by
-\link{read_config_file}}
+\code{\link[yaml:read_yaml]{yaml::read_yaml()}}}
 
 \item{new}{Another yml-derived config list, to be inserted}
 }

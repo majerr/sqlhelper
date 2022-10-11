@@ -1,0 +1,21 @@
+#' Close all connections and remove them from the connections list
+#' @export
+disconnect <- function(){
+  invisible(lapply(names(connection_cache),prune))
+}
+
+#' remove a connection from the connections cache
+#'
+#' @param conn_name The name of the connection to be removed
+prune <- function(conn_name){
+
+  if(!(conn_name %in% names(connection_cache)))
+    stop(glue::glue("No connection named {conn_name}"))
+
+  if(!connection_cache[[conn_name]]$pool)
+    DBI::dbDisconnect(connection_cache[[conn_name]]$conn)
+
+
+  connection_cache[[conn_name]] <- NULL
+  rm(list=c(conn_name), envir=connection_cache)
+}

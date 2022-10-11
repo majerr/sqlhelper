@@ -1,0 +1,9 @@
+title: Manage database connections and execute SQL from R
+description: >
+  SQLHelper brings together several existing elements of R's database
+  functionality and text processing to support smoother integration of R and SQL
+  code. The core functions allow easy management of multiple simultaneous
+  database connections and easy execution of SQL files and queries.
+
+development:
+  mode: auto

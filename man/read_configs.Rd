@@ -7,16 +7,22 @@
 read_configs(config_name = NA, exclusive = FALSE)
 }
 \arguments{
-\item{exclusive}{Boolean. If TRUE, the file named by the .config_filename parameter is
-treated as the only config file. Site and user level files are not read.
-This parameter is ignored if .fn is missing.}
+\item{exclusive}{Boolean. If TRUE, the file named by the .config_filename
+parameter is treated as the only config file. Site and user level files are
+not read. This parameter is ignored if .config_filename is missing.}
 
-\item{.config_filename}{String. The full name and path of a configuration file.}
+\item{.config_filename}{String. The full name and path of a configuration
+file.}
 }
 \value{
 optionally nested named list or vector as returned by
-\code{yaml::read_yaml}
+\code{\link[yaml:read_yaml]{yaml::read_yaml()}}
 }
 \description{
 Return the combined available configurations
+}
+\details{
+Reads and combines all available config files. User- and Site-level
+files are sought in \code{\link[rappdirs:user_data_dir]{rappdirs::user_config_dir()}} and
+\code{\link[rappdirs:site_data_dir]{rappdirs::site_config_dir()}} respectively, unless \code{exclusive=TRUE}.
 }

@@ -1,11 +1,17 @@
 #' Return the combined available configurations
 #'
-#' @param .config_filename String. The full name and path of a configuration file.
-#' @param exclusive Boolean. If TRUE, the file named by the .config_filename parameter is
-#'   treated as the only config file. Site and user level files are not read.
-#'   This parameter is ignored if .fn is missing.
+#' @param .config_filename String. The full name and path of a configuration
+#'   file.
+#' @param exclusive Boolean. If TRUE, the file named by the .config_filename
+#'   parameter is treated as the only config file. Site and user level files are
+#'   not read. This parameter is ignored if .config_filename is missing.
+#'
+#' @details Reads and combines all available config files. User- and Site-level
+#'   files are sought in [rappdirs::user_config_dir()] and
+#'   [rappdirs::site_config_dir()] respectively, unless \code{exclusive=TRUE}.
+#'
 #' @return optionally nested named list or vector as returned by
-#'   \code{yaml::read_yaml}
+#'   [yaml::read_yaml()]
 read_configs <- function(config_name=NA, exclusive=FALSE){
 
   missing_file <- FALSE
@@ -27,21 +33,19 @@ read_configs <- function(config_name=NA, exclusive=FALSE){
       # config_name is one of 'site' or 'user'
     } else if(config_name %in% names(confdirs)){
 
-
       # conf_fn is defined in data-raw/sysdata.r
       fn <- file.path(confdirs[[config_name]], conf_fn)
-      if(!file.exists(fn)){
-        stop(glue::glue("Configuration file {fn} does not exist"))
-      } else {
-        configs[[config_name]] = yaml::read_yaml(fn)
-      }
 
       # Assume config_name is intended to be the name of a file
     } else {
-      if(!file.exists(config_name)){
-        stop(glue::glue("Configuration file {config_name} does not exist"))
-      }
-      configs[["file"]] <- yaml::read_yaml(config_name)
+      fn <- config_name
+      config_name <- 'file'
+    }
+
+    if(!file.exists(fn)){
+      stop(glue::glue("Configuration file {fn} does not exist"))
+    } else {
+      configs[[config_name]] = yaml::read_yaml(fn)
     }
 
   # exclusive is FALSE, so search the whole config search path
@@ -65,31 +69,28 @@ read_configs <- function(config_name=NA, exclusive=FALSE){
         if(file.exists(config_name)){
           configs[[conf_name]] <- yaml::read_yaml(config_name)
 
-        } else if(!(config_name %in% names(confdirs))){
-          missing_file <- TRUE
+        } else {
+          warning(glue::glue("Configuration file '{config_name}' does not exist"))
         }
       }
-    }
-  }
+
+    } # end of loop
+  } # end of if(exclusive = TRUE){...} else {...}
 
   # Drop any remaining NAs
   configs <- configs[!is.na(configs)]
 
-  # Error if no configs
-  if(length(configs) == 0){
-    stop("No configuration files found")
+  combined <- NULL
 
-  # Warn if the specified file is missing
-  } else if(missing_file){
-    warning(glue::glue("Configuration file '{config_name}' does not exist"))
-  }
+  if(length(configs) > 0){
 
-  # Combine the configs
-  combined <- configs[[1]]
+    # Combine the configs
+    combined <- configs[[1]]
 
-  if(length(configs) > 1){
-    for(conf in configs[2:length(configs)]){
-      combined <- combine_configs(combined,conf)
+    if(length(configs) > 1){
+      for(conf in configs[2:length(configs)]){
+        combined <- combine_configs(combined,conf)
+      }
     }
   }
 
@@ -99,7 +100,7 @@ read_configs <- function(config_name=NA, exclusive=FALSE){
 #' Combine optionally nested yaml config lists
 #'
 #' @param root An yml-derived config list, as returned by
-#'   [read_config_file]
+#'   [yaml::read_yaml()]
 #' @param new Another yml-derived config list, to be inserted
 #'
 #' @return Combined yml config

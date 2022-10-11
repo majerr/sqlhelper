@@ -1,7 +1,4 @@
-# Adding internal placeholder vars to R/sysdata.rda means that they are found in
-# the package env and don't get set in the user's global env.
-#
-# To extend the list of internal placeholders, add to vars and source() this
+# To extend the list of internals add to vars and source() this
 # file
 
 vars <- list(
@@ -10,7 +7,24 @@ vars <- list(
                                "pool"=FALSE,
                                "conn_str"=NA,
                                "description"=NA),
-  "conf_fn" = "sqlhelper_db_conf.yml"
+
+  "conf_fn" = "sqlhelper_db_conf.yml",
+
+  interpretable_names = c("qname",
+                          "quotesql",
+                          "interpolate",
+                          "execmethod",
+                          "geometry",
+                          "conn_name"),
+
+  sql_tbl_names = c("qname",
+                    "quotesql",
+                    "interpolate",
+                    "execmethod",
+                    "geometry",
+                    "conn_name",
+                    "sql",
+                    "filename")
 )
 
 list2env(vars,.GlobalEnv)
