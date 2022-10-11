@@ -13,7 +13,9 @@ assign("defaults",
 #' @param .fn String, the name of a config file
 #' @param exclusive if .fn is present, should it be used exclusively (TRUE) or
 #'   combined with user and site configs (FALSE)?
-#' Closes and then re-opens all configured connections
+#'
+#' @details
+#' Closes all database connections, re-read config files and create new connections
 #'
 #' @export
 connect <- function(.config_filename=NA, exclusive=FALSE){
