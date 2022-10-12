@@ -102,6 +102,8 @@ prepare_sql <- function(sql,
 #'   'default'.
 #'
 #' @return A list or character vector of parameterized sql queries
+#'
+#' @noRd
 interpolate_sql <- function(interpolate,
                             quotesql,
                             conn_name,

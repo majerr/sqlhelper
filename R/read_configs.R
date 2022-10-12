@@ -1,7 +1,10 @@
 #' Return the combined available configurations
 #'
-#' Reads and combines configuration files for database connections. By default, configuration files are
-#' sought in user- and site-level config directories, and named by `config_filename`.
+#' See [connect()] for details
+#'
+#' Reads and combines configuration files for database connections. By default,
+#' configuration files are sought in user- and site-level config directories,
+#' and named by `config_filename`.
 #'
 #' @inheritParams connect
 #'
@@ -11,6 +14,8 @@
 #'
 #' @return optionally nested named list or vector as returned by
 #'   [yaml::read_yaml()]
+#'
+#' @noRd
 read_configs <- function(config_filename=NA, exclusive=FALSE){
 
   missing_file <- FALSE
@@ -109,6 +114,7 @@ read_configs <- function(config_filename=NA, exclusive=FALSE){
 #'   * Elements that exists in root but not new will be retained
 #'   * Elements that exist in both will be replaced in root by the contents of new
 #'
+#' @noRd
 combine_configs <- function(root,new){
   combined <- root
   for(name in rev(names(new))){

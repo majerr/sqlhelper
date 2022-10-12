@@ -8,11 +8,11 @@
 #'  \item{quotesql}{"yes" or "no". Should parameterized character values be quoted for this query? Defaults to "yes".}
 #'  \item{interpolate}{"yes" or "no". Should this query be parameterized with values from R? Defaults to "yes".}
 #'  \item{execmethod}{The method to execute this query.
-#' One of "get" (\code{\link{DBI::dbGetQuery}}), "send" (\code{\link{DBI::dbSendQuery}}) or "spatial" (\code{\link{sf:st_read}})}
-#'  \item{geometry}{character. If \code{execmethod} is "spatial", which is the geometry column?}
+#' One of "get" ([DBI::dbGetQuery()]), "send" ([DBI::dbSendQuery()]) or "spatial" ([sf:st_read()])}
+#'  \item{geometry}{character. If `execmethod` is "spatial", which is the geometry column?}
 #'  \item{conn}{The name of the database connection to use for this query}
 #'  \item{sql}{The unparameterized sql query to be executed}
-#'  \item{filename}{The value of \code{file_name}}
+#'  \item{filename}{The value of `file_name`}
 #' }
 #'
 #' @export
@@ -49,7 +49,8 @@ read_sql <- function(file_name)  {
   queries
 }
 
-# Generate a low entropy token to temporarily replace newlines and quoted strings
+#' Generate a low entropy token to temporarily replace newlines and quoted strings
+#' @noRd
 tok <- function(){
   paste(
     sample(
@@ -69,7 +70,7 @@ assign("quote_cache",
 #' Extract and cache single quoted strings from lines of sql
 #'
 #' @param lines A character vector containing consecutive lines of SQL code.
-#'
+#' @noRd
 extract_quoted_strings <- function(lines){
 
   linetok <- tok()
@@ -126,7 +127,7 @@ extract_quoted_strings <- function(lines){
 #' Replace tokens with their matched quoted strings in lines of sql
 #'
 #' @param lines A character vector containing consecutive lines of SQL code.
-#'
+#' @noRd
 reinstate_quoted_strings <- function(lines, id) {
   if (is.null(id)) {
     with_strs <- lines
@@ -151,6 +152,7 @@ reinstate_quoted_strings <- function(lines, id) {
 
   with_strs
 }
+
 
 remove_block_comments <- function(lines){
 

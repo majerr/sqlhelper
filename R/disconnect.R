@@ -1,4 +1,4 @@
-#' Close all connections and remove them from the connections list
+#' Close all connections and remove them from the connections cache
 #' @export
 disconnect <- function(){
   invisible(lapply(names(connection_cache),prune))
@@ -7,6 +7,8 @@ disconnect <- function(){
 #' remove a connection from the connections cache
 #'
 #' @param conn_name The name of the connection to be removed
+#'
+#' @noRd
 prune <- function(conn_name){
 
   if(!(conn_name %in% names(connection_cache)))

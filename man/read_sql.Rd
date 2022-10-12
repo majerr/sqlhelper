@@ -16,7 +16,7 @@ A tibble containing 1 row per query and the following fields:
 \item{quotesql}{"yes" or "no". Should parameterized character values be quoted for this query? Defaults to "yes".}
 \item{interpolate}{"yes" or "no". Should this query be parameterized with values from R? Defaults to "yes".}
 \item{execmethod}{The method to execute this query.
-One of "get" (\code{\link{DBI::dbGetQuery}}), "send" (\code{\link{DBI::dbSendQuery}}) or "spatial" (\code{\link{sf:st_read}})}
+One of "get" (\code{\link[DBI:dbGetQuery]{DBI::dbGetQuery()}}), "send" (\code{\link[DBI:dbSendQuery]{DBI::dbSendQuery()}}) or "spatial" (\code{\link[=sf:st_read]{sf:st_read()}})}
 \item{geometry}{character. If \code{execmethod} is "spatial", which is the geometry column?}
 \item{conn}{The name of the database connection to use for this query}
 \item{sql}{The unparameterized sql query to be executed}

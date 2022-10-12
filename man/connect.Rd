@@ -8,19 +8,20 @@ connect(config_filename = NA, exclusive = FALSE)
 }
 \arguments{
 \item{config_filename}{String. The full name and path of a configuration
-file, or \code{NA} (the default).}
+file, or \code{NA} (the default). Cannot be \code{NA} if \code{exclusive = TRUE}.}
 
 \item{exclusive}{Logical. If \code{TRUE}, the file named by \code{config_filename} is
 treated as the only config file. Site and user level files are not read.
 This parameter is ignored if \code{config_filename} is missing.}
 }
 \description{
-(Re-)Establish connections to databases
-}
-\details{
 Closes any open connections, reads config files as directed by
 \code{config_filename} and \code{exclusive}, and creates new connections from the
 descriptions in those files.
+}
+\details{
+See also \verb{vignette("Managing connections", pkg="sqlhelper)} for details of these
+operations
 }
 \examples{
 

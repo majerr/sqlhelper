@@ -1,4 +1,4 @@
-title: Manage database connections and execute SQL from R
+title: sqlhelper
 description: >
   SQLHelper brings together several existing elements of R's database
   functionality and text processing to support smoother integration of R and SQL

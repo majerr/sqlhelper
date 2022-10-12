@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Easier SQL integration • Manage database connections and execute SQL from R</title>
+<title>Easier SQL integration • sqlhelper</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="bootstrap-toc.css">
 <script src="bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
@@ -32,13 +32,16 @@
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="index.html">Manage database connections and execute SQL from R</a>
+        <a class="navbar-link" href="index.html">sqlhelper</a>
         <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
+<li>
+  <a href="articles/sqlhelper.html">Get started</a>
+</li>
 <li>
   <a href="reference/index.html">Reference</a>
 </li>
@@ -50,7 +53,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="articles/configs.html">How to configure connections</a>
+      <a href="articles/configs.html">Managing Connections</a>
     </li>
   </ul>
 </li>
@@ -70,27 +73,41 @@
 <div class="section level1">
 <div class="page-header"><h1 id="sqlhelper">sqlhelper<a class="anchor" aria-label="anchor" href="#sqlhelper"></a>
 </h1></div>
-<p>Easier SQLing</p>
+<p>Easier SQL integration with R</p>
 <div class="section level2">
 <h2 id="summary">Summary<a class="anchor" aria-label="anchor" href="#summary"></a>
 </h2>
 <p><code>sqlhelper</code> does three things:</p>
 <ol style="list-style-type: decimal">
-<li>It <strong>manages your connection to the CDS database</strong>. A connection is opened automatically when the package is loaded.</li>
-<li>It <strong>provides functions for running sql queries and files of sql queries</strong>. You simply provide a query or filename (or list of queries or filenames).</li>
-<li>It <strong>provides functions that generate resusable sql snippets</strong>, e.g. for getting a sample of rows from a large table.</li>
+<li>It <strong>manages connections to RDBMSs</strong>. Multiple DBI connections are configured with YAML and stored in the background for easy access by name.</li>
+<li>It <strong>provides functions for preparing and executing sql queries and files of sql queries</strong>. You simply provide a query or filename (or lists of queries or filenames).</li>
+<li>It <strong>provides helper functions to facilitate interactive use and defensive programming</strong>, e.g. to check a connection is live before executing some sql.</li>
 </ol>
+<p>There are, of course, many excellent ways to execute code against a database from R, often not involving SQL at all (e.g. <a href="https://dbplyr.tidyverse.org/" class="external-link">dbplyr</a>); <code>sqlhelper</code> is for the times when you <em>do</em> want to use SQL - perhaps you have inherited some legacy SQL, or need some specific functionality offered by your RDBMS, or simply prefer to write SQL.</p>
 </div>
 <div class="section level2">
-<h2 id="quickstart">Quickstart<a class="anchor" aria-label="anchor" href="#quickstart"></a>
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<div class="section level3">
-<h3 id="running-sql-files-and-queries">Running sql files and queries<a class="anchor" aria-label="anchor" href="#running-sql-files-and-queries"></a>
-</h3>
-<p>For data wrangling, you probably want to write your queries in their own files. Then you will want to use <code><a href="reference/runfiles.html">runfiles()</a></code>:</p>
+<p>Install from github:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># install.packages("devtools")</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/remotes/man/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"majr-red/sqlhelper"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
+</h2>
+<p>For data wrangling, you probably want to write SQL queries in their own files and use [runfiles()]:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># load sqlhelper</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">sqlhelper</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># If your admin has kindly provided a site-wide config, or you have set up</span></span>
+<span><span class="co"># your own, you can connect to your all your databases with:</span></span>
+<span><span class="fu"><a href="reference/connect.html">connect</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Otherwise, you'll need to provide a config file </span></span>
+<span><span class="co"># (see 'Getting Started' for what to put in it)</span></span>
+<span><span class="co"># connect("path/to/db_config_file.yml")</span></span>
 <span></span>
 <span><span class="co"># write some queries</span></span>
 <span><span class="va">files_to_run</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"path/to/create_temporary_dataset.sql"</span>,</span>
@@ -100,18 +117,15 @@
 <span><span class="co"># Run the queries and save the results</span></span>
 <span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/runfiles.html">runfiles</a></span><span class="op">(</span><span class="va">files_to_run</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Inspect the results. runfiles() returns a list of lists.</span></span>
-<span><span class="co"># Names in the outer list are the filenames, stripped of path and extension:</span></span>
-<span><span class="va">my_subsets</span> <span class="op">&lt;-</span> <span class="va">results</span><span class="op">$</span><span class="va">extract_subsets</span></span>
+<span><span class="co"># Inspect the results. By default, runfiles() returns a list of the results of </span></span>
+<span><span class="co"># each query in the files you provided. Results of a specific query can be accessed by the</span></span>
+<span><span class="co"># the name of the query. See 'Getting Started' for more on named queries.</span></span>
 <span></span>
-<span><span class="co"># the results of each query in the file can be accessed by it's index:</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">my_subsets</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># queries that do not return a result (e.g. create table) will result in an empty list.</span></span></code></pre></div>
-<p>But sometimes you just want to run some short queries; in this case <code><a href="reference/runqueries.html">runqueries()</a></code> is for you:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># load sqlhelper</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">sqlhelper</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">results</span><span class="op">$</span><span class="va">my_extracted_subset</span><span class="op">)</span></span></code></pre></div>
+<p>For exploratory work you might just want to run some short queries; in this case <code><a href="reference/runqueries.html">runqueries()</a></code> is for you:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">sqlhelper</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/connect.html">connect</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># write some queries</span></span>
 <span><span class="va">my_queries</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>usedb<span class="op">=</span><span class="st">"use COVID19"</span>, showtabs<span class="op">=</span><span class="st">"select * from INFORMATION_SCHEMA.TABLES"</span><span class="op">)</span></span>
@@ -125,7 +139,6 @@
 <span></span>
 <span><span class="co"># or you can use indices (see below for comments on indexing lists in R):</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">results</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
-</div>
 </div>
 </div>
   </div>

@@ -6,6 +6,7 @@
 #'
 #' @details Each configuration is passed to [validate_config]; invalid configs
 #'   are dropped with a warning
+#' @noRd
 validate_configs <- function(configs){
 
   if( length(configs) == 0){
@@ -41,7 +42,7 @@ validate_configs <- function(configs){
 #' @param conf a single connection configuration returned by [read_configs]
 #'
 #' @return A valid connection configuration, or NULL
-#'
+#' @noRd
 validate_config <- function(conf){
 
   # conf is a list

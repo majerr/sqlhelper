@@ -1,8 +1,8 @@
 ---
-title: "How to configure connections"
+title: "Managing Connections"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{How to configure connections}
+  %\VignetteIndexEntry{Managing Connections}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

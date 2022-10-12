@@ -2,10 +2,10 @@
 % Please edit documentation in R/disconnect.R
 \name{disconnect}
 \alias{disconnect}
-\title{Close all connections and remove them from the connections list}
+\title{Close all connections and remove them from the connections cache}
 \usage{
 disconnect()
 }
 \description{
-Close all connections and remove them from the connections list
+Close all connections and remove them from the connections cache
 }

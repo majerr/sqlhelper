@@ -14,11 +14,16 @@ assign("defaults",
 #' `config_filename` and `exclusive`, and creates new connections from the
 #' descriptions in those files.
 #'
+#' See also `vignette("Managing connections", pkg="sqlhelper)` for details of these
+#' operations
+#'
+#'
 #' @param config_filename String. The full name and path of a configuration
-#'   file, or `NA` (the default).
+#'   file, or `NA` (the default). Cannot be `NA` if `exclusive = TRUE`.
 #' @param exclusive Logical. If `TRUE`, the file named by `config_filename` is
 #'   treated as the only config file. Site and user level files are not read.
 #'   This parameter is ignored if `config_filename` is missing.
+#'
 #'
 #' @export
 #' @examples
@@ -58,8 +63,9 @@ connect <- function(config_filename=NA, exclusive=FALSE){
 #' Add a new connection to the connections cache
 #'
 #' @param conn_name A string identifier for the new connection
-#' @param params Connection parameters
+#' @param params Connection parameters read by [read_configs]
 #'
+#' @noRd
 add_connection <- function(conn_name, params){
   tryCatch({
 
@@ -129,15 +135,13 @@ add_connection <- function(conn_name, params){
 
 
 
-#' Convert a list object returned by read_yaml() to a db
-#' connection string.
+#' Convert a list a connection string.
 #'
 #' @param params Connection parameters
 #'
 #' @return Connection string
 #'
-#'   YAML values need to be double quoted in the YAML file.
-#'
+#' @noRd
 yml2conn_str <- function(params){
   paste0(
     paste0(
