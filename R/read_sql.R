@@ -8,7 +8,7 @@
 #'  \item{quotesql}{"yes" or "no". Should parameterized character values be quoted for this query? Defaults to "yes".}
 #'  \item{interpolate}{"yes" or "no". Should this query be parameterized with values from R? Defaults to "yes".}
 #'  \item{execmethod}{The method to execute this query.
-#' One of "get" ([DBI::dbGetQuery()]), "send" ([DBI::dbSendQuery()]) or "spatial" ([sf:st_read()])}
+#' One of "get" ([DBI::dbGetQuery()]), "execute" ([DBI::dbExecute()]), "sendq" ([DBI::dbSendQuery()]), "sends" ([DBI::dbSendStatement()]) or "spatial" ([sf:st_read()])}
 #'  \item{geometry}{character. If `execmethod` is "spatial", which is the geometry column?}
 #'  \item{conn}{The name of the database connection to use for this query}
 #'  \item{sql}{The unparameterized sql query to be executed}
@@ -256,8 +256,7 @@ interpret_comments <- function(lines){
           }
   )
 
-  # methods must be one of 'get', 'send' or 'spatial'
-  recognized_methods <- c("get","send","spatial")
+  # methods must be one of 'getquery', 'execute', 'sendquery', 'sendstatement' or 'spatial'
   lapply(interpreted_comments$execmethod,
          function(x){
            if( ( ! x %in% recognized_methods ) && ! is.na( x ) )
@@ -276,6 +275,10 @@ interpret_comments <- function(lines){
   # cascade any explicit connections to subsequent queries in the file
   interpreted_comments <- tidyr::fill(
     tibble::as_tibble( interpreted_comments ),
+    "quotesql",
+    "interpolate",
+    "conn_name",
+    "execmethod",
     "conn_name")
 
   interpreted_comments

@@ -3,21 +3,21 @@
 #' Accepts a character vector of SQL queries and runs each one
 #'
 #' @param sql An optionally-named list or character vector containing sql
-#'   commands, or a tibble returned by \code{\link{read_sql_file}}
+#'   commands, or a tibble returned by [read_sql()]
 #' @param quotesql "yes" or "no" - should interpolated characters be quoted by
 #'   default?
 #' @param interpolate Should the SQL be parameterized from R? Defaults to the
-#'   value of \code{parent.frame()}. Pass any object that is not an environment
+#'   value of [parent.frame()]. Pass any object that is not an environment
 #'   (e.g. "no" or FALSE) if interpolation is to be skipped, or another
 #'   environment containing values to interpolate to avoid using
 #'   \code{.GlobalEnv}.
-#' @param execmethod One of "get", "send" or "spatial" - which method should be
-#'   used to execute the query? "get" means \code{DBI::dbGetQuery}; "send" means
-#'   \code{DBI::dbSendQuery}; "spatial" means \code{sf::st_read}.
+#' @param execmethod One of "get", "execute", "sendq", "sends" or "spatial" - which method should be
+#'   used to execute the query? "get" means [DBI::dbGetQuery()]; "execute" means [DBI::dbExecute()]; "sendq" means
+#'   \code{DBI::dbSendQuery}; "sends" means [DBI::dbSendStatement()]; "spatial" means [sf::st_read()].
 #' @param geometry If \code{execmethod} is "spatial", which geometry column
 #'   should be used (ignored if \code{execmethod} is not spatial)
 #' @param conn Either the name of a sqlhelper connection, or a database
-#'   connection returned by \code{DBI::dbConnect}, or NA
+#'   connection returned by [DBI::dbConnect()], or NA
 #' @param include_params Should the parameters be included in the output?
 #' @return If \code{include_params} is \code{FALSE}, an named list containing
 #'   the results of each query; the names are the same as those in the \code{sql}
@@ -71,12 +71,16 @@ runqueries <- function(sql,
     function( execmethod, conn_name, geometry, prepared_sql, default_conn ){
       if(execmethod == "get")
         dispatcher <- DBI::dbGetQuery
-      else if(execmethod == "send")
+      else if(execmethod == "execute")
+        dispatcher <- DBI::dbExecute
+      else if(execmethod == "sendq")
         dispatcher <- DBI::dbSendQuery
+      else if(execmethod == "sends")
+        dispatcher <- DBI::dbSendStatement
       else if(execmethod == "spatial")
         dispatcher <- sf::st_read
       else
-        stop( glue::glue( "execmethod must be one of 'get', 'send' or 'spatial', not {execmethod}" ) )
+        stop( glue::glue( "execmethod must be one of 'get', 'execute', 'sendq', 'sends' or 'spatial', not {execmethod}" ) )
 
       if(conn_name == "default")
         conn <- default_conn
@@ -211,7 +215,7 @@ runfiles <- function(filenames,
                      default_conn = live_connection( get_default_conn_name() ),
                      include_params = FALSE){
 
-  sql <- purrr:map_dfc(filenames, read_sql)
+  sql <- purrr::map_dfc(filenames, read_sql)
 
   runqueries(sql,
              quotesql,

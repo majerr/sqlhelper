@@ -5,5 +5,8 @@ description: >
   code. The core functions allow easy management of multiple simultaneous
   database connections and easy execution of SQL files and queries.
 
+home:
+  title: Easier SQL integration with R
+
 development:
   mode: auto

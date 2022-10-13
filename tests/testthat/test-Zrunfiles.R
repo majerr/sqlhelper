@@ -47,5 +47,5 @@ test_that("runfiles() will run sequential queries and return a list of results",
 })
 
 
-#devtools::unload(package="sqlhelper")
+
 

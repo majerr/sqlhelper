@@ -59,13 +59,9 @@ validate_config <- function(conf){
   for(name in names(conf$connection)){
     if(!(is.character(conf$connection[[name]])) |
        length(conf$connection[[name]]) != 1){
+      print(length(conf$connection[[name]]))
       return(NULL)
     }
-    conf$connection[[name]] <- stringr::str_to_title(conf$connection[[name]])
-  }
-
-  if(!("Server" %in% names(conf$connection))){
-    return(NULL)
   }
 
   valid_conf <- conf

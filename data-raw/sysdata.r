@@ -17,6 +17,12 @@ vars <- list(
                           "geometry",
                           "conn_name"),
 
+  recognized_methods = c("get",
+                          "execute",
+                          "sendq",
+                          "sends",
+                          "spatial"),
+
   sql_tbl_names = c("qname",
                     "quotesql",
                     "interpolate",

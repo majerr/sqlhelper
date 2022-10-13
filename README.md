@@ -61,7 +61,10 @@ library(sqlhelper)
 connect()
 
 # write some queries
-my_queries <- list(usedb="use COVID19", showtabs="select * from INFORMATION_SCHEMA.TABLES")
+my_queries <- list(
+  usedb="use COVID19", 
+  showtabs="select * from INFORMATION_SCHEMA.TABLES"
+)
 
 # Run the queries and save the results
 results <- runqueries(my_queries)
@@ -69,8 +72,5 @@ results <- runqueries(my_queries)
 # Inspect the results. runqueries() returns a list with one element per query.
 # You can access them using the names of the queries:
 head(results$showtabs)
-
-# or you can use indices (see below for comments on indexing lists in R):
-head(results[[2]])
 ```
 

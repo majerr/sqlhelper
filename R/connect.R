@@ -55,9 +55,11 @@ connect <- function(config_filename=NA, exclusive=FALSE){
       add_connection( conn_name,
                       conf[[conn_name]] )
     }
-
-    set_default_conn_name( names(conf)[[1]] )
   }
+
+  if( length( names( connection_cache )))
+    set_default_conn_name( names(conf)[[1]] )
+
 }
 
 #' Add a new connection to the connections cache
@@ -108,47 +110,31 @@ add_connection <- function(conn_name, params){
       new_conn$pool <- FALSE
     }
 
-    new_conn$conn_str <- yml2conn_str(params$connection)
-
     if("description" %in% names(params)){
       new_conn$description <- params$description
     }
 
     if(new_conn$pool){
-      new_conn$conn <- pool::dbPool(drv(),
-                                    .connection_string = new_conn$conn_str)
-      reg.finalizer(new_conn$conn,pool::poolClose)
+      new_conn$conn <- do.call( pool::dbPool,
+                                c(drv(),
+                                  params$connection)
+                              )
+
+      reg.finalizer( new_conn$conn,
+                     pool::poolClose )
 
     } else {
-      new_conn$conn <- DBI::dbConnect(drv(),
-                                      .connection_string = new_conn$conn_str)
+      new_conn$conn <- do.call( DBI::dbConnect,
+                                c(drv(),
+                                  params$connection)
+                              )
     }
 
     # connection_cache is an environment created above
     assign(conn_name, new_conn, envir = connection_cache)
   },
   error=function(c){
-    message(c)
+    message(glue::glue("Error whilst connecting {conn_name}: {c}"))
     warning(glue::glue("{conn_name} is not available"))
   })
 }
-
-
-
-#' Convert a list a connection string.
-#'
-#' @param params Connection parameters
-#'
-#' @return Connection string
-#'
-#' @noRd
-yml2conn_str <- function(params){
-  paste0(
-    paste0(
-      names(params),
-      "=",
-      unlist(params)
-    ),
-    collapse="; ")
-}
-
