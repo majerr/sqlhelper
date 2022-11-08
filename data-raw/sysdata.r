@@ -30,7 +30,32 @@ vars <- list(
                     "geometry",
                     "conn_name",
                     "sql",
-                    "filename")
+                    "filename"),
+
+  # acceptable server_types found in yml configs
+  db_types = c("odbc",
+                "sqlite",
+                "postgresql",
+                "mysql",
+                "mariadb",
+                "bigquery"),
+
+  # packages corresponding to db_types
+  db_driver_pkgs = c("odbc",
+                      "RSQLite",
+                      "RPostgres",
+                      "RMariaDB",
+                      "RMariaDB",
+                      "bigrquery"),
+
+  # functions in db_driver_pkgs corresponding to db_types
+  db_driver_funcs = c("odbc",
+                       "SQLite",
+                       "Postgres",
+                       "MariaDB",
+                       "MariaDB",
+                       "bigquery")
+
 )
 
 list2env(vars,.GlobalEnv)

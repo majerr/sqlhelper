@@ -50,6 +50,11 @@ validate_config <- function(conf){
     return(NULL)
   }
 
+  # conf contains a server_type element
+  if(!("server_type" %in% names(conf))){
+    return(NULL)
+  }
+
   # conf contains a connection element
   if(!("connection" %in% names(conf))){
     return(NULL)

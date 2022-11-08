@@ -4,25 +4,21 @@ Version: 0.1.1
 Authors@R: person("Matthew", "Roberts", email = "matthew.roberts@levellingup.gov.uk", role = c("aut", "cre"))
 Description: Manage database connections and SQL execution.
 Depends: R 
-Imports: 
-    odbc,
+Imports:
     DBI,
     yaml,
     rappdirs,
     stringr,
     glue,
     dplyr,
-    RSQLite,
     pool,
-    RPostgres,
-    RMariaDB,
-    bigrquery,
     methods,
     tibble,
     tidyr,
     purrr,
     sf,
-    spData
+    spData,
+    rlang
 License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
@@ -31,6 +27,11 @@ Roxygen: list(markdown = TRUE)
 Suggests: 
     rmarkdown,
     knitr,
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    odbc,
+    RSQLite,
+    RPostgres,
+    RMariaDB,
+    bigrquery
 Config/testthat/edition: 3
 VignetteBuilder: knitr

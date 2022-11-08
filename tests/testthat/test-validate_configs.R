@@ -10,6 +10,8 @@ test_that("All invalidations are captured", {
   configs <- read_configs(fn,exclusive=TRUE)
   expect_warning(validate_configs(configs["no_connection"]),
                  "Connection configuration for no_connection was invalid; no_connection will not be available")
+  expect_warning(validate_configs(configs["no_server_type"]),
+                 "Connection configuration for no_server_type was invalid; no_server_type will not be available")
   expect_warning(validate_configs(configs["conn_child_is_list"]),
                  "Connection configuration for conn_child_is_list was invalid; conn_child_is_list will not be available")
   expect_warning(validate_configs(configs["no_server"]),

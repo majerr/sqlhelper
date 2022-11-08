@@ -75,34 +75,9 @@ add_connection <- function(conn_name, params){
     # R/sysdata.rda
     new_conn <- connection_template
 
-    # Default is odbc
-    if(!("server_type" %in% stringr::str_to_lower(names(params)))){
-      drv <- odbc::odbc
-      new_conn$driver <- "odbc::odbc"
-
-    } else if(stringr::str_to_lower(params$server_type) == "sqlite"){
-      drv <- RSQLite::SQLite
-      new_conn$driver <- "RSQLite::SQLite"
-
-    } else if(stringr::str_to_lower(params$server_type) == "postgresql"){
-      drv <- RPostgres::Postgres
-      new_conn$driver <- RPostgres::Postgres
-
-    } else if(stringr::str_to_lower(params$server_type) == "mysql" |
-              stringr::str_to_lower(params$server_type) == "mariadb"){
-      drv <- RMariaDB::MariaDB
-      new_conn$driver <- "RMariaDB::MariaDB"
-
-    } else if(stringr::str_to_lower(params$server_type) == "bigquery"){
-      drv <- bigrquery::bigquery
-      new_conn$driver <- "bigrquery::bigquery"
-
-      ### ...more patterns and drivers can be added here as needed... ###
-
-    } else {
-      drv <- odbc::odbc
-      new_conn$driver <- "odbc::odbc"
-    }
+    driver <- get_driver(conn_name, stringr::str_to_lower(params$server_type))
+    new_conn$driver <- driver$driver_name
+    drv <- driver$driver_func
 
     if("pool" %in% names(params)){
       new_conn$pool <- params$pool
@@ -134,7 +109,8 @@ add_connection <- function(conn_name, params){
     assign(conn_name, new_conn, envir = connection_cache)
   },
   error=function(c){
-    message(glue::glue("Error whilst connecting {conn_name}: {c}"))
+    message(glue::glue("Error whilst connecting {conn_name}:
+                       {c}"))
     warning(glue::glue("{conn_name} is not available"))
   })
 }

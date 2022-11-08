@@ -3,6 +3,10 @@
 no_connection:
   server_type: sqlite
 
+no_server_type:
+  connection:
+    Server: ":memory:"
+
 conn_child_is_list:
   connection:
     server:
