@@ -75,7 +75,7 @@ add_connection <- function(conn_name, params){
     # R/sysdata.rda
     new_conn <- connection_template
 
-    driver <- get_driver(conn_name, stringr::str_to_lower(params$server_type))
+    driver <- get_driver(conn_name, stringr::str_to_lower(params$driver_type))
     new_conn$driver <- driver$driver_name
     drv <- driver$driver_func
 

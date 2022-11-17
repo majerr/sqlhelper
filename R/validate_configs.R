@@ -51,7 +51,7 @@ validate_config <- function(conf){
   }
 
   # conf contains a server_type element
-  if(!("server_type" %in% names(conf))){
+  if(!("driver_type" %in% names(conf))){
     return(NULL)
   }
 
@@ -64,7 +64,6 @@ validate_config <- function(conf){
   for(name in names(conf$connection)){
     if(!(is.character(conf$connection[[name]])) |
        length(conf$connection[[name]]) != 1){
-      print(length(conf$connection[[name]]))
       return(NULL)
     }
   }

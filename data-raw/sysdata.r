@@ -10,20 +10,20 @@ vars <- list(
 
   "conf_fn" = "sqlhelper_db_conf.yml",
 
-  interpretable_names = c("qname",
+  "interpretable_names" = c("qname",
                           "quotesql",
                           "interpolate",
                           "execmethod",
                           "geometry",
                           "conn_name"),
 
-  recognized_methods = c("get",
+  "recognized_methods" = c("get",
                           "execute",
                           "sendq",
                           "sends",
                           "spatial"),
 
-  sql_tbl_names = c("qname",
+  "sql_tbl_names" = c("qname",
                     "quotesql",
                     "interpolate",
                     "execmethod",
@@ -33,7 +33,7 @@ vars <- list(
                     "filename"),
 
   # acceptable server_types found in yml configs
-  db_types = c("odbc",
+  "driver_types" = c("odbc",
                 "sqlite",
                 "postgresql",
                 "mysql",
@@ -41,7 +41,7 @@ vars <- list(
                 "bigquery"),
 
   # packages corresponding to db_types
-  db_driver_pkgs = c("odbc",
+  "driver_pkgs" = c("odbc",
                       "RSQLite",
                       "RPostgres",
                       "RMariaDB",
@@ -49,7 +49,7 @@ vars <- list(
                       "bigrquery"),
 
   # functions in db_driver_pkgs corresponding to db_types
-  db_driver_funcs = c("odbc",
+  "driver_funcs" = c("odbc",
                        "SQLite",
                        "Postgres",
                        "MariaDB",
