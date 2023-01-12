@@ -50,7 +50,7 @@ validate_config <- function(conf){
     return(NULL)
   }
 
-  # conf contains a server_type element
+  # conf contains a driver_type element
   if(!("driver_type" %in% names(conf))){
     return(NULL)
   }

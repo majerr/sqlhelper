@@ -13,12 +13,13 @@
 #' @return An environment containing `driver_func`, a driver function such as
 #'   `odbc::odbc()`, and `driver_name`, the name of that function as a character
 #'   string, e.g. "odbc::odbc".
+#' @noRd
 get_driver <- function(conn_name, drv_type){
   # driver_types, driver_pkgs, and driver_funcs are defined in
   # data-raw/sysdata.r
 
   if(!(drv_type %in% driver_types))
-    stop(glue::glue("Server type '{drv_type}' not recognized for connection '{conn_name}'"))
+    stop(glue::glue("Driver type '{drv_type}' not recognized for connection '{conn_name}'"))
 
   pkgnames <- driver_pkgs
   names(pkgnames) <- driver_types

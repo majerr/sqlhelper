@@ -72,7 +72,7 @@
     <h2>Arguments</h2>
     <dl><dt>sql</dt>
 <dd><p>An optionally-named list or character vector containing sql
-commands, or a tibble returned by <code>read_sql_file</code></p></dd>
+commands, or a tibble returned by <code><a href="read_sql.html">read_sql()</a></code></p></dd>
 
 
 <dt>quotesql</dt>
@@ -81,9 +81,9 @@ default?</p></dd>
 
 
 <dt>execmethod</dt>
-<dd><p>One of "get", "send" or "spatial" - which method should be
-used to execute the query? "get" means <code><a href="https://rdrr.io/pkg/DBI/man/dbGetQuery.html" class="external-link">DBI::dbGetQuery</a></code>; "send" means
-<code><a href="https://rdrr.io/pkg/DBI/man/dbSendQuery.html" class="external-link">DBI::dbSendQuery</a></code>; "spatial" means <code><a href="https://rdrr.io/pkg/sf/man/st_read.html" class="external-link">sf::st_read</a></code>.</p></dd>
+<dd><p>One of "get", "execute", "sendq", "sends" or "spatial" - which method should be
+used to execute the query? "get" means <code><a href="https://rdrr.io/pkg/DBI/man/dbGetQuery.html" class="external-link">DBI::dbGetQuery()</a></code>; "execute" means <code><a href="https://rdrr.io/pkg/DBI/man/dbExecute.html" class="external-link">DBI::dbExecute()</a></code>; "sendq" means
+<code><a href="https://rdrr.io/pkg/DBI/man/dbSendQuery.html" class="external-link">DBI::dbSendQuery</a></code>; "sends" means <code><a href="https://rdrr.io/pkg/DBI/man/dbSendStatement.html" class="external-link">DBI::dbSendStatement()</a></code>; "spatial" means <code><a href="https://rdrr.io/pkg/sf/man/st_read.html" class="external-link">sf::st_read()</a></code>.</p></dd>
 
 
 <dt>geometry</dt>
@@ -105,7 +105,7 @@ environment containing values to interpolate to avoid using
 
 <dt>conn</dt>
 <dd><p>Either the name of a sqlhelper connection, or a database
-connection returned by <code><a href="https://rdrr.io/pkg/DBI/man/dbConnect.html" class="external-link">DBI::dbConnect</a></code>, or NA</p></dd>
+connection returned by <code><a href="https://rdrr.io/pkg/DBI/man/dbConnect.html" class="external-link">DBI::dbConnect()</a></code>, or NA</p></dd>
 
 </dl></div>
     <div id="value">
@@ -138,7 +138,7 @@ and the result of each query.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

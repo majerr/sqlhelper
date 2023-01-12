@@ -59,7 +59,7 @@ read_configs <- function(config_filename=NA, exclusive=FALSE){
       # conf_name is one of 'site' or 'user'
       if(conf_name %in% names(confdirs)){
 
-        # conf_fn is defined in data-raw/sysdata.r
+        # conf_fn is defined in data-raw/sysdata.r as sqlhelper_db_conf.yml
         fn <- file.path(confdirs[[conf_name]],
                         conf_fn)
 
@@ -105,18 +105,21 @@ read_configs <- function(config_filename=NA, exclusive=FALSE){
 #'
 #' @param root An yml-derived config list, as returned by
 #'   [yaml::read_yaml()]
-#' @param new Another yml-derived config list, to be inserted
+#' @param new Another yml-derived config list, to be combined with root
 #'
 #' @return Combined yml config
 #'
 #' @details
 #'   * Elements that exists in new but not root will be added
 #'   * Elements that exists in root but not new will be retained
-#'   * Elements that exist in both will be replaced in root by the contents of new
+#'   * Elements that exist in both will be overwritten in root by the contents
+#'   of new
 #'
 #' @noRd
 combine_configs <- function(root,new){
   combined <- root
+
+  # work through new from the bottom up
   for(name in rev(names(new))){
     if(!(name %in% names(root))) {
       # New name does not yet exist in the combined list- insert it at the first
@@ -143,5 +146,3 @@ combine_configs <- function(root,new){
   }
   combined
 }
-
-

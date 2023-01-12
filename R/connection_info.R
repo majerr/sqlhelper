@@ -1,4 +1,6 @@
-#' Get information about available database connection
+#' Browse available connections
+#'
+#' Provides information about created connections.
 #'
 #' @param name_str A regular expression to be used identify connection names to
 #'   include. The default ('.*') returns all of them.

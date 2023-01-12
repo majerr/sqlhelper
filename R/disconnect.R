@@ -14,7 +14,7 @@ prune <- function(conn_name){
   if(!(conn_name %in% names(connection_cache)))
     stop(glue::glue("No connection named {conn_name}"))
 
-  if(!connection_cache[[conn_name]]$pool)
+  if(!connection_cache[[conn_name]]$pool && is_connected(conn_name))
     DBI::dbDisconnect(connection_cache[[conn_name]]$conn)
 
 

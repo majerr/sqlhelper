@@ -4,9 +4,6 @@
     <loc>/404.html</loc>
   </url>
   <url>
-    <loc>/articles/configs.html</loc>
-  </url>
-  <url>
     <loc>/articles/connections.html</loc>
   </url>
   <url>
@@ -31,6 +28,9 @@
     <loc>/reference/combine_configs.html</loc>
   </url>
   <url>
+    <loc>/reference/config_examples.html</loc>
+  </url>
+  <url>
     <loc>/reference/connect.html</loc>
   </url>
   <url>
@@ -41,6 +41,9 @@
   </url>
   <url>
     <loc>/reference/extract_quoted_strings.html</loc>
+  </url>
+  <url>
+    <loc>/reference/get_driver.html</loc>
   </url>
   <url>
     <loc>/reference/index.html</loc>

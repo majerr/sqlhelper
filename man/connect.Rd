@@ -8,11 +8,15 @@ connect(config_filename = NA, exclusive = FALSE)
 }
 \arguments{
 \item{config_filename}{String. The full name and path of a configuration
-file, or \code{NA} (the default). Cannot be \code{NA} if \code{exclusive = TRUE}.}
+file, or "site", or "user", or "example", or \code{NA} (the default). Cannot be
+\code{NA} if \code{exclusive = TRUE}.}
 
 \item{exclusive}{Logical. If \code{TRUE}, the file named by \code{config_filename} is
 treated as the only config file. Site and user level files are not read.
 This parameter is ignored if \code{config_filename} is missing.}
+}
+\value{
+\code{NULL}, invisibly
 }
 \description{
 Closes any open connections, reads config files as directed by
@@ -20,15 +24,29 @@ Closes any open connections, reads config files as directed by
 descriptions in those files.
 }
 \details{
-See also \verb{vignette("Managing connections", pkg="sqlhelper)} for details of these
-operations
+If \code{exclusive=FALSE} (the default), configuration files will be sought in the
+directory returned by \code{\link[rappdirs:site_data_dir]{rappdirs::site_config_dir()}}, the directory returned
+by \code{\link[rappdirs:user_data_dir]{rappdirs::user_config_dir()}}, and finally a file named by
+\code{config_filename} (if not \code{NA}). If elements of those files conflict, later
+files overwrite the elements of earlier files.
+
+if \code{exclusive=TRUE}, only 1 file will be read, as indicated by the
+\code{config_filename} parameter.
+\itemize{
+\item if \code{config_filename = "site"}, a config file called
+\code{sqlhelper_db_conf.yml} will be sought in the directory returned by
+\code{\link[rappdirs:site_data_dir]{rappdirs::site_config_dir()}}
+\item if \code{config_filename = "user"}, a config file called
+\code{sqlhelper_db_conf.yml} will be sought in the directory returned by
+\code{\link[rappdirs:user_data_dir]{rappdirs::user_config_dir()}}
+\item if \code{config_filename} is not \code{NULL} (but not "site" or "user"), it is
+assumed to name a file.
+}
+
+\code{vignette("connections")} explains how to write a
+config file and how to access the created connections.
 }
 \examples{
-
-# Search for config files in rappdirs::site_config_dir() and
-# rappdirs::user_config_dir()
-connect()
-
 \dontrun{
 # Search for config files in rappdirs::site_config_dir(),
 # rappdirs::user_config_dir(), and read `my_connections.yml` in the current

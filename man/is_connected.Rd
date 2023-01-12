@@ -21,5 +21,5 @@ connection
 Test whether a database is connected
 }
 \details{
-\code{not_connected} is provided as a convenience
+\code{not_connected} is provided for readability, and is identical to \code{!is_connected()}.
 }

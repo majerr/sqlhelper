@@ -68,7 +68,8 @@ descriptions in those files.</p>
     <h2>Arguments</h2>
     <dl><dt>config_filename</dt>
 <dd><p>String. The full name and path of a configuration
-file, or <code>NA</code> (the default). Cannot be <code>NA</code> if <code>exclusive = TRUE</code>.</p></dd>
+file, or "site", or "user", or "example", or <code>NA</code> (the default). Cannot be
+<code>NA</code> if <code>exclusive = TRUE</code>.</p></dd>
 
 
 <dt>exclusive</dt>
@@ -77,26 +78,35 @@ treated as the only config file. Site and user level files are not read.
 This parameter is ignored if <code>config_filename</code> is missing.</p></dd>
 
 </dl></div>
+    <div id="value">
+    <h2>Value</h2>
+    
+
+<p><code>NULL</code>, invisibly</p>
+    </div>
     <div id="details">
     <h2>Details</h2>
-    <p>See also <code>vignette("Managing connections", pkg="sqlhelper)</code> for details of these
-operations</p>
+    <p>If <code>exclusive=FALSE</code> (the default), configuration files will be sought in the
+directory returned by <code><a href="https://rdrr.io/pkg/rappdirs/man/site_data_dir.html" class="external-link">rappdirs::site_config_dir()</a></code>, the directory returned
+by <code><a href="https://rdrr.io/pkg/rappdirs/man/user_data_dir.html" class="external-link">rappdirs::user_config_dir()</a></code>, and finally a file named by
+<code>config_filename</code> (if not <code>NA</code>). If elements of those files conflict, later
+files overwrite the elements of earlier files.</p>
+<p>if <code>exclusive=TRUE</code>, only 1 file will be read, as indicated by the
+<code>config_filename</code> parameter.</p><ul><li><p>if <code>config_filename = "site"</code>, a config file called
+<code>sqlhelper_db_conf.yml</code> will be sought in the directory returned by
+<code><a href="https://rdrr.io/pkg/rappdirs/man/site_data_dir.html" class="external-link">rappdirs::site_config_dir()</a></code></p></li>
+<li><p>if <code>config_filename = "user"</code>, a config file called
+<code>sqlhelper_db_conf.yml</code> will be sought in the directory returned by
+<code><a href="https://rdrr.io/pkg/rappdirs/man/user_data_dir.html" class="external-link">rappdirs::user_config_dir()</a></code></p></li>
+<li><p>if <code>config_filename</code> is not <code>NULL</code> (but not "site" or "user"), it is
+assumed to name a file.</p></li>
+</ul><p><code><a href="../articles/connections.html">vignette("connections")</a></code> explains how to write a
+config file and how to access the created connections.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Search for config files in rappdirs::site_config_dir() and</span></span></span>
-<span class="r-in"><span><span class="co"># rappdirs::user_config_dir()</span></span></span>
-<span class="r-in"><span><span class="fu">connect</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Error whilst connecting dap:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Error in get_driver(conn_name, stringr::str_to_lower(params$server_type)): Server type 'sqlserver' not recognized for connection 'dap'</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>dap is not available</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Error whilst connecting cds:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Error in get_driver(conn_name, stringr::str_to_lower(params$server_type)): Server type 'sqlserver' not recognized for connection 'cds'</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>cds is not available</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span><span class="co"># Search for config files in rappdirs::site_config_dir(),</span></span></span>
 <span class="r-in"><span><span class="co"># rappdirs::user_config_dir(), and read `my_connections.yml` in the current</span></span></span>
 <span class="r-in"><span><span class="co"># working directory</span></span></span>
@@ -119,7 +129,7 @@ operations</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

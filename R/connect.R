@@ -14,24 +14,37 @@ assign("defaults",
 #' `config_filename` and `exclusive`, and creates new connections from the
 #' descriptions in those files.
 #'
-#' See also `vignette("Managing connections", pkg="sqlhelper)` for details of these
-#' operations
+#' If `exclusive=FALSE` (the default), configuration files will be sought in the
+#' directory returned by [rappdirs::site_config_dir()], the directory returned
+#' by [rappdirs::user_config_dir()], and finally a file named by
+#' `config_filename` (if not `NA`). If elements of those files conflict, later
+#' files overwrite the elements of earlier files.
 #'
+#' if `exclusive=TRUE`, only 1 file will be read, as indicated by the
+#' `config_filename` parameter.
+#'
+#'   * if `config_filename = "site"`, a config file called
+#'   `sqlhelper_db_conf.yml` will be sought in the directory returned by
+#'   [rappdirs::site_config_dir()]
+#'   * if `config_filename = "user"`, a config file called
+#'   `sqlhelper_db_conf.yml` will be sought in the directory returned by
+#'   [rappdirs::user_config_dir()]
+#'   * if `config_filename` is not `NULL` (but not "site" or "user"), it is
+#'   assumed to name a file.
+#'
+#' `vignette("connections")` explains how to write a
+#' config file and how to access the created connections.
 #'
 #' @param config_filename String. The full name and path of a configuration
-#'   file, or `NA` (the default). Cannot be `NA` if `exclusive = TRUE`.
+#'   file, or "site", or "user", or "example", or `NA` (the default). Cannot be
+#'   `NA` if `exclusive = TRUE`.
 #' @param exclusive Logical. If `TRUE`, the file named by `config_filename` is
 #'   treated as the only config file. Site and user level files are not read.
 #'   This parameter is ignored if `config_filename` is missing.
 #'
-#'
+#' @returns `NULL`, invisibly
 #' @export
 #' @examples
-#'
-#' # Search for config files in rappdirs::site_config_dir() and
-#' # rappdirs::user_config_dir()
-#' connect()
-#'
 #' \dontrun{
 #' # Search for config files in rappdirs::site_config_dir(),
 #' # rappdirs::user_config_dir(), and read `my_connections.yml` in the current
@@ -60,12 +73,14 @@ connect <- function(config_filename=NA, exclusive=FALSE){
   if( length( names( connection_cache )))
     set_default_conn_name( names(conf)[[1]] )
 
+  invisible(NULL)
 }
 
 #' Add a new connection to the connections cache
 #'
 #' @param conn_name A string identifier for the new connection
 #' @param params Connection parameters read by [read_configs]
+#' @returns NULL
 #'
 #' @noRd
 add_connection <- function(conn_name, params){
@@ -105,7 +120,7 @@ add_connection <- function(conn_name, params){
                               )
     }
 
-    # connection_cache is an environment created above
+    # connection_cache is an environment created at the top of this file
     assign(conn_name, new_conn, envir = connection_cache)
   },
   error=function(c){
@@ -113,4 +128,6 @@ add_connection <- function(conn_name, params){
                        {c}"))
     warning(glue::glue("{conn_name} is not available"))
   })
+
+  NULL
 }

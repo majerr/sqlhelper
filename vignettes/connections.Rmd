@@ -14,50 +14,28 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
-#library(sqlhelper)
+`sqlhelper` can maintain one or many database connections internally. This
+article describes how to configure and create connections, and the methods for
+inspecting and accessing them.
+
+## Creating connections
+
+You can define database connections in config files which are read and processed by the `connect()` function. For example, if your config file is called `my_db_config.yml`, you might run:
+
+``` r
+library(sqlhelper)
+
+connect("my_db_config.yml")
 ```
 
-## Introduction 
+### Config files
 
-`sqlhelper` maintains a cache of database connections internally. The package
-initially attempts to populate the cache during loading but the cache is mutable
-(so may be altered subsequently). This article describes the processes by which
-`sqlhelper` populates the connections cache and the options for adjusting it
-after loading.
-
-The basic steps in the process are:
-
-#. Search for YAML config files
-#. Read and validate connection definitions from config files
-#. Combine the contents of separate config files
-#. Create connections from the read definitions and add them to the cache.
-
-## Searching for YAML config files.
-
-### The config search path.
-
-To re-populate the cache after loading `sqlhelper`, use `reconnect()`. The parameter controlling the search path for configuration files is \code{.config_filename}. This allows you to search for site-wide configuration, user-specific configuration, or a specific file (e.g. specific to the project you are working on).
-
- * To search for a specific file simply supply the filename, e.g. \code{create_connections('my_config_file.yml')}.
- * To search for your own user-specific file, supply 'user', e.g. \code{create_connections('user')}
- * To search for a site-wide configuration file, supply 'site' e.g. \code{create_connections('site')}
- * To search the current directory for a configuration file, supply \code{NA}, which is also the default:
- i.e. simply \code{create_connections()}
-
-The default file name is 'sqlhelper_db_conf.yml', so if you use the last option, a file in the current directory with that name will be sought.
-
-In practice, you are most likely to want the first or last options; the site-wide and user-specific files are read when the package is loaded.
-
-The second parameter, \code{exclusive}, determines how many files will be sought. The default value, \code{FALSE}, means that \code{sqlhelper} will search first for a site-wide configuration, then for a user-specific configuration, then for a file in the current working directory, and finally for a supplied file name. Supplying \code{exclusive=TRUE} will mean that only the named file will be sought; where no file is named (i.e. \code{.config_filename=NA}), \code{exclusive} has no effect.
-
-### Validating connection definitions
-
-Connection definitions are YAML. The following defines a connection called 'dap'. 
+A config file can contain one or more connection definitions.
+Connection definitions are [YAML](https://yaml.org/). The following YAML chunk defines a connection called 'dap'. 
 
 ```yaml
 dap:
-  server_type: sqlserver
+  driver_type: sqlserver
   pool: yes
   description: >
     Databases managed by ADD teams on the Data and Analytics Platform
@@ -66,7 +44,10 @@ dap:
     Server: "Dap-sql01"
     Trusted_Connection: "yes"
 ```
-The **'server_type'** line defines the flavour of database, and hence the driver package that will be used. Current options are:
+
+The first line is a name for this connection; subsequent lines contain information about the connection.
+
+The **driver_type** line defines the flavour of database, and hence the driver package that will be used. This parameter is required. Current options are:
 
 * 'sqlserver' (odbc)
 * 'sqlite' (RSQLite)
@@ -74,11 +55,142 @@ The **'server_type'** line defines the flavour of database, and hence the driver
 * 'mysql/mariadb'(RMariaDB)
 * 'bigquery' (bigquery)
 
-The **'pool'** line determines whether a single connection is required (as
-returned by \code{\link{DBI::dbConnect}[]) or a pool of connections (as returned by
-\code{pool::dbPool})
+The **pool** line determines whether a single connection is required (as
+returned by `DBI::dbConnect()`) or a pool of connections (as returned
+by `pool::dbPool()`). The latter is recommended for [shiny](https://shiny.rstudio.com/) applications. This parameter defaults to 'no', meaning a single connection will be provided.
 
-### Combining configuration files
+The **description** line provides a short description of this connection. This parameter can be omitted.
 
-### Creating Connections
- 
+The **connection** section contains several lines which provide the parameters required for the connection itself, to be passed to the constructor function as name=value pairs. For example, you will need to supply a `Driver` connection string if you are using an `odbc` driver. The **server** parameter will probably always be required but see `DBI::dbConnect()` for more details.
+
+In summary, the elements needed for every connection are:
+
+#. The connection **name**, and
+#. The **driver_type**, and
+#. A **connection** section containing a **Server** element
+
+The others *may* be needed for some connections or may be omitted entirely. The function `config_examples()` provides several example configurations. 
+
+### The config search path
+
+By default, the `connect()` function reads not only the config file named by its `config_filename` parameter, but also any config files found on a search path that includes both the user's and the site's config directories.
+
+If you use the same database connections often, you can place a config file called `sqlhelper_db_config.yml` in the directory named by `rappdirs::user_config_dir()`. Similarly, if you are a site admin you can provide your users with pre-configured connections by placing a config file of the same name in the directory named by `rappdirs::site_config_dir()`. In either of these cases, no config filename is needed and `connect()` can be called without arguments. Nonetheless, in the case where you require additional connections to those provided by user- and site-wide configurations, you may provide a `config_filename` argument.
+
+### File precedence and conflicts across config files
+
+Site-wide config files are read first, then user-wide, then named files. If conflicting connection names or connection elements are encountered between config files, values from later files overwrite those from earlier. This operates on an element-by-element basis; for example, if your site-wide config contains:
+
+```yaml
+my_conn:
+  server_type: mysql
+  connection:
+    Server: "organization_server_host"
+```
+
+but your named file contains:
+
+```yaml
+my_conn:
+  description: Private MySQL database
+  connection:
+    Server: "my_alternate_server_host"
+```
+then `sqlhelper` will attempt to create a connection described by:
+
+```yaml
+my_conn:
+  server_type: mysql
+  description: Private MySQL database
+  connection:
+    Server: "my_alternate_server_host"
+```
+
+### Suppressing the config search path
+
+If only one config file is wanted, the config search path may be suppressed by supplying the `exclusive = TRUE` argument.
+
+If `exclusive = TRUE`, then `connect()` will check whether the `config_filename`
+is one of 'user' or 'site'. If it is, the user- or site-wide config file will be
+sought; if it is not 'user' or 'site', it will be treated as the name of a
+config file.
+
+## Browsing the connection cache
+
+After `connect()` has been called, you may inspect the created connections with `connection_info()`. 
+
+```{r}
+library(sqlhelper)
+
+readLines("resources/sqlhelper_db_conf.yml") |>
+  writeLines()
+
+connect("resources/sqlhelper_db_conf.yml", exclusive = TRUE)
+
+connection_info()
+```
+
+
+## Accessing individual connections
+
+Connections may be accessed by name, with `live_connection()`
+
+```{r}
+myconn <- live_connection("simple_sqlite")
+myconn
+```
+
+## The default connection
+
+The first connection in the file with the highest precedence (i.e. the last one to be read) becomes the default default. This connection will be used whenever queries or files of SQL are executed (`runqueries()` or `runfiles()`) with without explicitly stating which connection to use. 
+
+You can check the default connection with `connection_info()` or `get_default_conn_name()` and change it with `set_default_conn_name()`.
+
+```{r}
+get_default_conn_name()
+
+set_default_conn_name("pool_sqlite")
+
+get_default_conn_name()
+
+get_default_conn_name() |>
+  live_connection()
+```
+
+## Checking, closing and re-opening connections
+
+You can check whether connections are live in two ways:
+
+#. `connection_info()` provides a 'live' field for interactive use
+#. The functions `is_connected()` and `not_connected()` are intended for programmatic use.
+
+To close all connections and remove them from the internal cache, use `disconnect()`.
+
+Individual connections may be closed with `DBI::dbDisconnect()`. 
+
+`connect()` closes any open connections before reading config files. 
+
+
+```{r}
+conn_name <- "simple_sqlite"
+
+is_connected(conn_name)
+connection_info(conn_name)$live
+
+myconn <- live_connection(conn_name)
+DBI::dbDisconnect(myconn)
+
+connection_info()
+
+if(not_connected(conn_name)){
+  message(glue::glue("{conn_name} is not available, reconnecting..."))
+  connect("resources/sqlhelper_db_conf.yml", exclusive = TRUE)
+}
+
+connection_info()
+
+disconnect()
+
+connection_info()
+```
+

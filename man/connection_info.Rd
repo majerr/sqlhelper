@@ -2,7 +2,7 @@
 % Please edit documentation in R/connection_info.R
 \name{connection_info}
 \alias{connection_info}
-\title{Get information about available database connection}
+\title{Browse available connections}
 \usage{
 connection_info(name_str = ".*")
 }
@@ -26,5 +26,5 @@ If no connection names matched \code{name_str}, the tibble will be empty. If
 no connections have been configured, \code{NULL} is returned.
 }
 \description{
-Get information about available database connection
+Provides information about created connections.
 }
