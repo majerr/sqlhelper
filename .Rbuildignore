@@ -1,4 +1,8 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^data-raw$
+^docs$
 ^LICENSE\.md$
+^doc$
+^Meta$
+^pkgdown$

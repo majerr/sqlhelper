@@ -5,34 +5,53 @@
 \title{Execute a sequence of SQL queries}
 \usage{
 runqueries(
-  queries,
-  conn_name = default_conn_name,
-  interpolate = parent.frame()
+  sql,
+  quotesql = TRUE,
+  values = parent.frame(),
+  execmethod = "get",
+  geometry = NA,
+  default_conn = live_connection(get_default_conn_name()),
+  include_params = FALSE
 )
 }
 \arguments{
-\item{queries}{A list or character vector containing your sql commands}
+\item{sql}{An optionally-named list or character vector containing sql
+commands, or a tibble returned by \code{\link[=read_sql]{read_sql()}}}
+
+\item{quotesql}{"yes" or "no" - should interpolated characters be quoted by
+default?}
+
+\item{execmethod}{One of "get", "execute", "sendq", "sends" or "spatial" - which method should be
+used to execute the query? "get" means \code{\link[DBI:dbGetQuery]{DBI::dbGetQuery()}}; "execute" means \code{\link[DBI:dbExecute]{DBI::dbExecute()}}; "sendq" means
+\code{DBI::dbSendQuery}; "sends" means \code{\link[DBI:dbSendStatement]{DBI::dbSendStatement()}}; "spatial" means \code{\link[sf:st_read]{sf::st_read()}}.}
+
+\item{geometry}{If \code{execmethod} is "spatial", which geometry column
+should be used (ignored if \code{execmethod} is not spatial)}
+
+\item{include_params}{Should the parameters be included in the output?}
 
 \item{interpolate}{Should the SQL be parameterized from R? Defaults to the
-value of \code{parent.frame()}. May be set to \code{FALSE} if interpolation is
-to be avoided, or to another environment to control the source of the used.
-This can be useful if \code{sqlhelper} is used to run SQL from within another
-package, and you don't want to interfere with \code{.GlobalEnv}.}
+value of \code{\link[=parent.frame]{parent.frame()}}. Pass any object that is not an environment
+(e.g. "no" or FALSE) if interpolation is to be skipped, or another
+environment containing values to interpolate to avoid using
+\code{.GlobalEnv}.}
 
-\item{db}{Defaults to 'cds', which is the only option on the DAP}
+\item{conn}{Either the name of a sqlhelper connection, or a database
+connection returned by \code{\link[DBI:dbConnect]{DBI::dbConnect()}}, or NA}
 }
 \value{
-A list containing the results of each query
+If \code{include_params} is \code{FALSE}, an named list containing
+the results of each query; the names are the same as those in the \code{sql}
+parameter. If \code{include_params} is \code{TRUE}, a tibble containing the query as executed, the above parameters,
+and the result of each query.
 }
 \description{
-Accepts a character vector of SQL queries and runs each one on the
-on either hive or postgresql.
+Accepts a character vector of SQL queries and runs each one
 }
 \seealso{
 \code{\link{runfiles}}
 
 Other SQL runners: 
-\code{\link{runfiles}()},
-\code{\link{showsql}()}
+\code{\link{runfiles}()}
 }
 \concept{SQL runners}

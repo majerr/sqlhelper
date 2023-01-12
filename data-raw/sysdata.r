@@ -1,17 +1,61 @@
-# Adding internal placeholder vars to R/sysdata.rda means that they are found in
-# the package env and don't get set in the user's global env.
-#
-# To extend the list of internal placeholders, add them to vars and source()
-# this file
+# To extend the list of internals add to vars and source() this
+# file
 
 vars <- list(
   "connection_template" = list("conn"=NA,
                                "driver"=NA,
                                "pool"=FALSE,
-                               "close"=DBI::dbDisconnect),
-  "connections" = list(),
-  "default_conn_name" = '',
-  "conf_fn" = "sqlhelper_db_conf.yml"
+                               "conn_str"=NA,
+                               "description"=NA),
+
+  "conf_fn" = "sqlhelper_db_conf.yml",
+
+  "interpretable_names" = c("qname",
+                          "quotesql",
+                          "interpolate",
+                          "execmethod",
+                          "geometry",
+                          "conn_name"),
+
+  "recognized_methods" = c("get",
+                          "execute",
+                          "sendq",
+                          "sends",
+                          "spatial"),
+
+  "sql_tbl_names" = c("qname",
+                    "quotesql",
+                    "interpolate",
+                    "execmethod",
+                    "geometry",
+                    "conn_name",
+                    "sql",
+                    "filename"),
+
+  # acceptable server_types found in yml configs
+  "driver_types" = c("odbc",
+                "sqlite",
+                "postgresql",
+                "mysql",
+                "mariadb",
+                "bigquery"),
+
+  # packages corresponding to db_types
+  "driver_pkgs" = c("odbc",
+                      "RSQLite",
+                      "RPostgres",
+                      "RMariaDB",
+                      "RMariaDB",
+                      "bigrquery"),
+
+  # functions in db_driver_pkgs corresponding to db_types
+  "driver_funcs" = c("odbc",
+                       "SQLite",
+                       "Postgres",
+                       "MariaDB",
+                       "MariaDB",
+                       "bigquery")
+
 )
 
 list2env(vars,.GlobalEnv)

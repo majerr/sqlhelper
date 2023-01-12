@@ -1,7 +1,8 @@
 pandoc: 2.17.1.1
-pkgdown: 2.0.1
+pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
-  configs: configs.html
-last_built: 2022-07-14T10:49Z
+  connections: connections.html
+  sqlhelper: sqlhelper.html
+last_built: 2023-01-11T16:40Z
 

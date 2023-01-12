@@ -11,5 +11,3 @@ pool_mem:
   pool: yes
   connection:
     Server: ":memory:"
-
-

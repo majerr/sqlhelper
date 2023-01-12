@@ -18,22 +18,25 @@ or postgresql."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/l
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sqlhelper</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav"><li>
+  <a href="../articles/sqlhelper.html">Get started</a>
+</li>
+<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/configs.html">How to configure connections</a>
+      <a href="../articles/connections.html">Managing Connections</a>
     </li>
   </ul></li>
       </ul><ul class="nav navbar-nav navbar-right"></ul></div><!--/.nav-collapse -->
@@ -56,7 +59,15 @@ or postgresql.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">runfiles</span><span class="op">(</span><span class="va">filenames</span>, db <span class="op">=</span> <span class="cn">NA</span>, interpolate <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sys.parent.html" class="external-link">parent.frame</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">runfiles</span><span class="op">(</span></span>
+<span>  <span class="va">filenames</span>,</span>
+<span>  quotesql <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sys.parent.html" class="external-link">parent.frame</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  execmethod <span class="op">=</span> <span class="st">"get"</span>,</span>
+<span>  geometry <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  default_conn <span class="op">=</span> <span class="fu"><a href="live_connection.html">live_connection</a></span><span class="op">(</span><span class="fu"><a href="set_default_conn_name.html">get_default_conn_name</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  include_params <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -64,20 +75,30 @@ or postgresql.</p>
     <dl><dt>filenames</dt>
 <dd><p>A character vector containing your sql file names, including
 paths if they are not in the working directory</p></dd>
+
+
 <dt>db</dt>
 <dd><p>Defaults to 'cds' which is the only option on the DAP
 Although you <em>can</em> specify <code>db</code> as a parameter, the preferred way is
 to include a <code>-- db=&lt;dbname&gt;</code> comment in your sql file. See details.</p></dd>
+
+
 <dt>interpolate</dt>
 <dd><p>defaults to the value of <code><a href="https://rdrr.io/r/base/sys.parent.html" class="external-link">parent.frame()</a></code>. May be set
 to <code>FALSE</code> if interpolation to be avoided, or to another environment
 to control the source of the used. This can be useful if <code>sqlhelper</code> is
 used to run SQL from within another package, and you don't want to
 interfere with <code>.GlobalEnv</code>. See details.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>Depending on the input, <code>runfiles</code> returns one of:</p><dl><dt><strong>A list of lists</strong> (for multiple files)</dt>
+    
+
+<p>Depending on the input, <code>runfiles</code> returns one of:</p>
+
+
+<dl><dt><strong>A list of lists</strong> (for multiple files)</dt>
 <dd><p>The outer list
 contains one list for each file in filenames. Each inner list is named with
 the file basename and contains the results of each query from that file.</p></dd>
@@ -91,7 +112,7 @@ element is the result of a query.</p></dd>
 <dt><strong>An R object</strong> (for files containing a single query).</dt>
 <dd><p>The
 result of the query, e.g. a dataframe for a <code>SELECT</code> statement, or a
-single element character vector for a <code>CREATE TABLE</code> statment.</p></dd>
+single element character vector for a <code>CREATE TABLE</code> statement.</p></dd>
  
 </dl><p><code>runfiles()</code> will try to flatten the list intelligently so that you
 don't have to name lots of containers that contain only one element to
@@ -151,8 +172,7 @@ case use the <code>interpolate</code> argument:</p>
     <div id="see-also">
     <h2>See also</h2>
     <div class="dont-index"><p>Other SQL runners: 
-<code><a href="runqueries.html">runqueries</a>()</code>,
-<code><a href="showsql.html">showsql</a>()</code></p></div>
+<code><a href="runqueries.html">runqueries</a>()</code></p></div>
     </div>
 
   </div>
@@ -167,8 +187,7 @@ case use the <code>interpolate</code> argument:</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
-2.0.1.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

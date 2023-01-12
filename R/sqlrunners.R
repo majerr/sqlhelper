@@ -1,94 +1,116 @@
 #' Execute a sequence of SQL queries
 #'
-#' Accepts a character vector of SQL queries and runs each one on the
-#' on either hive or postgresql.
+#' Accepts a character vector of SQL queries and runs each one
 #'
-#' @param queries A list or character vector containing your sql commands
-#' @param db Defaults to 'cds', which is the only option on the DAP
+#' @param sql An optionally-named list or character vector containing sql
+#'   commands, or a tibble returned by [read_sql()]
+#' @param quotesql "yes" or "no" - should interpolated characters be quoted by
+#'   default?
 #' @param interpolate Should the SQL be parameterized from R? Defaults to the
-#'   value of \code{parent.frame()}. May be set to \code{FALSE} if interpolation is
-#'   to be avoided, or to another environment to control the source of the used.
-#'   This can be useful if \code{sqlhelper} is used to run SQL from within another
-#'   package, and you don't want to interfere with \code{.GlobalEnv}.
-#' @return A list containing the results of each query
+#'   value of [parent.frame()]. Pass any object that is not an environment
+#'   (e.g. "no" or FALSE) if interpolation is to be skipped, or another
+#'   environment containing values to interpolate to avoid using
+#'   \code{.GlobalEnv}.
+#' @param execmethod One of "get", "execute", "sendq", "sends" or "spatial" - which method should be
+#'   used to execute the query? "get" means [DBI::dbGetQuery()]; "execute" means [DBI::dbExecute()]; "sendq" means
+#'   \code{DBI::dbSendQuery}; "sends" means [DBI::dbSendStatement()]; "spatial" means [sf::st_read()].
+#' @param geometry If \code{execmethod} is "spatial", which geometry column
+#'   should be used (ignored if \code{execmethod} is not spatial)
+#' @param conn Either the name of a sqlhelper connection, or a database
+#'   connection returned by [DBI::dbConnect()], or NA
+#' @param include_params Should the parameters be included in the output?
+#' @return If \code{include_params} is \code{FALSE}, an named list containing
+#'   the results of each query; the names are the same as those in the \code{sql}
+#'   parameter. If \code{include_params} is \code{TRUE}, a tibble containing the query as executed, the above parameters,
+#'   and the result of each query.
 #' @family SQL runners
 #' @seealso \code{\link{runfiles}}
 #' @export
-runqueries <- function(queries, conn_name=default_conn_name, interpolate=parent.frame()){
-  # If runqueries is called from runfiles with no parameter set and no db
-  # spec'ed in the sql, the db parameter can be set to NA. If that happens, we
-  # want it reset to the default before proceeding.
-  if(is.na(conn_name)){conn_name <- default_conn_name}
+runqueries <- function(sql,
+                       quotesql = TRUE,
+                       values = parent.frame(),
+                       execmethod = "get",
+                       geometry = NA,
+                       default_conn = live_connection( get_default_conn_name() ),
+                       include_params = FALSE ){
 
-  if(not.connected(conn_name)){
+  if( ! (is(default_conn, "DBIConnection" ) | is(default_conn, "Pool")) ){
 
-    # This grep checks whether db is enclosed in quotes
-    if( grepl("^[\"\'][^\"\']*[\"\']$",conn_name) == TRUE){
-      quotewarn <- " Try removing the quotes."
-    }
-    else {quotewarn <- ""}
+    if( is.null( connection_info() ) )
+      stop("No connections are configured")
 
-    message("There were connection errors. Please check your output carefully.")
+    if( ! is.character( default_conn ) )
+      stop("default_conn must be a connection or the name of a connection")
 
-    return(
-      list(
-        error=glue::glue("No connection to {conn_name}.{quotewarn}")
-      )
-    )
-  }
-  else{
-    #runparams is an internal function. Definition is in R/connections.R
-    dbparms <- getrunparams(conn_name)
+    if( default_conn %in% names( connection_cache ) )
+      default_conn <- live_connection( conn_name = default_conn )
+
+
+    if( ! (is(default_conn, "DBIConnection" ) | is(default_conn, "Pool")) )
+      stop( glue::glue("default_conn is not a connection or the name of a connection") )
+
   }
 
-  # parameterize queries before submitting, if required
-  if(is.environment(interpolate) == TRUE){
-    queries <- lapply(queries,glue::glue_sql,
-                      .con = dbparms$conn,
-                      .envir=interpolate)
+
+  prepped_sql <- prepare_sql(sql,
+                              quotesql,
+                              values,
+                              execmethod,
+                              geometry,
+                              default_conn
+                              )
+
+  prepped_sql$result <- purrr::pmap(
+    dplyr::select(
+      prepped_sql,
+      execmethod,
+      conn_name,
+      geometry,
+      prepared_sql),
+
+    function( execmethod, conn_name, geometry, prepared_sql, default_conn ){
+      if(execmethod == "get")
+        dispatcher <- DBI::dbGetQuery
+      else if(execmethod == "execute")
+        dispatcher <- DBI::dbExecute
+      else if(execmethod == "sendq")
+        dispatcher <- DBI::dbSendQuery
+      else if(execmethod == "sends")
+        dispatcher <- DBI::dbSendStatement
+      else if(execmethod == "spatial")
+        dispatcher <- sf::st_read
+      else
+        stop( glue::glue( "execmethod must be one of 'get', 'execute', 'sendq', 'sends' or 'spatial', not {execmethod}" ) )
+
+      if(conn_name == "default")
+        conn <- default_conn
+      else
+        conn <- live_connection(conn_name)
+
+      if( execmethod == "spatial" ){
+        result <- dispatcher(dsn = conn,
+                             query = prepared_sql,
+                             geometry_column = geometry)
+      } else {
+        result <- dispatcher(conn = conn,
+                             statement = prepared_sql)
+      }
+    }, # close function definition
+
+    default_conn = default_conn
+  ) # close purrr::pmap
+
+  execd_sql <- tibble::as_tibble(prepped_sql)
+
+  if( include_params ){
+    out <- execd_sql
+  } else {
+    out <- execd_sql$result
+    names( out ) <- execd_sql$qname
   }
 
-  suppressWarnings(
-    # Submit with the appropriate connection and return the result
-    results <- lapply(queries, dbparms$runner, conn=dbparms$conn)
-  )
-
-  #Flatten the result, if there's only one
-  if(length(results) == 1){
-    results <- results[[1]]
-  }
-  return(results)
+  out
 }
-
-#' execute a \strong{single} file of SQL queries and obtain a flat list of results.
-#'
-#' This function is used internally and not exported, use \code{\link{runfiles}} instead.
-#'
-#' @param fn is a file name.
-#' @param conn is passed from runfiles and defaults to NA - the preferred method, for transparency,
-#'           is to use an interpreted comment inside the sql file.
-#' @param interpolate defaults to the value of \code{parent.frame()}. May be set to \code{FALSE} if
-#'        interpolation to be avoided, or to another environment to control the source of the used. This
-#'        can be useful if sqlhelper is used to run SQL from within another package, and you don't want
-#'        to interfere with \code{.GlobalEnv}.
-#' @return If the file contains more than one query, a list. Each element contains the results of
-#'        each query.
-#'
-#'        If the file contains a single query, the result of that query is returned.
-runfile <- function(fn,conn=NA,interpolate=parent.frame()){
-  sql <- read_sql_file(fn)
-
-  # A  connection name from the file takes priority over a parameter
-  if(is.na(sql$conn)==FALSE){
-    conn <- sql$conn
-  }
-  else{
-    conn <- conn
-  }
-
-  return(runqueries(sql$queries, conn_name = conn, interpolate=interpolate))
-}
-
 
 #' Execute a list of .sql files
 #'
@@ -176,7 +198,7 @@ runfile <- function(fn,conn=NA,interpolate=parent.frame()){
 #'
 #'   \item{\strong{An R object} (for files containing a single query).}{The
 #'   result of the query, e.g. a dataframe for a \code{SELECT} statement, or a
-#'   single element character vector for a \code{CREATE TABLE} statment.} }
+#'   single element character vector for a \code{CREATE TABLE} statement.} }
 #'
 #'   \code{runfiles()} will try to flatten the list intelligently so that you
 #'   don't have to name lots of containers that contain only one element to
@@ -185,59 +207,22 @@ runfile <- function(fn,conn=NA,interpolate=parent.frame()){
 #'
 #' @family SQL runners
 #' @export
-runfiles <- function(filenames,conn=NA,interpolate=parent.frame()){
-  results <- lapply(filenames,runfile,conn=conn, interpolate=interpolate)
-  names(results) <- gsub("\\.\\S+","",basename(filenames))
-  if(length(results)==1){
-    results <- results[[1]]
-  }
-  return(results)
+runfiles <- function(filenames,
+                     quotesql = TRUE,
+                     values = parent.frame(),
+                     execmethod = "get",
+                     geometry = NA,
+                     default_conn = live_connection( get_default_conn_name() ),
+                     include_params = FALSE){
+
+  sql <- purrr::map_dfc(filenames, read_sql)
+
+  runqueries(sql,
+             quotesql,
+             values,
+             execmethod,
+             geometry,
+             default_conn,
+             include_params)
 }
 
-#' Show to-be-executed SQL code
-#'
-#' Allows inspection of interpolated SQL before it is submitted to the database
-#'
-#' @param sql A character vector containing either sql file names or queries
-#' @param is.queries Are these queries or filenames? defaults to FALSE (i.e. filenames)
-#' @param interpolate defaults to the value of \code{parent.frame()}. May be set
-#'   to \code{FALSE} if interpolation to be avoided, or to another environment
-#'   to control the source of the used. This can be useful if \code{sqlhelper} is
-#'   used to run SQL from within another package, and you don't want to
-#'   interfere with \code{.GlobalEnv}.
-#' @param interpolate An env containing parameters to interpolate into the sql, or NULL
-#' @return \code{showsql} returns one of:
-#' \describe{
-#' \item{\strong{A list of lists} (for multiple files)}{The outer list contains one list for each file in filenames. Each inner list contains interpolated queries from that file.}
-#' \item{\strong{A list} (for single files containing several queries, or vectors of queries)}{Each element is an interpolated query.}
-#' \item{\strong{A single element character vector} (for single queries or files containing a single query).}{A single interpolated SQL query}
-#' }
-#'
-#' @family SQL runners
-#' @export
-#'
-showsql <- function(sql,is.queries=FALSE,interpolate=parent.frame()){
-  if(is.queries == FALSE){
-    filenames <- sql
-    sql <- lapply(sql,read_sql_file)
-    sql <- lapply(sql, function(sql){sql$queries})
-    names(sql) <- gsub("\\.\\S+","",basename(filenames))
-    if(is.environment(interpolate)==TRUE){
-      sql <- lapply(sql,function(x){
-        lapply(x,glue::glue,.envir=interpolate)
-      })
-    }
-  }
-  else{
-    if(is.environment(interpolate)==TRUE){
-      sql <- lapply(sql,glue::glue)
-    }
-  }
-
-  if(length(sql)==1){
-    return(sql[[1]])
-  }
-  else{
-    return(sql)
-  }
-}

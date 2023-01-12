@@ -4,10 +4,13 @@
     <loc>/404.html</loc>
   </url>
   <url>
-    <loc>/articles/configs.html</loc>
+    <loc>/articles/connections.html</loc>
   </url>
   <url>
     <loc>/articles/index.html</loc>
+  </url>
+  <url>
+    <loc>/articles/sqlhelper.html</loc>
   </url>
   <url>
     <loc>/authors.html</loc>
@@ -19,19 +22,28 @@
     <loc>/LICENSE.html</loc>
   </url>
   <url>
-    <loc>/reference/close_connections.html</loc>
+    <loc>/reference/add_connection.html</loc>
   </url>
   <url>
     <loc>/reference/combine_configs.html</loc>
   </url>
   <url>
-    <loc>/reference/connections_list.html</loc>
+    <loc>/reference/config_examples.html</loc>
   </url>
   <url>
-    <loc>/reference/driver.html</loc>
+    <loc>/reference/connect.html</loc>
   </url>
   <url>
-    <loc>/reference/get_all_configs.html</loc>
+    <loc>/reference/connection_info.html</loc>
+  </url>
+  <url>
+    <loc>/reference/disconnect.html</loc>
+  </url>
+  <url>
+    <loc>/reference/extract_quoted_strings.html</loc>
+  </url>
+  <url>
+    <loc>/reference/get_driver.html</loc>
   </url>
   <url>
     <loc>/reference/index.html</loc>
@@ -40,25 +52,25 @@
     <loc>/reference/interpolate_sql.html</loc>
   </url>
   <url>
-    <loc>/reference/is.connected.html</loc>
+    <loc>/reference/is_connected.html</loc>
   </url>
   <url>
     <loc>/reference/live_connection.html</loc>
   </url>
   <url>
-    <loc>/reference/not.connected.html</loc>
+    <loc>/reference/prepare_sql.html</loc>
   </url>
   <url>
-    <loc>/reference/nthofk.html</loc>
+    <loc>/reference/prune.html</loc>
   </url>
   <url>
-    <loc>/reference/read_config_file.html</loc>
+    <loc>/reference/read_configs.html</loc>
   </url>
   <url>
-    <loc>/reference/reconnect.html</loc>
+    <loc>/reference/read_sql.html</loc>
   </url>
   <url>
-    <loc>/reference/runfile.html</loc>
+    <loc>/reference/reinstate_quoted_strings.html</loc>
   </url>
   <url>
     <loc>/reference/runfiles.html</loc>
@@ -67,22 +79,16 @@
     <loc>/reference/runqueries.html</loc>
   </url>
   <url>
-    <loc>/reference/set_connections.html</loc>
-  </url>
-  <url>
-    <loc>/reference/showsql.html</loc>
+    <loc>/reference/set_default_conn_name.html</loc>
   </url>
   <url>
     <loc>/reference/sqlhelper.html</loc>
   </url>
   <url>
-    <loc>/reference/validate_all_configs.html</loc>
-  </url>
-  <url>
     <loc>/reference/validate_config.html</loc>
   </url>
   <url>
-    <loc>/reference/vinnthoffk.html</loc>
+    <loc>/reference/validate_configs.html</loc>
   </url>
   <url>
     <loc>/reference/yml2conn_str.html</loc>
