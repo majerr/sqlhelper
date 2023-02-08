@@ -57,10 +57,9 @@ assign("defaults",
 connect <- function(config_filename=NA, exclusive=FALSE){
   disconnect()
 
-  conf <- validate_configs(
-    read_configs( config_filename,
-                  exclusive )
-  )
+  conf <- read_configs( config_filename,
+                        exclusive ) |>
+    validate_configs()
 
   if( length(conf) ){
 

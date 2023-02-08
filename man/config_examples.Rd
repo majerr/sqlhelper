@@ -2,7 +2,7 @@
 % Please edit documentation in R/config_examples.R
 \name{config_examples}
 \alias{config_examples}
-\title{Examples of yaml configurations for databases}
+\title{Examples of yaml configurations for database connections}
 \usage{
 config_examples(filename = NA)
 }

@@ -7,11 +7,12 @@
 connection_info(name_str = ".*")
 }
 \arguments{
-\item{name_str}{A regular expression to be used identify connection names to
-include. The default ('.*') returns all of them.}
+\item{name_str}{A regular expression to be used to identify connection names
+to include. The default ('.*') returns all of them.}
 }
 \value{
-Null, or a tibble with 1 row per connection and the following fields:
+Null, or a tibble with 1 row per identified connection and the
+following fields:
 
 \describe{
 \item{name}{identifier (character)}

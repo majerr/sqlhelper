@@ -3,7 +3,7 @@
 \name{set_default_conn_name}
 \alias{set_default_conn_name}
 \alias{get_default_conn_name}
-\title{Set the name of the default connection to use}
+\title{Set/get the name of the default connection to use}
 \usage{
 set_default_conn_name(conn_name)
 
@@ -13,10 +13,9 @@ get_default_conn_name()
 \item{conn_name}{Character string. The name a connection}
 }
 \value{
-The name of the default connection
+\code{get} returns the name of the default connection; \code{set}
+returns \code{NULL}, invisibly.
 }
 \description{
-Set the name of the default connection to use
-
-Get the name of the default connection
+Set/get the name of the default connection to use
 }

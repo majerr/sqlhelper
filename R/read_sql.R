@@ -8,7 +8,7 @@
 #'  \item{quotesql}{"yes" or "no". Should parameterized character values be quoted for this query? Defaults to "yes".}
 #'  \item{interpolate}{"yes" or "no". Should this query be parameterized with values from R? Defaults to "yes".}
 #'  \item{execmethod}{The method to execute this query.
-#' One of "get" ([DBI::dbGetQuery()]), "execute" ([DBI::dbExecute()]), "sendq" ([DBI::dbSendQuery()]), "sends" ([DBI::dbSendStatement()]) or "spatial" ([sf:st_read()])}
+#' One of "get" ([DBI::dbGetQuery()]), "execute" ([DBI::dbExecute()]), "sendq" ([DBI::dbSendQuery()]), "sends" ([DBI::dbSendStatement()]) or "spatial" ([sf::st_read()])}
 #'  \item{geometry}{character. If `execmethod` is "spatial", which is the geometry column?}
 #'  \item{conn}{The name of the database connection to use for this query}
 #'  \item{sql}{The unparameterized sql query to be executed}

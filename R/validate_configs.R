@@ -1,11 +1,12 @@
 #' Apply validate_config to all connection configurations
 #'
-#' @param configs a configuration object returned by [read_all_configs]
+#' @param configs a configuration object returned by [read_configs]
 #'
 #' @return A list of valid configs, similar to one returned by [read_configs]
 #'
 #' @details Each configuration is passed to [validate_config]; invalid configs
 #'   are dropped with a warning
+#'
 #' @noRd
 validate_configs <- function(configs){
 

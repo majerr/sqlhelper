@@ -2,10 +2,11 @@
 #'
 #' Provides information about created connections.
 #'
-#' @param name_str A regular expression to be used identify connection names to
-#'   include. The default ('.*') returns all of them.
+#' @param name_str A regular expression to be used to identify connection names
+#'   to include. The default ('.*') returns all of them.
 #'
-#' @return Null, or a tibble with 1 row per connection and the following fields:
+#' @return Null, or a tibble with 1 row per identified connection and the
+#'   following fields:
 #'
 #'\describe{
 #'  \item{name}{identifier (character)}

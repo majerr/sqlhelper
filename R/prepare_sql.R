@@ -1,10 +1,10 @@
 #' prepare to queries and meta data for running
 #'
 #' @param sql An optionally-named list or character vector containing sql
-#'   commands, or a tibble returned by [read_sql_file()]
+#'   commands, or a tibble returned by [read_sql()]
 #' @param quotesql "yes" or "no" - should interpolated characters be quoted by
 #'   default?
-#' @param interpolate Should the SQL be parameterized from R? Defaults to the
+#' @param values Should the SQL be parameterized from R? Defaults to the
 #'   value of `parent.frame()`. Pass any object that is not an environment
 #'   (e.g. "no" or FALSE) if interpolation is to be skipped, or another
 #'   environment containing values to interpolate to avoid using
@@ -14,7 +14,7 @@
 #'   [DBI::dbSendQuery()]; "spatial" means [sf::st_read()].
 #' @param geometry If `execmethod` is "spatial", which column contains the
 #'   geometry? (ignored if `execmethod` is not spatial)
-#' @param conn Either the name of a sqlhelper connection, or a database
+#' @param default_conn Either the name of a sqlhelper connection, or a database
 #'   connection returned by [DBI::dbConnect()], or NA
 #' @export
 prepare_sql <- function(sql,

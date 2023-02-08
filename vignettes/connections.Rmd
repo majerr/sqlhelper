@@ -122,10 +122,10 @@ After `connect()` has been called, you may inspect the created connections with 
 ```{r}
 library(sqlhelper)
 
-readLines("resources/sqlhelper_db_conf.yml") |>
+readLines("configs/sqlhelper_db_conf.yml") |>
   writeLines()
 
-connect("resources/sqlhelper_db_conf.yml", exclusive = TRUE)
+connect("configs/sqlhelper_db_conf.yml", exclusive = TRUE)
 
 connection_info()
 ```
@@ -184,7 +184,7 @@ connection_info()
 
 if(not_connected(conn_name)){
   message(glue::glue("{conn_name} is not available, reconnecting..."))
-  connect("resources/sqlhelper_db_conf.yml", exclusive = TRUE)
+  connect("configs/sqlhelper_db_conf.yml", exclusive = TRUE)
 }
 
 connection_info()

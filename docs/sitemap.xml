@@ -1,96 +1,99 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>/404.html</loc>
+    <loc>https://majr-red.github.io/sqlhelper/404.html</loc>
   </url>
   <url>
-    <loc>/articles/connections.html</loc>
+    <loc>https://majr-red.github.io/sqlhelper/articles/connections.html</loc>
   </url>
   <url>
-    <loc>/articles/index.html</loc>
+    <loc>https://majr-red.github.io/sqlhelper/articles/index.html</loc>
   </url>
   <url>
-    <loc>/articles/sqlhelper.html</loc>
+    <loc>https://majr-red.github.io/sqlhelper/articles/sqlhelper.html</loc>
   </url>
   <url>
-    <loc>/authors.html</loc>
+    <loc>https://majr-red.github.io/sqlhelper/articles/sql_execution.html</loc>
   </url>
   <url>
-    <loc>/index.html</loc>
+    <loc>https://majr-red.github.io/sqlhelper/authors.html</loc>
   </url>
   <url>
-    <loc>/LICENSE.html</loc>
+    <loc>https://majr-red.github.io/sqlhelper/index.html</loc>
   </url>
   <url>
-    <loc>/reference/add_connection.html</loc>
+    <loc>https://majr-red.github.io/sqlhelper/LICENSE.html</loc>
   </url>
   <url>
-    <loc>/reference/combine_configs.html</loc>
+    <loc>https://majr-red.github.io/sqlhelper/reference/add_connection.html</loc>
   </url>
   <url>
-    <loc>/reference/config_examples.html</loc>
+    <loc>https://majr-red.github.io/sqlhelper/reference/combine_configs.html</loc>
   </url>
   <url>
-    <loc>/reference/connect.html</loc>
+    <loc>https://majr-red.github.io/sqlhelper/reference/config_examples.html</loc>
   </url>
   <url>
-    <loc>/reference/connection_info.html</loc>
+    <loc>https://majr-red.github.io/sqlhelper/reference/connect.html</loc>
   </url>
   <url>
-    <loc>/reference/disconnect.html</loc>
+    <loc>https://majr-red.github.io/sqlhelper/reference/connection_info.html</loc>
   </url>
   <url>
-    <loc>/reference/extract_quoted_strings.html</loc>
+    <loc>https://majr-red.github.io/sqlhelper/reference/disconnect.html</loc>
   </url>
   <url>
-    <loc>/reference/get_driver.html</loc>
+    <loc>https://majr-red.github.io/sqlhelper/reference/extract_quoted_strings.html</loc>
   </url>
   <url>
-    <loc>/reference/index.html</loc>
+    <loc>https://majr-red.github.io/sqlhelper/reference/get_driver.html</loc>
   </url>
   <url>
-    <loc>/reference/interpolate_sql.html</loc>
+    <loc>https://majr-red.github.io/sqlhelper/reference/index.html</loc>
   </url>
   <url>
-    <loc>/reference/is_connected.html</loc>
+    <loc>https://majr-red.github.io/sqlhelper/reference/interpolate_sql.html</loc>
   </url>
   <url>
-    <loc>/reference/live_connection.html</loc>
+    <loc>https://majr-red.github.io/sqlhelper/reference/is_connected.html</loc>
   </url>
   <url>
-    <loc>/reference/prepare_sql.html</loc>
+    <loc>https://majr-red.github.io/sqlhelper/reference/live_connection.html</loc>
   </url>
   <url>
-    <loc>/reference/prune.html</loc>
+    <loc>https://majr-red.github.io/sqlhelper/reference/prepare_sql.html</loc>
   </url>
   <url>
-    <loc>/reference/read_configs.html</loc>
+    <loc>https://majr-red.github.io/sqlhelper/reference/prune.html</loc>
   </url>
   <url>
-    <loc>/reference/read_sql.html</loc>
+    <loc>https://majr-red.github.io/sqlhelper/reference/read_configs.html</loc>
   </url>
   <url>
-    <loc>/reference/reinstate_quoted_strings.html</loc>
+    <loc>https://majr-red.github.io/sqlhelper/reference/read_sql.html</loc>
   </url>
   <url>
-    <loc>/reference/runfiles.html</loc>
+    <loc>https://majr-red.github.io/sqlhelper/reference/reinstate_quoted_strings.html</loc>
   </url>
   <url>
-    <loc>/reference/runqueries.html</loc>
+    <loc>https://majr-red.github.io/sqlhelper/reference/runfiles.html</loc>
   </url>
   <url>
-    <loc>/reference/set_default_conn_name.html</loc>
+    <loc>https://majr-red.github.io/sqlhelper/reference/runqueries.html</loc>
   </url>
   <url>
-    <loc>/reference/sqlhelper.html</loc>
+    <loc>https://majr-red.github.io/sqlhelper/reference/set_default_conn_name.html</loc>
   </url>
   <url>
-    <loc>/reference/validate_config.html</loc>
+    <loc>https://majr-red.github.io/sqlhelper/reference/sqlhelper.html</loc>
   </url>
   <url>
-    <loc>/reference/validate_configs.html</loc>
+    <loc>https://majr-red.github.io/sqlhelper/reference/validate_config.html</loc>
   </url>
   <url>
-    <loc>/reference/yml2conn_str.html</loc>
+    <loc>https://majr-red.github.io/sqlhelper/reference/validate_configs.html</loc>
+  </url>
+  <url>
+    <loc>https://majr-red.github.io/sqlhelper/reference/yml2conn_str.html</loc>
   </url>
 </urlset>
