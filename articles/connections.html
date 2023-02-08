@@ -45,6 +45,7 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/connections.html">Managing Connections</a>
+    <a class="dropdown-item" href="../articles/sql_execution.html">Executing SQL</a>
   </div>
 </li>
       </ul>
@@ -203,7 +204,7 @@ created connections with <code><a href="../reference/connection_info.html">conne
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://majr-red.github.io/sqlhelper/">sqlhelper</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/readLines.html" class="external-link">readLines</a></span><span class="op">(</span><span class="st">"resources/sqlhelper_db_conf.yml"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/readLines.html" class="external-link">readLines</a></span><span class="op">(</span><span class="st">"configs/sqlhelper_db_conf.yml"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/writeLines.html" class="external-link">writeLines</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; simple_sqlite:</span></span>
 <span><span class="co">#&gt;   driver_type: sqlite</span></span>
@@ -219,7 +220,7 @@ created connections with <code><a href="../reference/connection_info.html">conne
 <span><span class="co">#&gt;   connection:</span></span>
 <span><span class="co">#&gt;     Server: ":memory:"</span></span>
 <span></span>
-<span><span class="fu"><a href="../reference/connect.html">connect</a></span><span class="op">(</span><span class="st">"resources/sqlhelper_db_conf.yml"</span>, exclusive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/connect.html">connect</a></span><span class="op">(</span><span class="st">"configs/sqlhelper_db_conf.yml"</span>, exclusive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/connection_info.html">connection_info</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 7</span></span></span>
@@ -327,7 +328,7 @@ config files.</p>
 <span></span>
 <span><span class="kw">if</span><span class="op">(</span><span class="fu"><a href="../reference/is_connected.html">not_connected</a></span><span class="op">(</span><span class="va">conn_name</span><span class="op">)</span><span class="op">)</span><span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">message</a></span><span class="op">(</span><span class="fu">glue</span><span class="fu">::</span><span class="fu"><a href="https://glue.tidyverse.org/reference/glue.html" class="external-link">glue</a></span><span class="op">(</span><span class="st">"{conn_name} is not available, reconnecting..."</span><span class="op">)</span><span class="op">)</span></span>
-<span>  <span class="fu"><a href="../reference/connect.html">connect</a></span><span class="op">(</span><span class="st">"resources/sqlhelper_db_conf.yml"</span>, exclusive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="../reference/connect.html">connect</a></span><span class="op">(</span><span class="st">"configs/sqlhelper_db_conf.yml"</span>, exclusive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span><span class="co">#&gt; simple_sqlite is not available, reconnecting...</span></span>
 <span></span>

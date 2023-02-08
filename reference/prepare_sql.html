@@ -28,6 +28,7 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/connections.html">Managing Connections</a>
+    <a class="dropdown-item" href="../articles/sql_execution.html">Executing SQL</a>
   </div>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
@@ -65,12 +66,20 @@
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>sql</dt>
 <dd><p>An optionally-named list or character vector containing sql
-commands, or a tibble returned by <code>read_sql_file()</code></p></dd>
+commands, or a tibble returned by <code><a href="read_sql.html">read_sql()</a></code></p></dd>
 
 
 <dt>quotesql</dt>
 <dd><p>"yes" or "no" - should interpolated characters be quoted by
 default?</p></dd>
+
+
+<dt>values</dt>
+<dd><p>Should the SQL be parameterized from R? Defaults to the
+value of <code><a href="https://rdrr.io/r/base/sys.parent.html" class="external-link">parent.frame()</a></code>. Pass any object that is not an environment
+(e.g. "no" or FALSE) if interpolation is to be skipped, or another
+environment containing values to interpolate to avoid using
+<code>.GlobalEnv</code>.</p></dd>
 
 
 <dt>execmethod</dt>
@@ -84,15 +93,7 @@ used to execute the query? "get" means <code><a href="https://dbi.r-dbi.org/refe
 geometry? (ignored if <code>execmethod</code> is not spatial)</p></dd>
 
 
-<dt>interpolate</dt>
-<dd><p>Should the SQL be parameterized from R? Defaults to the
-value of <code><a href="https://rdrr.io/r/base/sys.parent.html" class="external-link">parent.frame()</a></code>. Pass any object that is not an environment
-(e.g. "no" or FALSE) if interpolation is to be skipped, or another
-environment containing values to interpolate to avoid using
-<code>.GlobalEnv</code>.</p></dd>
-
-
-<dt>conn</dt>
+<dt>default_conn</dt>
 <dd><p>Either the name of a sqlhelper connection, or a database
 connection returned by <code><a href="https://dbi.r-dbi.org/reference/dbConnect.html" class="external-link">DBI::dbConnect()</a></code>, or NA</p></dd>
 

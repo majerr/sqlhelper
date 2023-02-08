@@ -45,6 +45,7 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/connections.html">Managing Connections</a>
+    <a class="dropdown-item" href="../articles/sql_execution.html">Executing SQL</a>
   </div>
 </li>
       </ul>
@@ -73,19 +74,119 @@
 
     
     
+<div class="section level2">
+<h2 id="quickstart">Quickstart<a class="anchor" aria-label="anchor" href="#quickstart"></a>
+</h2>
+<p>Specify your connections to databases in a yaml file:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://majr-red.github.io/sqlhelper/">sqlhelper</a></span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># load sqlhelper</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://majr-red.github.io/sqlhelper/">sqlhelper</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># If your admin has kindly provided a site-wide config, or you have set one up </span></span>
+<span><span class="co"># in your home directory, you can connect to your all your databases with:</span></span>
+<span><span class="co"># connect()</span></span>
+<span></span>
+<span><span class="co"># Otherwise, you'll need to provide a config file:</span></span>
+<span><span class="fu"><a href="../reference/connect.html">connect</a></span><span class="op">(</span><span class="st">"configs/sqlhelper_db_conf.yml"</span><span class="op">)</span></span></code></pre></div>
+<p><a href="#managing-connections">Managing Connections</a> (below) and
+<code><a href="../articles/connections.html">vignette("connections")</a></code> explain how to specify
+connections.</p>
+<p>For data wrangling, you probably want to write SQL queries in their
+own files and use <code><a href="../reference/runfiles.html">runfiles()</a></code>:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="co"># write some queries in sql files</span></span>
+<span><span class="va">files_to_run</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"path/to/create_temporary_dataset.sql"</span>,</span>
+<span>                     <span class="st">"path/containing/final_merge.sql"</span>,</span>
+<span>                     <span class="st">"folder/enclosing/extract_subsets.sql"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Run the queries and save the results</span></span>
+<span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runfiles.html">runfiles</a></span><span class="op">(</span><span class="va">files_to_run</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Inspect the results. By default, runfiles() returns a list of the results of </span></span>
+<span><span class="co"># each query in the files you provided. Results of a specific query can be accessed by the</span></span>
+<span><span class="co"># the name of the query. See the article 'Executing SQL' for more on named queries.</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">results</span><span class="op">$</span><span class="va">my_extracted_subset</span><span class="op">)</span></span></code></pre></div>
+<p>For exploratory work you might just want to run some short queries;
+in this case <code><a href="../reference/runqueries.html">runqueries()</a></code> is for you:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># write some queries</span></span>
+<span><span class="va">my_queries</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>  usedb<span class="op">=</span><span class="st">"use COVID19"</span>, </span>
+<span>  showtabs<span class="op">=</span><span class="st">"select * from INFORMATION_SCHEMA.TABLES"</span> <span class="co"># We're using SQLServer</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Run the queries and save the results</span></span>
+<span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runqueries.html">runqueries</a></span><span class="op">(</span><span class="va">my_queries</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Inspect the results. runqueries() returns a list with one element per query.</span></span>
+<span><span class="co"># You can access them using the names of the queries:</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">results</span><span class="op">$</span><span class="va">showtabs</span><span class="op">)</span></span></code></pre></div>
+</div>
 <div class="section level2">
 <h2 id="managing-connections">Managing Connections<a class="anchor" aria-label="anchor" href="#managing-connections"></a>
 </h2>
+<p>Connections are configured with <a href="https://yaml.org/" class="external-link">YAML</a>.
+An minimal config file could contain:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">my_sqlite_conn</span><span class="kw">:</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">driver_type</span><span class="kw">:</span><span class="at"> sqlite</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">connection</span><span class="kw">:</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">Server</span><span class="kw">:</span><span class="at"> </span><span class="st">":memory:"</span></span></code></pre></div>
+<p>See <code><a href="../articles/connections.html">vignette("connections")</a></code> for complete details.</p>
 </div>
 <div class="section level2">
 <h2 id="running-queries">Running queries<a class="anchor" aria-label="anchor" href="#running-queries"></a>
 </h2>
+<p>Queries in SQL files can be named using comments, and SQL can be
+interpolated with R values.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://majr-red.github.io/sqlhelper/">sqlhelper</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/connect.html">connect</a></span><span class="op">(</span><span class="st">"configs/sqlhelper_db_conf.yml"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">sqlite_con</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/live_connection.html">live_connection</a></span><span class="op">(</span><span class="st">"simple_sqlite"</span><span class="op">)</span></span>
+<span><span class="fu">DBI</span><span class="fu">::</span><span class="fu"><a href="https://dbi.r-dbi.org/reference/dbWriteTable.html" class="external-link">dbWriteTable</a></span><span class="op">(</span><span class="va">sqlite_con</span>,</span>
+<span>                  name <span class="op">=</span> <span class="st">"IRIS"</span>, </span>
+<span>                  value <span class="op">=</span> <span class="va">iris</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">n_longest_petals</span> <span class="op">&lt;-</span> <span class="fl">6</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/readLines.html" class="external-link">readLines</a></span><span class="op">(</span><span class="st">"sql/example.sql"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/writeLines.html" class="external-link">writeLines</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; -- qname = how_many_irises</span></span>
+<span><span class="co">#&gt; SELECT count(*) as N FROM IRIS;</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; -- qname = n_longest_setosa_petal_lengths</span></span>
+<span><span class="co">#&gt; SELECT *</span></span>
+<span><span class="co">#&gt; FROM (SELECT *</span></span>
+<span><span class="co">#&gt;       FROM IRIS</span></span>
+<span><span class="co">#&gt;       WHERE Species = 'setosa'</span></span>
+<span><span class="co">#&gt;       ORDER BY [Petal.Length] DESC)</span></span>
+<span><span class="co">#&gt; LIMIT {n_longest_petals}</span></span>
+<span></span>
+<span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runfiles.html">runfiles</a></span><span class="op">(</span><span class="st">"sql/example.sql"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">result</span><span class="op">$</span><span class="va">how_many_irises</span></span>
+<span><span class="co">#&gt;     N</span></span>
+<span><span class="co">#&gt; 1 150</span></span>
+<span></span>
+<span><span class="va">result</span><span class="op">$</span><span class="va">n_longest_setosa_petal_lengths</span></span>
+<span><span class="co">#&gt;   Sepal.Length Sepal.Width Petal.Length Petal.Width Species</span></span>
+<span><span class="co">#&gt; 1          4.8         3.4          1.9         0.2  setosa</span></span>
+<span><span class="co">#&gt; 2          5.1         3.8          1.9         0.4  setosa</span></span>
+<span><span class="co">#&gt; 3          5.4         3.9          1.7         0.4  setosa</span></span>
+<span><span class="co">#&gt; 4          5.7         3.8          1.7         0.3  setosa</span></span>
+<span><span class="co">#&gt; 5          5.4         3.4          1.7         0.2  setosa</span></span>
+<span><span class="co">#&gt; 6          5.1         3.3          1.7         0.5  setosa</span></span></code></pre></div>
+<p>Several aspects of SQL execution can also be controlled this way. See
+<code><a href="../articles/sql_execution.html">vignette("sql_execution")</a></code> for complete details.</p>
 </div>
 <div class="section level2">
 <h2 id="getting-information">Getting information<a class="anchor" aria-label="anchor" href="#getting-information"></a>
 </h2>
+<p>Several functions provide information about connections and the
+process of reading and preparing sql.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>

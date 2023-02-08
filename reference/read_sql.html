@@ -28,6 +28,7 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/connections.html">Managing Connections</a>
+    <a class="dropdown-item" href="../articles/sql_execution.html">Executing SQL</a>
   </div>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
@@ -75,7 +76,7 @@
 
 <dt>execmethod</dt>
 <dd><p>The method to execute this query.
-One of "get" (<code><a href="https://dbi.r-dbi.org/reference/dbGetQuery.html" class="external-link">DBI::dbGetQuery()</a></code>), "execute" (<code><a href="https://dbi.r-dbi.org/reference/dbExecute.html" class="external-link">DBI::dbExecute()</a></code>), "sendq" (<code><a href="https://dbi.r-dbi.org/reference/dbSendQuery.html" class="external-link">DBI::dbSendQuery()</a></code>), "sends" (<code><a href="https://dbi.r-dbi.org/reference/dbSendStatement.html" class="external-link">DBI::dbSendStatement()</a></code>) or "spatial" (<code>sf:st_read()</code>)</p></dd>
+One of "get" (<code><a href="https://dbi.r-dbi.org/reference/dbGetQuery.html" class="external-link">DBI::dbGetQuery()</a></code>), "execute" (<code><a href="https://dbi.r-dbi.org/reference/dbExecute.html" class="external-link">DBI::dbExecute()</a></code>), "sendq" (<code><a href="https://dbi.r-dbi.org/reference/dbSendQuery.html" class="external-link">DBI::dbSendQuery()</a></code>), "sends" (<code><a href="https://dbi.r-dbi.org/reference/dbSendStatement.html" class="external-link">DBI::dbSendStatement()</a></code>) or "spatial" (<code><a href="https://r-spatial.github.io/sf/reference/st_read.html" class="external-link">sf::st_read()</a></code>)</p></dd>
 
 <dt>geometry</dt>
 <dd><p>character. If <code>execmethod</code> is "spatial", which is the geometry column?</p></dd>
