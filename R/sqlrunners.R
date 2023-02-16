@@ -217,6 +217,8 @@ runfiles <- function(filenames,
 
   sql <- purrr::map_dfc(filenames, read_sql)
 
+  print(names(sql))
+
   runqueries(sql,
              quotesql,
              values,

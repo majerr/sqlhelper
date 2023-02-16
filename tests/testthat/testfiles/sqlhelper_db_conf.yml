@@ -1,13 +1,13 @@
 # Local folder
 
 single_mem:
-  server_type: sqlite
+  driver_type: sqlite
   connection:
     Server: ":memory:"
 
 
 pool_mem:
-  server_type: sqlite
+  driver_type: sqlite
   pool: yes
   connection:
     Server: ":memory:"

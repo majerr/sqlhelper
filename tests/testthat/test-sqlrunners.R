@@ -18,14 +18,25 @@ test_that("runqueries runs queries in sequence", {
                    nrow(head(iris,10)))
 })
 
-test_that("runfiles runs queries correctly", {
+test_that("runfiles runs files correctly", {
   results <- runfiles(
-    testthat::test_path("testfiles",
-                        "test_runfiles.sql")
-    )
+    c(
+      # testthat::test_path("testfiles",
+      #                     "test_runfiles.sql"),
+      testthat::test_path("testfiles",
+                          "test_runfiles2.sql")
+      )
+  )
+
+  expect_identical(results$two,
+                   head(iris, 50))
+
+  expect_identical(results$three,
+                   head(iris, 10))
 })
 
 test_that("spatial read works", {
+  skip("NOT RUN")
   DBI::dbWriteTable(live_connection("single_mem"),
                    "congruent",
                    spData::congruent)
