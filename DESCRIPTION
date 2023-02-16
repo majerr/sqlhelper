@@ -15,7 +15,7 @@ Imports:
     methods,
     tibble,
     tidyr,
-    purrr,
+    purrr >= 1.0.0,
     sf,
     spData,
     rlang

@@ -21,18 +21,18 @@ test_that("runqueries runs queries in sequence", {
 test_that("runfiles runs files correctly", {
   results <- runfiles(
     c(
-      # testthat::test_path("testfiles",
-      #                     "test_runfiles.sql"),
+      testthat::test_path("testfiles",
+                           "test_runfiles.sql"),
       testthat::test_path("testfiles",
                           "test_runfiles2.sql")
       )
   )
 
   expect_identical(results$two,
-                   head(iris, 50))
+                   head(iris, 50) |> dplyr::mutate_if(is.factor,as.character))
 
   expect_identical(results$three,
-                   head(iris, 10))
+                   head(iris, 10) |> dplyr::mutate_if(is.factor,as.character))
 })
 
 test_that("spatial read works", {
