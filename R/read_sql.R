@@ -15,7 +15,6 @@
 #'  \item{filename}{The value of `file_name`}
 #' }
 #'
-#' @examples
 #'
 #' @export
 read_sql <- function(file_name)  {

@@ -10,7 +10,7 @@ read_sql(file_name)
 \item{file_name}{Full name and path of file to read}
 }
 \value{
-A tibble containing 1 row per query and the following fields:
+A tibble containing 1 row per query with the following fields:
 \describe{
 \item{qname}{character. A name for this query}
 \item{quotesql}{"yes" or "no". Should parameterized character values be quoted for this query? Defaults to "yes".}

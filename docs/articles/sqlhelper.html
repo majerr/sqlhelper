@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">sqlhelper</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.2</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -48,12 +48,22 @@
     <a class="dropdown-item" href="../articles/sql_execution.html">Executing SQL</a>
   </div>
 </li>
+<li class="nav-item">
+  <a class="nav-link" href="../news/index.html">Changelog</a>
+</li>
       </ul>
 <form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
 </form>
 
-      <ul class="navbar-nav"></ul>
+      <ul class="navbar-nav">
+<li class="nav-item">
+  <a class="external-link nav-link" href="https://github.com/majr-red/sqlhelper/" aria-label="github">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
 </div>
 
     
@@ -68,7 +78,7 @@
       <img src="" class="logo" alt=""><h1>sqlhelper</h1>
             
       
-      
+      <small class="dont-index">Source: <a href="https://github.com/majr-red/sqlhelper/blob/HEAD/vignettes/sqlhelper.Rmd" class="external-link"><code>vignettes/sqlhelper.Rmd</code></a></small>
       <div class="d-none name"><code>sqlhelper.Rmd</code></div>
     </div>
 
@@ -77,8 +87,7 @@
 <div class="section level2">
 <h2 id="quickstart">Quickstart<a class="anchor" aria-label="anchor" href="#quickstart"></a>
 </h2>
-<p>For data wrangling, you probably want to write SQL queries in their
-own files and use <code><a href="../reference/runfiles.html">runfiles()</a></code>:</p>
+<p>Specify your connections to databases in a yaml file:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># load sqlhelper</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://majr-red.github.io/sqlhelper/">sqlhelper</a></span><span class="op">)</span></span>
@@ -88,9 +97,14 @@ own files and use <code><a href="../reference/runfiles.html">runfiles()</a></cod
 <span><span class="co"># connect()</span></span>
 <span></span>
 <span><span class="co"># Otherwise, you'll need to provide a config file:</span></span>
-<span><span class="co"># See the article 'Managing Connections' for details of what to put in it.</span></span>
-<span><span class="fu"><a href="../reference/connect.html">connect</a></span><span class="op">(</span><span class="st">"configs/sqlhelper_db_conf.yml"</span><span class="op">)</span></span>
-<span></span>
+<span><span class="fu"><a href="../reference/connect.html">connect</a></span><span class="op">(</span><span class="st">"configs/sqlhelper_db_conf.yml"</span><span class="op">)</span></span></code></pre></div>
+<p><a href="#managing-connections">Managing Connections</a> (below) and
+<code><a href="../articles/connections.html">vignette("connections")</a></code> explain how to specify
+connections.</p>
+<p>For data wrangling, you probably want to write SQL queries in their
+own files and use <code><a href="../reference/runfiles.html">runfiles()</a></code>:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
 <span><span class="co"># write some queries in sql files</span></span>
 <span><span class="va">files_to_run</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"path/to/create_temporary_dataset.sql"</span>,</span>
 <span>                     <span class="st">"path/containing/final_merge.sql"</span>,</span>
@@ -106,7 +120,7 @@ own files and use <code><a href="../reference/runfiles.html">runfiles()</a></cod
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">results</span><span class="op">$</span><span class="va">my_extracted_subset</span><span class="op">)</span></span></code></pre></div>
 <p>For exploratory work you might just want to run some short queries;
 in this case <code><a href="../reference/runqueries.html">runqueries()</a></code> is for you:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># write some queries</span></span>
 <span><span class="va">my_queries</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  usedb<span class="op">=</span><span class="st">"use COVID19"</span>, </span>
@@ -125,10 +139,10 @@ in this case <code><a href="../reference/runqueries.html">runqueries()</a></code
 </h2>
 <p>Connections are configured with <a href="https://yaml.org/" class="external-link">YAML</a>.
 An minimal config file could contain:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">my_sqlite_conn</span><span class="kw">:</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">driver_type</span><span class="kw">:</span><span class="at"> sqlite</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">connection</span><span class="kw">:</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">Server</span><span class="kw">:</span><span class="at"> </span><span class="st">":memory:"</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">my_sqlite_conn</span><span class="kw">:</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">driver_type</span><span class="kw">:</span><span class="at"> sqlite</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">connection</span><span class="kw">:</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">Server</span><span class="kw">:</span><span class="at"> </span><span class="st">":memory:"</span></span></code></pre></div>
 <p>See <code><a href="../articles/connections.html">vignette("connections")</a></code> for complete details.</p>
 </div>
 <div class="section level2">
@@ -136,7 +150,7 @@ An minimal config file could contain:</p>
 </h2>
 <p>Queries in SQL files can be named using comments, and SQL can be
 interpolated with R values.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://majr-red.github.io/sqlhelper/">sqlhelper</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/connect.html">connect</a></span><span class="op">(</span><span class="st">"configs/sqlhelper_db_conf.yml"</span><span class="op">)</span></span>

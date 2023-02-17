@@ -2,7 +2,7 @@
 title: "Executing SQL"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{sql_execution}
+  %\VignetteIndexEntry{Executing SQL}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

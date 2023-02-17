@@ -2,7 +2,7 @@
 % Please edit documentation in R/sqlrunners.R
 \name{runfiles}
 \alias{runfiles}
-\title{Execute a list of .sql files}
+\title{Read, prepare and execute .SQL files}
 \usage{
 runfiles(
   filenames,
@@ -14,106 +14,6 @@ runfiles(
   include_params = FALSE
 )
 }
-\arguments{
-\item{filenames}{A character vector containing your sql file names, including
-paths if they are not in the working directory}
-
-\item{db}{Defaults to 'cds' which is the only option on the DAP
-Although you \emph{can} specify \code{db} as a parameter, the preferred way is
-to include a \verb{-- db=<dbname>} comment in your sql file. See details.}
-
-\item{interpolate}{defaults to the value of \code{parent.frame()}. May be set
-to \code{FALSE} if interpolation to be avoided, or to another environment
-to control the source of the used. This can be useful if \code{sqlhelper} is
-used to run SQL from within another package, and you don't want to
-interfere with \code{.GlobalEnv}. See details.}
-}
-\value{
-Depending on the input, \code{runfiles} returns one of:
-
-\describe{
-
-\item{\strong{A list of lists} (for multiple files)}{The outer list
-contains one list for each file in filenames. Each inner list is named with
-the file basename and contains the results of each query from that file.}
-
-\item{\strong{A list} (for a single file containing several queries)}{Each
-element is the result of a query.}
-
-\item{\strong{An R object} (for files containing a single query).}{The
-result of the query, e.g. a dataframe for a \code{SELECT} statement, or a
-single element character vector for a \code{CREATE TABLE} statement.} }
-
-\code{runfiles()} will try to flatten the list intelligently so that you
-don't have to name lots of containers that contain only one element to
-inspect your results. But this may mean that you get a dataframe where you
-were expecting a list, e.g. if your file contains only one query.
-}
 \description{
-Accepts a character vector of SQL file names and runs each one on either hive
-or postgresql.
+Accepts a character vector of SQL file names and attempts to execute each one.
 }
-\details{
-Before queries are sent to the database for execution,
-\code{runfiles} interprets comments and parameterizes queries.
-
-\strong{Comment interpretation:}
-
-\code{sqlhelper} can extract parameters from two kinds of SQL comments. Both
-must occur on a line by themselves.
-
-\describe{
-
-\item{\code{-- db=cds}}{The \code{db} parameter is legacy from previous versions of the package,
-where multiple databases were available.
-For use on the DAP, 'cds' is the only accepted value. Case insensitive. Use this
-once before the first query in the file. Don't quote the parameter! For example,
-use \code{-- db=cds}, NOT \code{-- db="cds"}.}
-
-\item{\code{-- qname=<a_name_for_this_query>}}{The \code{qname} parameter
-assigns a name to each query, which can then be used to access the result
-of that query. Don't quote the parameter! For example,
-if your query is called create_tab, use \code{-- qname=create_tab}, NOT \code{-- qname="create_tab"}.}
-
-}
-
-\strong{Query parameterization:}
-
-Queries may be parameterized with values from the R. In fact you may run
-arbitrary R code to parameterize your queries. Parameters are enclosed in
-braces (\code{{...}}). So if you have defined a parameter \code{max_rows}
-in R:
-
-\code{max_rows <- 10}
-
-You might use it in your SQLServer code as part of a TOP clause to get 10 rows of a
-table:
-
-\code{SELECT TOP {max_rows} * FROM mytable}
-
-Before your query is submitted to the server, it will be parameterized to:
-
-\code{SELECT TOP 10 * FROM mytable}
-
-By default, parameters are searched for from the package up to the global
-environment, so if you have defined your parameters globally, they will be
-found. You might not always want this though. For example, if you are
-calling \code{runfiles} to run parameterized SQL from within a package, you
-shouldn't interfere with your user's global environment. In this case you
-will want to pass in an environment containing the required parameters. In this
-case use the \code{interpolate} argument:
-
-\preformatted{
-  >param_env <- new.env()
-  >param_env$max_rows <- 10
-  >runfiles("my_queries.sql", interpolate=param_env)
-  }
-
-If you want to avoid parameterization from R altogether, set the
-\code{interpolate} parameter to \code{FALSE}.
-}
-\seealso{
-Other SQL runners: 
-\code{\link{runqueries}()}
-}
-\concept{SQL runners}

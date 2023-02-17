@@ -50,8 +50,5 @@ Accepts a character vector of SQL queries and runs each one
 }
 \seealso{
 \code{\link{runfiles}}
-
-Other SQL runners: 
-\code{\link{runfiles}()}
 }
 \concept{SQL runners}
