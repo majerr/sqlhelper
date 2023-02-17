@@ -215,8 +215,10 @@ runfiles <- function(filenames,
                      default_conn = live_connection( get_default_conn_name() ),
                      include_params = FALSE){
 
-  sql <- purrr::map(filenames, read_sql) |>
-    purrr::list_rbind()
+  sql <- do.call(
+    rbind,
+    lapply(filenames, read_sql)
+  )
 
   runqueries(sql,
              quotesql,

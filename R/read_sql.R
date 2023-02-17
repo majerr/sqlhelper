@@ -2,7 +2,7 @@
 #'
 #' @param file_name Full name and path of file to read
 #'
-#' @return A tibble containing 1 row per query and the following fields:
+#' @return A tibble containing 1 row per query with the following fields:
 #' \describe{
 #'  \item{qname}{character. A name for this query}
 #'  \item{quotesql}{"yes" or "no". Should parameterized character values be quoted for this query? Defaults to "yes".}
@@ -14,6 +14,8 @@
 #'  \item{sql}{The unparameterized sql query to be executed}
 #'  \item{filename}{The value of `file_name`}
 #' }
+#'
+#' @examples
 #'
 #' @export
 read_sql <- function(file_name)  {
