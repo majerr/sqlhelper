@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">sqlhelper</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.2</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -48,12 +48,22 @@
     <a class="dropdown-item" href="../articles/sql_execution.html">Executing SQL</a>
   </div>
 </li>
+<li class="nav-item">
+  <a class="nav-link" href="../news/index.html">Changelog</a>
+</li>
       </ul>
 <form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
 </form>
 
-      <ul class="navbar-nav"></ul>
+      <ul class="navbar-nav">
+<li class="nav-item">
+  <a class="external-link nav-link" href="https://github.com/majr-red/sqlhelper/" aria-label="github">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
 </div>
 
     
@@ -68,7 +78,7 @@
       <img src="" class="logo" alt=""><h1>Managing Connections</h1>
             
       
-      
+      <small class="dont-index">Source: <a href="https://github.com/majr-red/sqlhelper/blob/HEAD/vignettes/connections.Rmd" class="external-link"><code>vignettes/connections.Rmd</code></a></small>
       <div class="d-none name"><code>connections.Rmd</code></div>
     </div>
 
@@ -117,7 +127,7 @@ is required. Current options are:</p>
 </ul>
 <p>The <strong>pool</strong> line determines whether a single connection
 is required (as returned by <code><a href="https://dbi.r-dbi.org/reference/dbConnect.html" class="external-link">DBI::dbConnect()</a></code>) or a pool of
-connections (as returned by <code><a href="https://rdrr.io/pkg/pool/man/dbPool.html" class="external-link">pool::dbPool()</a></code>). The latter is
+connections (as returned by <code><a href="http://rstudio.github.io/pool/reference/dbPool.html" class="external-link">pool::dbPool()</a></code>). The latter is
 recommended for <a href="https://shiny.rstudio.com/" class="external-link">shiny</a>
 applications. This parameter defaults to ‘no’, meaning a single
 connection will be provided.</p>
@@ -264,31 +274,11 @@ and change it with <code><a href="../reference/set_default_conn_name.html">set_d
 <span></span>
 <span><span class="fu"><a href="../reference/set_default_conn_name.html">get_default_conn_name</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/live_connection.html">live_connection</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; &lt;Pool&gt;</span></span>
-<span><span class="co">#&gt;   Public:</span></span>
-<span><span class="co">#&gt;     clone: function (deep = FALSE) </span></span>
-<span><span class="co">#&gt;     close: function () </span></span>
-<span><span class="co">#&gt;     counters: environment</span></span>
-<span><span class="co">#&gt;     fetch: function () </span></span>
-<span><span class="co">#&gt;     idleTimeout: 60</span></span>
-<span><span class="co">#&gt;     initialize: function (factory, minSize, maxSize, idleTimeout, validationInterval, </span></span>
-<span><span class="co">#&gt;     maxSize: Inf</span></span>
-<span><span class="co">#&gt;     minSize: 1</span></span>
-<span><span class="co">#&gt;     release: function (object) </span></span>
-<span><span class="co">#&gt;     state: environment</span></span>
-<span><span class="co">#&gt;     valid: TRUE</span></span>
-<span><span class="co">#&gt;     validationInterval: 600</span></span>
-<span><span class="co">#&gt;   Private:</span></span>
-<span><span class="co">#&gt;     cancelScheduledTask: function (object, task) </span></span>
-<span><span class="co">#&gt;     changeObjectStatus: function (object, to) </span></span>
-<span><span class="co">#&gt;     checkValid: function (object) </span></span>
-<span><span class="co">#&gt;     checkValidTemplate: function (object, errorFun) </span></span>
-<span><span class="co">#&gt;     createObject: function () </span></span>
-<span><span class="co">#&gt;     destroyObject: function (object) </span></span>
-<span><span class="co">#&gt;     factory: function () </span></span>
-<span><span class="co">#&gt;     freeObjects: environment</span></span>
-<span><span class="co">#&gt;     idCounter: 2</span></span>
-<span><span class="co">#&gt;     validate: function (object)</span></span></code></pre></div>
+<span><span class="co">#&gt; &lt;Pool&gt; of SQLiteConnection objects</span></span>
+<span><span class="co">#&gt;   Objects checked out: 0</span></span>
+<span><span class="co">#&gt;   Available in pool: 1</span></span>
+<span><span class="co">#&gt;   Max size: Inf</span></span>
+<span><span class="co">#&gt;   Valid: TRUE</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="checking-closing-and-re-opening-connections">Checking, closing and re-opening connections<a class="anchor" aria-label="anchor" href="#checking-closing-and-re-opening-connections"></a>
