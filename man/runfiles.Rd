@@ -4,15 +4,15 @@
 \alias{runfiles}
 \title{Read, prepare and execute .SQL files}
 \usage{
-runfiles(
-  filenames,
-  quotesql = TRUE,
-  values = parent.frame(),
-  execmethod = "get",
-  geometry = NA,
-  default_conn = live_connection(get_default_conn_name()),
-  include_params = FALSE
-)
+runfiles(filenames, ...)
+}
+\arguments{
+\item{filenames}{name, or vector of names, of file(s) to be executed}
+
+\item{...}{default parameters for \code{\link[=runqueries]{runqueries()}}}
+}
+\value{
+A list of results of sql queries found in files
 }
 \description{
 Accepts a character vector of SQL file names and attempts to execute each one.

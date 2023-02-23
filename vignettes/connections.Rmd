@@ -127,6 +127,7 @@ readLines("configs/sqlhelper_db_conf.yml") |>
 
 connect("configs/sqlhelper_db_conf.yml", exclusive = TRUE)
 
+
 connection_info()
 ```
 

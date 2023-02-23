@@ -116,26 +116,27 @@ runqueries <- function(sql,
 #'
 #' Accepts a character vector of SQL file names and attempts to execute each one.
 #'
+#' @param filenames name, or vector of names, of file(s) to be executed
+#' @param ... default parameters for [runqueries()]
+#'
+#' @return A list of results of sql queries found in files
+#'
 #' @export
 runfiles <- function(filenames,
-                     quotesql = TRUE,
-                     values = parent.frame(),
-                     execmethod = "get",
-                     geometry = NA,
-                     default_conn = live_connection( get_default_conn_name() ),
-                     include_params = FALSE){
+                     ...
+                     # quotesql = TRUE,
+                     # values = parent.frame(),
+                     # execmethod = "get",
+                     # geometry = NA,
+                     # default_conn = live_connection( get_default_conn_name() ),
+                     # include_params = FALSE
+                     ){
 
   sql <- do.call(
     rbind,
     lapply(filenames, read_sql)
   )
 
-  runqueries(sql,
-             quotesql,
-             values,
-             execmethod,
-             geometry,
-             default_conn,
-             include_params)
+  runqueries(sql, ...)
 }
 
