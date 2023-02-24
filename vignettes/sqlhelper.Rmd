@@ -79,7 +79,21 @@ my_sqlite_conn:
     Server: ":memory:"
 ```
 
-See `vignette("connections")` for complete details.
+A more complete config might look more like:
+
+```yaml
+dap:
+  driver_type: sqlserver
+  pool: yes
+  description: >
+    Databases managed by ADD teams on the Data and Analytics Platform
+  connection:
+    Driver: "{ODBC Driver 17 for SQL Server}"
+    Server: "add_dap"
+    Trusted_Connection: "yes"
+```
+
+The connections article (see `vignette("connections")`) provides complete details.
 
 ## Running queries
 

@@ -33,6 +33,3 @@ devtools::install_github("majr-red/sqlhelper@dev")
 ## Usage
 
 See https://majr-red.github.io/sqlhelper/dev
-
-
-
