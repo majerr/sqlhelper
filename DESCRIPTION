@@ -1,6 +1,6 @@
 Package: sqlhelper
 Title: Easier SQL integration
-Version: 0.1.2
+Version: 0.1.2.9000
 Authors@R: person("Matthew", "Roberts", email = "matthew.roberts@levellingup.gov.uk", role = c("aut", "cre"))
 Description: Manage database connections and SQL execution.
 Depends: R 
