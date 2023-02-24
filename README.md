@@ -21,16 +21,18 @@ RDBMS, or simply prefer to write SQL.
 
 ## Installation
 
-Install from github:
+`sqlhelper` is under development and has not yet been released.
+
+You can install the development version from github:
 
 ```R
 # install.packages("devtools")
-devtools::install_github("majr-red/sqlhelper")
+devtools::install_github("majr-red/sqlhelper@dev")
 ```
 
 ## Usage
 
-See https://majr-red.github.io/sqlhelper/
+See https://majr-red.github.io/sqlhelper/dev
 
 
 
