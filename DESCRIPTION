@@ -35,5 +35,5 @@ Suggests:
     bigrquery
 Config/testthat/edition: 3
 VignetteBuilder: knitr
-URL: https://majr-red.github.io/sqlhelper/, https://github.com/majr-red/sqlhelper
+URL: https://majr-red.github.io/sqlhelper/dev, https://github.com/majr-red/sqlhelper
 BugReports: https://github.com/majr-red/sqlhelper/issues
