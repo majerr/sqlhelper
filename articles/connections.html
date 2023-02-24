@@ -8,8 +8,8 @@
 <meta name="description" content="sqlhelper">
 <title>Managing Connections • sqlhelper</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.2.2/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<link href="../deps/bootstrap-5.1.3/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.1.3/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Managing Connections">
 <meta property="og:description" content="sqlhelper">
@@ -126,8 +126,8 @@ is required. Current options are:</p>
 <li>‘bigquery’ (bigquery)</li>
 </ul>
 <p>The <strong>pool</strong> line determines whether a single connection
-is required (as returned by <code><a href="https://dbi.r-dbi.org/reference/dbConnect.html" class="external-link">DBI::dbConnect()</a></code>) or a pool of
-connections (as returned by <code><a href="http://rstudio.github.io/pool/reference/dbPool.html" class="external-link">pool::dbPool()</a></code>). The latter is
+is required (as returned by <code><a href="https://rdrr.io/pkg/DBI/man/dbConnect.html" class="external-link">DBI::dbConnect()</a></code>) or a pool of
+connections (as returned by <code><a href="https://rdrr.io/pkg/pool/man/dbPool.html" class="external-link">pool::dbPool()</a></code>). The latter is
 recommended for <a href="https://shiny.rstudio.com/" class="external-link">shiny</a>
 applications. This parameter defaults to ‘no’, meaning a single
 connection will be provided.</p>
@@ -138,7 +138,7 @@ provide the parameters required for the connection itself, to be passed
 to the constructor function as name=value pairs. For example, you will
 need to supply a <code>Driver</code> connection string if you are using
 an <code>odbc</code> driver. The <strong>server</strong> parameter will
-probably always be required but see <code><a href="https://dbi.r-dbi.org/reference/dbConnect.html" class="external-link">DBI::dbConnect()</a></code> for
+probably always be required but see <code><a href="https://rdrr.io/pkg/DBI/man/dbConnect.html" class="external-link">DBI::dbConnect()</a></code> for
 more details.</p>
 <p>In summary, the elements needed for every connection are:</p>
 <ol>
@@ -160,10 +160,10 @@ also any config files found on a search path that includes both the
 user’s and the site’s config directories.</p>
 <p>If you use the same database connections often, you can place a
 config file called <code>sqlhelper_db_config.yml</code> in the directory
-named by <code><a href="https://rappdirs.r-lib.org/reference/user_data_dir.html" class="external-link">rappdirs::user_config_dir()</a></code>. Similarly, if you are
+named by <code><a href="https://rdrr.io/pkg/rappdirs/man/user_data_dir.html" class="external-link">rappdirs::user_config_dir()</a></code>. Similarly, if you are
 a site admin you can provide your users with pre-configured connections
 by placing a config file of the same name in the directory named by
-<code><a href="https://rappdirs.r-lib.org/reference/site_data_dir.html" class="external-link">rappdirs::site_config_dir()</a></code>. In either of these cases, no
+<code><a href="https://rdrr.io/pkg/rappdirs/man/site_data_dir.html" class="external-link">rappdirs::site_config_dir()</a></code>. In either of these cases, no
 config filename is needed and <code><a href="../reference/connect.html">connect()</a></code> can be called
 without arguments. Nonetheless, in the case where you require additional
 connections to those provided by user- and site-wide configurations, you
@@ -232,13 +232,14 @@ created connections with <code><a href="../reference/connection_info.html">conne
 <span></span>
 <span><span class="fu"><a href="../reference/connect.html">connect</a></span><span class="op">(</span><span class="st">"configs/sqlhelper_db_conf.yml"</span>, exclusive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
+<span></span>
 <span><span class="fu"><a href="../reference/connection_info.html">connection_info</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 7</span></span></span>
-<span><span class="co">#&gt;   name          description                   live  default driver conn_…¹ pool </span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 x 7</span></span></span>
+<span><span class="co">#&gt;   name          description                   live  default driver conn_~1 pool </span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                         <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;glue&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> pool_sqlite   A pooled connection to an in… TRUE  FALSE   RSQLi… <span style="color: #BB0000;">NA</span>      TRUE </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> simple_sqlite A simple connection to an in… TRUE  TRUE    RSQLi… <span style="color: #BB0000;">NA</span>      FALSE</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># … with abbreviated variable name ¹​conn_str</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> pool_sqlite   A pooled connection to an in~ TRUE  FALSE   RSQLi~ <span style="color: #BB0000;">NA</span>      TRUE </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> simple_sqlite A simple connection to an in~ TRUE  TRUE    RSQLi~ <span style="color: #BB0000;">NA</span>      FALSE</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ... with abbreviated variable name 1: conn_str</span></span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="accessing-individual-connections">Accessing individual connections<a class="anchor" aria-label="anchor" href="#accessing-individual-connections"></a>
@@ -274,11 +275,31 @@ and change it with <code><a href="../reference/set_default_conn_name.html">set_d
 <span></span>
 <span><span class="fu"><a href="../reference/set_default_conn_name.html">get_default_conn_name</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/live_connection.html">live_connection</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; &lt;Pool&gt; of SQLiteConnection objects</span></span>
-<span><span class="co">#&gt;   Objects checked out: 0</span></span>
-<span><span class="co">#&gt;   Available in pool: 1</span></span>
-<span><span class="co">#&gt;   Max size: Inf</span></span>
-<span><span class="co">#&gt;   Valid: TRUE</span></span></code></pre></div>
+<span><span class="co">#&gt; &lt;Pool&gt;</span></span>
+<span><span class="co">#&gt;   Public:</span></span>
+<span><span class="co">#&gt;     clone: function (deep = FALSE) </span></span>
+<span><span class="co">#&gt;     close: function () </span></span>
+<span><span class="co">#&gt;     counters: environment</span></span>
+<span><span class="co">#&gt;     fetch: function () </span></span>
+<span><span class="co">#&gt;     idleTimeout: 60</span></span>
+<span><span class="co">#&gt;     initialize: function (factory, minSize, maxSize, idleTimeout, validationInterval, </span></span>
+<span><span class="co">#&gt;     maxSize: Inf</span></span>
+<span><span class="co">#&gt;     minSize: 1</span></span>
+<span><span class="co">#&gt;     release: function (object) </span></span>
+<span><span class="co">#&gt;     state: environment</span></span>
+<span><span class="co">#&gt;     valid: TRUE</span></span>
+<span><span class="co">#&gt;     validationInterval: 600</span></span>
+<span><span class="co">#&gt;   Private:</span></span>
+<span><span class="co">#&gt;     cancelScheduledTask: function (object, task) </span></span>
+<span><span class="co">#&gt;     changeObjectStatus: function (object, to) </span></span>
+<span><span class="co">#&gt;     checkValid: function (object) </span></span>
+<span><span class="co">#&gt;     checkValidTemplate: function (object, errorFun) </span></span>
+<span><span class="co">#&gt;     createObject: function () </span></span>
+<span><span class="co">#&gt;     destroyObject: function (object) </span></span>
+<span><span class="co">#&gt;     factory: function () </span></span>
+<span><span class="co">#&gt;     freeObjects: environment</span></span>
+<span><span class="co">#&gt;     idCounter: 2</span></span>
+<span><span class="co">#&gt;     validate: function (object)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="checking-closing-and-re-opening-connections">Checking, closing and re-opening connections<a class="anchor" aria-label="anchor" href="#checking-closing-and-re-opening-connections"></a>
@@ -294,7 +315,7 @@ interactive use</li>
 <p>To close all connections and remove them from the internal cache, use
 <code><a href="../reference/disconnect.html">disconnect()</a></code>.</p>
 <p>Individual connections may be closed with
-<code><a href="https://dbi.r-dbi.org/reference/dbDisconnect.html" class="external-link">DBI::dbDisconnect()</a></code>.</p>
+<code><a href="https://rdrr.io/pkg/DBI/man/dbDisconnect.html" class="external-link">DBI::dbDisconnect()</a></code>.</p>
 <p><code><a href="../reference/connect.html">connect()</a></code> closes any open connections before reading
 config files.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
@@ -306,29 +327,29 @@ config files.</p>
 <span><span class="co">#&gt; [1] TRUE</span></span>
 <span></span>
 <span><span class="va">myconn</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/live_connection.html">live_connection</a></span><span class="op">(</span><span class="va">conn_name</span><span class="op">)</span></span>
-<span><span class="fu">DBI</span><span class="fu">::</span><span class="fu"><a href="https://dbi.r-dbi.org/reference/dbDisconnect.html" class="external-link">dbDisconnect</a></span><span class="op">(</span><span class="va">myconn</span><span class="op">)</span></span>
+<span><span class="fu">DBI</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/DBI/man/dbDisconnect.html" class="external-link">dbDisconnect</a></span><span class="op">(</span><span class="va">myconn</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/connection_info.html">connection_info</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 7</span></span></span>
-<span><span class="co">#&gt;   name          description                   live  default driver conn_…¹ pool </span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 x 7</span></span></span>
+<span><span class="co">#&gt;   name          description                   live  default driver conn_~1 pool </span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                         <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;glue&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> pool_sqlite   A pooled connection to an in… TRUE  TRUE    RSQLi… <span style="color: #BB0000;">NA</span>      TRUE </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> simple_sqlite A simple connection to an in… FALSE FALSE   RSQLi… <span style="color: #BB0000;">NA</span>      FALSE</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># … with abbreviated variable name ¹​conn_str</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> pool_sqlite   A pooled connection to an in~ TRUE  TRUE    RSQLi~ <span style="color: #BB0000;">NA</span>      TRUE </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> simple_sqlite A simple connection to an in~ FALSE FALSE   RSQLi~ <span style="color: #BB0000;">NA</span>      FALSE</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ... with abbreviated variable name 1: conn_str</span></span></span>
 <span></span>
 <span><span class="kw">if</span><span class="op">(</span><span class="fu"><a href="../reference/is_connected.html">not_connected</a></span><span class="op">(</span><span class="va">conn_name</span><span class="op">)</span><span class="op">)</span><span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">message</a></span><span class="op">(</span><span class="fu">glue</span><span class="fu">::</span><span class="fu"><a href="https://glue.tidyverse.org/reference/glue.html" class="external-link">glue</a></span><span class="op">(</span><span class="st">"{conn_name} is not available, reconnecting..."</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">message</a></span><span class="op">(</span><span class="fu">glue</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/glue/man/glue.html" class="external-link">glue</a></span><span class="op">(</span><span class="st">"{conn_name} is not available, reconnecting..."</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="../reference/connect.html">connect</a></span><span class="op">(</span><span class="st">"configs/sqlhelper_db_conf.yml"</span>, exclusive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span><span class="co">#&gt; simple_sqlite is not available, reconnecting...</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/connection_info.html">connection_info</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 7</span></span></span>
-<span><span class="co">#&gt;   name          description                   live  default driver conn_…¹ pool </span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 x 7</span></span></span>
+<span><span class="co">#&gt;   name          description                   live  default driver conn_~1 pool </span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                         <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;glue&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> pool_sqlite   A pooled connection to an in… TRUE  FALSE   RSQLi… <span style="color: #BB0000;">NA</span>      TRUE </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> simple_sqlite A simple connection to an in… TRUE  TRUE    RSQLi… <span style="color: #BB0000;">NA</span>      FALSE</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># … with abbreviated variable name ¹​conn_str</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> pool_sqlite   A pooled connection to an in~ TRUE  FALSE   RSQLi~ <span style="color: #BB0000;">NA</span>      TRUE </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> simple_sqlite A simple connection to an in~ TRUE  TRUE    RSQLi~ <span style="color: #BB0000;">NA</span>      FALSE</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ... with abbreviated variable name 1: conn_str</span></span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/disconnect.html">disconnect</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>

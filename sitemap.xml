@@ -4,19 +4,16 @@
     <loc>https://majr-red.github.io/sqlhelper/404.html</loc>
   </url>
   <url>
-    <loc>https://majr-red.github.io/sqlhelper/LICENSE.html</loc>
-  </url>
-  <url>
     <loc>https://majr-red.github.io/sqlhelper/articles/connections.html</loc>
   </url>
   <url>
     <loc>https://majr-red.github.io/sqlhelper/articles/index.html</loc>
   </url>
   <url>
-    <loc>https://majr-red.github.io/sqlhelper/articles/sql_execution.html</loc>
+    <loc>https://majr-red.github.io/sqlhelper/articles/sqlhelper.html</loc>
   </url>
   <url>
-    <loc>https://majr-red.github.io/sqlhelper/articles/sqlhelper.html</loc>
+    <loc>https://majr-red.github.io/sqlhelper/articles/sql_execution.html</loc>
   </url>
   <url>
     <loc>https://majr-red.github.io/sqlhelper/authors.html</loc>
@@ -25,7 +22,16 @@
     <loc>https://majr-red.github.io/sqlhelper/index.html</loc>
   </url>
   <url>
+    <loc>https://majr-red.github.io/sqlhelper/LICENSE.html</loc>
+  </url>
+  <url>
     <loc>https://majr-red.github.io/sqlhelper/news/index.html</loc>
+  </url>
+  <url>
+    <loc>https://majr-red.github.io/sqlhelper/reference/add_connection.html</loc>
+  </url>
+  <url>
+    <loc>https://majr-red.github.io/sqlhelper/reference/combine_configs.html</loc>
   </url>
   <url>
     <loc>https://majr-red.github.io/sqlhelper/reference/config_examples.html</loc>
@@ -40,7 +46,16 @@
     <loc>https://majr-red.github.io/sqlhelper/reference/disconnect.html</loc>
   </url>
   <url>
+    <loc>https://majr-red.github.io/sqlhelper/reference/extract_quoted_strings.html</loc>
+  </url>
+  <url>
+    <loc>https://majr-red.github.io/sqlhelper/reference/get_driver.html</loc>
+  </url>
+  <url>
     <loc>https://majr-red.github.io/sqlhelper/reference/index.html</loc>
+  </url>
+  <url>
+    <loc>https://majr-red.github.io/sqlhelper/reference/interpolate_sql.html</loc>
   </url>
   <url>
     <loc>https://majr-red.github.io/sqlhelper/reference/is_connected.html</loc>
@@ -52,7 +67,16 @@
     <loc>https://majr-red.github.io/sqlhelper/reference/prepare_sql.html</loc>
   </url>
   <url>
+    <loc>https://majr-red.github.io/sqlhelper/reference/prune.html</loc>
+  </url>
+  <url>
+    <loc>https://majr-red.github.io/sqlhelper/reference/read_configs.html</loc>
+  </url>
+  <url>
     <loc>https://majr-red.github.io/sqlhelper/reference/read_sql.html</loc>
+  </url>
+  <url>
+    <loc>https://majr-red.github.io/sqlhelper/reference/reinstate_quoted_strings.html</loc>
   </url>
   <url>
     <loc>https://majr-red.github.io/sqlhelper/reference/runfiles.html</loc>
@@ -62,5 +86,17 @@
   </url>
   <url>
     <loc>https://majr-red.github.io/sqlhelper/reference/set_default_conn_name.html</loc>
+  </url>
+  <url>
+    <loc>https://majr-red.github.io/sqlhelper/reference/sqlhelper.html</loc>
+  </url>
+  <url>
+    <loc>https://majr-red.github.io/sqlhelper/reference/validate_config.html</loc>
+  </url>
+  <url>
+    <loc>https://majr-red.github.io/sqlhelper/reference/validate_configs.html</loc>
+  </url>
+  <url>
+    <loc>https://majr-red.github.io/sqlhelper/reference/yml2conn_str.html</loc>
   </url>
 </urlset>
