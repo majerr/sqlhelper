@@ -13,11 +13,57 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 ```
-## Introduction
-
-`sqlhelper` provides two functions for executing SQL code: `runqueries()` and `runfiles()`.
 
 
-```{r setup}
+`sqlhelper` provides two functions for executing SQL code, `runqueries()` and
+`runfiles()`, and two functions for reading and preparing files of sql for
+execution: `read_sql()` and `prepare_sql()`.
+
+For quick, interactive, exploratory work, `runqueries()` has the same kind of
+functionality as existing sql execution functions (e.g. `DBI::dbGetQuery()`).
+
+For work that needs to be more robust and reproducible, split over several files
+or part of package, `runfiles()` will read, prepare and files of SQL.
+
+## Executing strings as SQL queries
+
+`runqueries()` attempts to execute strings as if they were SQL.
+
+```{r runqueries_bare}
 library(sqlhelper)
+
+connect("configs/sqlhelper_db_conf.yml", exclusive=TRUE)
+
+DBI::dbWriteTable(live_connection( get_default_conn_name() ),
+                  "iris",
+                  iris)
+
+runqueries("select * from iris limit 5")
+
 ```
+
+### Multiple Queries
+
+### Named queries
+
+### Database selection
+
+In the example above, the default database is the execution target but an alternative may be specified, either as a name or as a connection object.
+
+```{r runqueries_altdb}
+DBI::dbWriteTable(live_connection("pool_sqlite"),
+                  "cars",
+                  mtcars)
+
+runqueries("select * from cars limit 5", default_conn = "pool_sqlite" )
+
+con <- DBI::dbConnect(RSQLite::SQLite(), ":memory:")
+
+DBI::dbWriteTable(con,
+                  "sparkles",
+                  ggplot2::diamonds)
+
+runqueries("select * from sparkles limit 5", default_conn = con)
+```
+
+

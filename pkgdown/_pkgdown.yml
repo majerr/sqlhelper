@@ -11,7 +11,7 @@ home:
 reference:
 - title: Connections
   desc: >
-    Functions for creating and managing connections
+    Functions for creating and managing database connections
   contents:
   - connect
   - config_examples
