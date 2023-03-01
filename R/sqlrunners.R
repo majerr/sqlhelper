@@ -6,19 +6,20 @@
 #'   commands, or a tibble returned by [read_sql()]
 #' @param quotesql "yes" or "no" - should interpolated characters be quoted by
 #'   default?
-#' @param interpolate Should the SQL be parameterized from R? Defaults to the
+#' @param values Should the SQL be parameterized from R? Defaults to the
 #'   value of [parent.frame()]. Pass any object that is not an environment
 #'   (e.g. "no" or FALSE) if interpolation is to be skipped, or another
 #'   environment containing values to interpolate to avoid using
-#'   \code{.GlobalEnv}.
+#'   [parent.frame()].
 #' @param execmethod One of "get", "execute", "sendq", "sends" or "spatial" - which method should be
 #'   used to execute the query? "get" means [DBI::dbGetQuery()]; "execute" means [DBI::dbExecute()]; "sendq" means
 #'   \code{DBI::dbSendQuery}; "sends" means [DBI::dbSendStatement()]; "spatial" means [sf::st_read()].
 #' @param geometry If \code{execmethod} is "spatial", which geometry column
 #'   should be used (ignored if \code{execmethod} is not spatial)
-#' @param conn Either the name of a sqlhelper connection, or a database
+#' @param default_conn A connection against which to execute queries if no other
+#'   is specified. Either the name of a sqlhelper connection, or a database
 #'   connection returned by [DBI::dbConnect()], or NA
-#' @param include_params Should the parameters be included in the output?
+#' @param include_params \code{TRUE} or \code{FALSE}. Should the parameters be included in the output?
 #' @return If \code{include_params} is \code{FALSE}, an named list containing
 #'   the results of each query; the names are the same as those in the \code{sql}
 #'   parameter. If \code{include_params} is \code{TRUE}, a tibble containing the query as executed, the above parameters,
