@@ -158,6 +158,15 @@ get_default_conn_name() |>
   live_connection()
 ```
 
+The last of these - combining `get_default_conn_name()` with `live_connection()` to obtain the default connection - is common enough to warrant a convenience function, `default_conn()`:
+
+```{r}
+identical(
+  live_connection( get_default_conn_name() ),
+  default_conn()
+  )
+```
+
 ## Checking, closing and re-opening connections
 
 You can check whether connections are live in two ways:

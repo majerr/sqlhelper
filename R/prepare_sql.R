@@ -67,19 +67,13 @@ prepare_sql <- function(sql,
     else
       sql$qname <- NA
 
-    # TODO: this is inelegant; should use sql_tbl_names to add the remaining cols
-    sql <- dplyr::mutate( sql,
-                          quotesql = NA,
-                          interpolate = NA,
-                          execmethod = NA,
-                          geometry = NA,
-                          conn_name = NA,
-                          filename = NA
-    )
-
+    # Add other needed columns and reorder
     # sql_tbl_names is defined in data-raw/sysdata.r
-    sql <- dplyr::relocate(sql,
-                           sql_tbl_names)
+    new_col_names <- sql_tbl_names[ !sql_tbl_names %in% names(sql)]
+    new_cols <- rep(NA, length(new_col_names))
+    names(new_cols) <- new_col_names
+    sql <- tibble::add_column( sql, !!!new_cols )[,sql_tbl_names]
+
   }
 
   if( sum(names(sql) %in% sql_tbl_names) != length(sql_tbl_names) )
@@ -98,17 +92,11 @@ prepare_sql <- function(sql,
   if( is.environment( values ) ){
     sql$interpolate[ is.na( sql$interpolate ) ] <- "yes"
 
-    sql$prepared_sql <- purrr::pmap(
-      dplyr::select( sql,
-                     interpolate,
-                     quotesql,
-                     conn_name,
-                     sql
-      ),
-      interpolate_sql,
-      values = values,
-      dc = default.conn
-    )
+    sql$prepared_sql <- sql[,c("interpolate", "quotesql", "conn_name", "sql")] |>
+      purrr::pmap( interpolate_sql,
+                   values = values,
+                   default.conn = default.conn)
+
   } else {
     sql$interpolate <- "no"
 
@@ -139,8 +127,9 @@ interpolate_sql <- function(interpolate,
                             conn_name,
                             sql,
                             values,
-                            dc
+                            default.conn
                             ){
+
   if( interpolate == "no" )
     return( sql )
 
