@@ -5,7 +5,7 @@ articles:
   connections: connections.html
   sqlhelper: sqlhelper.html
   sql_execution: sql_execution.html
-last_built: 2023-02-23T14:16Z
+last_built: 2023-03-01T10:27Z
 urls:
   reference: https://majr-red.github.io/sqlhelper/reference
   article: https://majr-red.github.io/sqlhelper/articles

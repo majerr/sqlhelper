@@ -1,28 +1,58 @@
-#' prepare to queries and meta data for running
+#' prepare queries and meta data for execution
+#'
+#' Except for `sql`, parameters are default values to be used when none are
+#' supplied in `sql` (e.g. when `sql` is a tibble returned by [read_sql()]).
+#'
+#' The `default_conn` parameter may be used to supply a connection object that
+#' is not a configured sqlhelper connection. This can be used to interpolate
+#' quoted strings.
 #'
 #' @param sql An optionally-named list or character vector containing sql
 #'   commands, or a tibble returned by [read_sql()]
+#'
 #' @param quotesql "yes" or "no" - should interpolated characters be quoted by
-#'   default?
-#' @param values Should the SQL be parameterized from R? Defaults to the
-#'   value of `parent.frame()`. Pass any object that is not an environment
-#'   (e.g. "no" or FALSE) if interpolation is to be skipped, or another
-#'   environment containing values to interpolate to avoid using
-#'   `.GlobalEnv`.
-#' @param execmethod One of "get", "send" or "spatial" - which method should be
-#'   used to execute the query? "get" means [DBI::dbGetQuery()]; "send" means
-#'   [DBI::dbSendQuery()]; "spatial" means [sf::st_read()].
+#'   default? Anything that isn't "no" is treated as "yes".
+#'
+#' @param values An environment containing variables to interpolate into the
+#'   SQL. Pass any object that is not an environment (e.g. "no", NA, FALSE or
+#'   NULL) if interpolation is to be skipped, or another environment containing
+#'   values to interpolate to avoid using `.GlobalEnv`.
+#'
+#' @param execmethod One of "get", "execute", "sendq", "sends" or "spatial" -
+#'   which method should be used to execute the query? "get" means
+#'   [DBI::dbGetQuery()]; "execute" means [DBI::dbExecute()]; "sendq" means
+#'   [DBI::dbSendQuery]; "sends" means [DBI::dbSendStatement()]; "spatial"
+#'   means [sf::st_read()].
+#'
 #' @param geometry If `execmethod` is "spatial", which column contains the
-#'   geometry? (ignored if `execmethod` is not spatial)
+#'   geometry? Ignored if `execmethod` is not "spatial".
+#'
 #' @param default_conn Either the name of a sqlhelper connection, or a database
 #'   connection returned by [DBI::dbConnect()], or NA
+#'
+#' @value A tibble containing 1 row per query with the following fields:
+#' \describe{
+#'  \item{qname}{character. A name for this query}
+#'  \item{quotesql}{"yes" or "no". Should parameterized character values be quoted for this query?}
+#'  \item{interpolate}{"yes" or "no". Should this query be parameterized with values from R?}
+#'  \item{execmethod}{The method to execute this query.
+#'  One of "get" ([DBI::dbGetQuery()]), "execute" ([DBI::dbExecute()]), "sendq" ([DBI::dbSendQuery()]), "sends" ([DBI::dbSendStatement()]) or "spatial" ([sf::st_read()])}
+#'  \item{geometry}{character. If `execmethod` is "spatial", which is the geometry column?}
+#'  \item{conn_name}{character. The name of the database connection to use for this query.
+#'  Must be the name of a configured sqlhelper connection.}
+#'  \item{sql}{The sql query as entered}
+#'  \item{filename}{The value of `file_name`}
+#'  \item{prepared_sql}{The sql query to be executed, i.e. with interpolations
+#'  and quoting in place}
+#' }
 #' @export
 prepare_sql <- function(sql,
                         quotesql = "yes",
                         values = parent.frame(),
                         execmethod = "get",
                         geometry = NA,
-                        default_conn=NA){
+                        default.conn = default_conn()
+                        ){
 
   sql_names <- names(sql)
   sql <- tibble::as_tibble(sql)
@@ -77,7 +107,7 @@ prepare_sql <- function(sql,
       ),
       interpolate_sql,
       values = values,
-      default_conn = default_conn
+      dc = default.conn
     )
   } else {
     sql$interpolate <- "no"
@@ -108,8 +138,8 @@ interpolate_sql <- function(interpolate,
                             quotesql,
                             conn_name,
                             sql,
-                            values = parent.frame(),
-                            default_conn = NULL
+                            values,
+                            dc
                             ){
   if( interpolate == "no" )
     return( sql )
@@ -127,8 +157,8 @@ interpolate_sql <- function(interpolate,
       live_conn <- live_connection( conn_name )
 
     interpolated <- glue::glue_sql( sql,
-                                    .envir = values,
-                                    .con = live_conn)
+                                  .envir = values,
+                                  .con = live_conn)
   }
 
   interpolated

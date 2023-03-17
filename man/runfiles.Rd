@@ -9,7 +9,7 @@ runfiles(filenames, ...)
 \arguments{
 \item{filenames}{name, or vector of names, of file(s) to be executed}
 
-\item{...}{default parameters for \code{\link[=runqueries]{runqueries()}}}
+\item{...}{parameters to be passed to \code{\link[=runqueries]{runqueries()}}}
 }
 \value{
 A list of results of sql queries found in files
@@ -17,3 +17,53 @@ A list of results of sql queries found in files
 \description{
 Accepts a character vector of SQL file names and attempts to execute each one.
 }
+\details{
+\code{\link[=runfiles]{runfiles()}} enables you to control the arguments accepted by \code{\link[=runqueries]{runqueries()}}
+on a per-query basis, using interpreted comments in your sql file:
+
+\if{html}{\out{<div class="sourceCode sql">}}\preformatted{-- qname = create_setosa_table
+-- execmethod = execute
+-- conn_name = sqlite_simple
+CREATE TABLE iris_setosa as SELECT * FROM IRIS WHERE SPECIES = 'setosa';
+
+-- qname = get_setosa_table
+-- execmethod = get
+-- conn_name = sqlite_simple
+SELECT * FROM iris_setosa;
+}\if{html}{\out{</div>}}
+
+Interpreted comments precede the sql query to which the refer. Interpreted
+comments are:
+
+\describe{
+\item{qname}{A name for this query}
+\item{quotesql}{"yes" or "no" - should interpolated characters be quoted?}
+\item{interpolate}{"yes" or "no" - should sql be interpolated?}
+\item{execmethod}{One of "get", "execute", "sendq", "sends" or "spatial" -
+which method should be used to execute the query? "get" means
+\code{\link[DBI:dbGetQuery]{DBI::dbGetQuery()}}; "execute" means \code{\link[DBI:dbExecute]{DBI::dbExecute()}}; "sendq" means
+\code{DBI::dbSendQuery}; "sends" means \code{\link[DBI:dbSendStatement]{DBI::dbSendStatement()}}; "spatial"
+means \code{\link[sf:st_read]{sf::st_read()}}.}
+\item{geometry}{The name of a spatial column. Ignored if \code{execmethod} is not 'spatial'}
+\item{conn_name}{The name of a connection to execute this query against}
+}
+
+All interpreted comments except \code{qname} are recycled within their file, meaning
+that if you want to use the same values throughout, you need only set them for
+the first query.
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{readLines(
+  system.file("examples/cascade.sql",
+                package="sqlhelper")
+) |> writeLines()
+#> Warning in file(con, "r"): file("") only supports open = "w+" and open = "w+b":
+#> using the former
+}\if{html}{\out{</div>}}
+}
+\seealso{
+\code{\link[=read_sql]{read_sql()}}, \code{\link[=prepare_sql]{prepare_sql()}}
+
+Other SQL runners: 
+\code{\link{runqueries}()}
+}
+\concept{SQL runners}

@@ -1,7 +1,7 @@
--- Run some queries against the newly-created iris table
+-- Test interpretation and stripping of comment lines.
 
 
--- conn_name=single_mem
+-- conn_name=a_connection
 -- ------------------------------------------------------------
 
 -- what tables have we got?
@@ -15,7 +15,7 @@ block*/
 
 sqlite_schema WHERE type='table';
 
--- ------------------------------------------------------------
+--------------------------------------------------------------;
 
 -- qname=sample
 select * -- with a comment on a code line
@@ -29,17 +29,17 @@ block*/
 
 -- ------------------------------------------------------------
 
--- conn_name = cds
+-- conn_name = another_connection
 -- execmethod = spatial
 -- geometry = mystring
 -- make sure quoted double dashes survive the comment strip
--- qname=quoted_doubledash
+-- qname=quoted_inline
 select
 'stringvar' as myString
 from iris
 where 'foo' = '-- oops';
 
-/* as single-line block comment */
+/* a single-line block comment */
 
 -- ------------------------------------------------------------
 

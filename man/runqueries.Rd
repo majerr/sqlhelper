@@ -6,7 +6,7 @@
 \usage{
 runqueries(
   sql,
-  quotesql = TRUE,
+  quotesql = "yes",
   values = parent.frame(),
   execmethod = "get",
   geometry = NA,
@@ -16,28 +16,29 @@ runqueries(
 }
 \arguments{
 \item{sql}{An optionally-named list or character vector containing sql
-commands, or a tibble returned by \code{\link[=read_sql]{read_sql()}}}
+strings, or a tibble returned by \code{\link[=read_sql]{read_sql()}} or \code{\link[=prepare_sql]{prepare_sql()}}}
 
 \item{quotesql}{"yes" or "no" - should interpolated characters be quoted by
 default?}
 
-\item{execmethod}{One of "get", "execute", "sendq", "sends" or "spatial" - which method should be
-used to execute the query? "get" means \code{\link[DBI:dbGetQuery]{DBI::dbGetQuery()}}; "execute" means \code{\link[DBI:dbExecute]{DBI::dbExecute()}}; "sendq" means
-\code{DBI::dbSendQuery}; "sends" means \code{\link[DBI:dbSendStatement]{DBI::dbSendStatement()}}; "spatial" means \code{\link[sf:st_read]{sf::st_read()}}.}
+\item{values}{Should the SQL be parameterized using R values before
+execution? Pass a environment containing the parameters to use, or anything
+else (e.g. "no", or \code{FALSE}) to skip parameterization.}
+
+\item{execmethod}{One of "get", "execute", "sendq", "sends" or "spatial" -
+which method should be used to execute the query? "get" means
+\code{\link[DBI:dbGetQuery]{DBI::dbGetQuery()}}; "execute" means \code{\link[DBI:dbExecute]{DBI::dbExecute()}}; "sendq" means
+\code{DBI::dbSendQuery}; "sends" means \code{\link[DBI:dbSendStatement]{DBI::dbSendStatement()}}; "spatial"
+means \code{\link[sf:st_read]{sf::st_read()}}.}
 
 \item{geometry}{If \code{execmethod} is "spatial", which geometry column
 should be used (ignored if \code{execmethod} is not spatial)}
 
-\item{include_params}{Should the parameters be included in the output?}
-
-\item{interpolate}{Should the SQL be parameterized from R? Defaults to the
-value of \code{\link[=parent.frame]{parent.frame()}}. Pass any object that is not an environment
-(e.g. "no" or FALSE) if interpolation is to be skipped, or another
-environment containing values to interpolate to avoid using
-\code{.GlobalEnv}.}
-
-\item{conn}{Either the name of a sqlhelper connection, or a database
+\item{default_conn}{A connection against which to execute queries if no other
+is specified. Either the name of a sqlhelper connection, or a database
 connection returned by \code{\link[DBI:dbConnect]{DBI::dbConnect()}}, or NA}
+
+\item{include_params}{\code{TRUE} or \code{FALSE}. Should the parameters be included in the output?}
 }
 \value{
 If \code{include_params} is \code{FALSE}, an named list containing
@@ -48,7 +49,38 @@ and the result of each query.
 \description{
 Accepts a character vector of SQL queries and runs each one
 }
+\examples{
+library(sqlhelper)
+
+connect(
+    system.file("examples/sqlhelper_db_conf.yml",
+                package="sqlhelper"),
+    exclusive=TRUE
+    )
+
+DBI::dbWriteTable(live_connection( get_default_conn_name() ),
+                  "iris",
+                  iris)
+
+n <- 5
+
+runqueries(
+    c(top_n = "select * from iris limit {n}", # interpolation is controlled
+                                              # with the 'values' argument
+      uniqs = "select distinct species as species from iris")
+)
+
+## Use the execmethod parameter if you don't want to return results
+runqueries("create table iris_setosa as select * from iris where species = 'setosa'",
+           execmethod = 'execute')
+
+runqueries("select distinct species as species from iris_setosa")
+
+}
 \seealso{
 \code{\link{runfiles}}
+
+Other SQL runners: 
+\code{\link{runfiles}()}
 }
 \concept{SQL runners}

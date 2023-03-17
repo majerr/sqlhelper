@@ -7,7 +7,7 @@
 read_sql(file_name)
 }
 \arguments{
-\item{file_name}{Full name and path of file to read}
+\item{file_name}{Full name and path of a file to read}
 }
 \value{
 A tibble containing 1 row per query with the following fields:
@@ -18,11 +18,47 @@ A tibble containing 1 row per query with the following fields:
 \item{execmethod}{The method to execute this query.
 One of "get" (\code{\link[DBI:dbGetQuery]{DBI::dbGetQuery()}}), "execute" (\code{\link[DBI:dbExecute]{DBI::dbExecute()}}), "sendq" (\code{\link[DBI:dbSendQuery]{DBI::dbSendQuery()}}), "sends" (\code{\link[DBI:dbSendStatement]{DBI::dbSendStatement()}}) or "spatial" (\code{\link[sf:st_read]{sf::st_read()}})}
 \item{geometry}{character. If \code{execmethod} is "spatial", which is the geometry column?}
-\item{conn}{The name of the database connection to use for this query}
+\item{conn_name}{The name of the database connection to use for this query.
+Must be a configured sqlhelper connection.}
 \item{sql}{The unparameterized sql query to be executed}
 \item{filename}{The value of \code{file_name}}
 }
 }
 \description{
 Read a sql file and return it's contents as a tibble
+}
+\details{
+Multiple SQL queries in the file should be terminated by semi-colons (\verb{;}).
+
+The values of \code{qname}, \code{quotesql}, \code{interpolate}, \code{execmethod}, \code{geometry},
+and \code{conn_name} in the output may be controlled with comments
+immediately preceding each query:
+
+\if{html}{\out{<div class="sourceCode sql">}}\preformatted{-- qname = create_setosa_table
+-- execmethod = execute
+-- conn_name = sqlite_simple
+CREATE TABLE iris_setosa as SELECT * FROM IRIS WHERE SPECIES = 'setosa';
+
+-- qname = get_setosa_table
+-- execmethod = get
+-- conn_name = sqlite_simple
+SELECT * FROM iris_setosa;
+}\if{html}{\out{</div>}}
+
+With the exception of \code{qname}, the value of each interpreted comment is
+cascaded to subsequent queries. This means you may set values once for the
+first query in the file and they will apply to all the queries thereafter.
+
+See \code{prepare_sql()} for the treatment of missing values in the output.
+}
+\examples{
+
+library(sqlhelper)
+
+fn <- system.file( "examples/read_sql.sql", package="sqlhelper" )
+readLines( fn ) |> writeLines()
+
+connect( system.file("examples/sqlhelper_db_conf.yml", package="sqlhelper") )
+read_sql(fn)
+
 }

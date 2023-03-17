@@ -3,36 +3,69 @@
 #' Accepts a character vector of SQL queries and runs each one
 #'
 #' @param sql An optionally-named list or character vector containing sql
-#'   commands, or a tibble returned by [read_sql()]
-#' @param quotesql "yes" or "no" - should interpolated characters be quoted by
-#'   default?
-#' @param values Should the SQL be parameterized from R? Defaults to the
-#'   value of [parent.frame()]. Pass any object that is not an environment
-#'   (e.g. "no" or FALSE) if interpolation is to be skipped, or another
-#'   environment containing values to interpolate to avoid using
-#'   [parent.frame()].
-#' @param execmethod One of "get", "execute", "sendq", "sends" or "spatial" - which method should be
-#'   used to execute the query? "get" means [DBI::dbGetQuery()]; "execute" means [DBI::dbExecute()]; "sendq" means
-#'   \code{DBI::dbSendQuery}; "sends" means [DBI::dbSendStatement()]; "spatial" means [sf::st_read()].
-#' @param geometry If \code{execmethod} is "spatial", which geometry column
-#'   should be used (ignored if \code{execmethod} is not spatial)
-#' @param default_conn A connection against which to execute queries if no other
-#'   is specified. Either the name of a sqlhelper connection, or a database
-#'   connection returned by [DBI::dbConnect()], or NA
+#'   strings, or a tibble returned by [read_sql()] or [prepare_sql()]
+#'
+#' @param ... Arguments to be passed to `prepare_sql()`
+#'
 #' @param include_params \code{TRUE} or \code{FALSE}. Should the parameters be included in the output?
-#' @return If \code{include_params} is \code{FALSE}, an named list containing
-#'   the results of each query; the names are the same as those in the \code{sql}
-#'   parameter. If \code{include_params} is \code{TRUE}, a tibble containing the query as executed, the above parameters,
-#'   and the result of each query.
+#'
+#' @return If \code{include_params} is \code{FALSE}, a named list containing the
+#'   results of each query; the names are taken from the \code{sql} parameter.
+#'   If \code{include_params} is \code{TRUE}, a tibble containing the query as
+#'   executed, the execution parameters, and the result of each query.
+#'
+#'   A tibble containing 1 row per query with the following fields:
+#' \describe{
+#'  \item{qname}{character. A name for this query}
+#'  \item{quotesql}{"yes" or "no". Should parameterized character values be quoted for this query?}
+#'  \item{interpolate}{"yes" or "no". Should this query be parameterized with values from R?}
+#'  \item{execmethod}{The method to execute this query.
+#'  One of "get" ([DBI::dbGetQuery()]), "execute" ([DBI::dbExecute()]), "sendq" ([DBI::dbSendQuery()]), "sends" ([DBI::dbSendStatement()]) or "spatial" ([sf::st_read()])}
+#'  \item{geometry}{character. If `execmethod` is "spatial", which is the geometry column?}
+#'  \item{conn_name}{character. The name of the database connection to use for this query.
+#'  Must be the name of a configured sqlhelper connection.}
+#'  \item{sql}{The sql query to be executed}
+#'  \item{filename}{The value of `file_name`}
+#'  \item{prepared_sql}{The sql query to be executed, i.e. with interpolations
+#'  and quoting in place}
+#'  \item{}
+#' }
+#'
+#' @examples
+#' library(sqlhelper)
+#'
+#' connect(
+#'     system.file("examples/sqlhelper_db_conf.yml",
+#'                 package="sqlhelper"),
+#'     exclusive=TRUE
+#'     )
+#'
+#' DBI::dbWriteTable(live_connection( get_default_conn_name() ),
+#'                   "iris",
+#'                   iris)
+#'
+#' n <- 5
+#'
+#' runqueries(
+#'     c(top_n = "select * from iris limit {n}", # interpolation is controlled
+#'                                               # with the 'values' argument
+#'       uniqs = "select distinct species as species from iris")
+#' )
+#'
+#' ## Use the execmethod parameter if you don't want to return results
+#' runqueries("create table iris_setosa as select * from iris where species = 'setosa'",
+#'            execmethod = 'execute')
+#'
+#' runqueries("select distinct species as species from iris_setosa")
+#'
 #' @family SQL runners
+#'
 #' @seealso \code{\link{runfiles}}
+#'
 #' @export
 runqueries <- function(sql,
-                       quotesql = TRUE,
-                       values = parent.frame(),
-                       execmethod = "get",
-                       geometry = NA,
-                       default_conn = live_connection( get_default_conn_name() ),
+                       ...,
+                       default_conn = default_conn(),
                        include_params = FALSE ){
 
   if( ! (is(default_conn, "DBIConnection" ) | is(default_conn, "Pool")) ){
@@ -52,22 +85,10 @@ runqueries <- function(sql,
 
   }
 
-
-  prepped_sql <- prepare_sql(sql,
-                              quotesql,
-                              values,
-                              execmethod,
-                              geometry,
-                              default_conn
-                              )
+  prepped_sql <- prepare_sql( sql, quotesql, values, execmethod, geometry, default_conn )
 
   prepped_sql$result <- purrr::pmap(
-    dplyr::select(
-      prepped_sql,
-      execmethod,
-      conn_name,
-      geometry,
-      prepared_sql),
+    dplyr::select( prepped_sql, execmethod, conn_name, geometry, prepared_sql ),
 
     function( execmethod, conn_name, geometry, prepared_sql, default_conn ){
       if(execmethod == "get")
@@ -98,7 +119,7 @@ runqueries <- function(sql,
       }
     }, # close function definition
 
-    default_conn = default_conn
+    default_conn = parent.frame()$default_conn
   ) # close purrr::pmap
 
   execd_sql <- tibble::as_tibble(prepped_sql)
@@ -118,20 +139,58 @@ runqueries <- function(sql,
 #' Accepts a character vector of SQL file names and attempts to execute each one.
 #'
 #' @param filenames name, or vector of names, of file(s) to be executed
-#' @param ... default parameters for [runqueries()]
+#' @param ... Arguments to be passed to [runqueries()]
 #'
 #' @return A list of results of sql queries found in files
+#' @details
+#' [runfiles()] enables you to control the arguments accepted by [runqueries()]
+#' on a per-query basis, using interpreted comments in your sql file:
 #'
+#' ```{sql sql1, eval=FALSE}
+#' -- qname = create_setosa_table
+#' -- execmethod = execute
+#' -- conn_name = sqlite_simple
+#' CREATE TABLE iris_setosa as SELECT * FROM IRIS WHERE SPECIES = 'setosa';
+#'
+#' -- qname = get_setosa_table
+#' -- execmethod = get
+#' -- conn_name = sqlite_simple
+#' SELECT * FROM iris_setosa;
+#' ```
+#'
+#' Interpreted comments precede the sql query to which the refer. Interpreted
+#' comments are:
+#'
+#' \describe{
+#'  \item{qname}{A name for this query}
+#'  \item{quotesql}{"yes" or "no" - should interpolated characters be quoted?}
+#'  \item{interpolate}{"yes" or "no" - should sql be interpolated?}
+#'  \item{execmethod}{One of "get", "execute", "sendq", "sends" or "spatial" -
+#'   which method should be used to execute the query? "get" means
+#'   [DBI::dbGetQuery()]; "execute" means [DBI::dbExecute()]; "sendq" means
+#'   \code{DBI::dbSendQuery}; "sends" means [DBI::dbSendStatement()]; "spatial"
+#'   means [sf::st_read()].}
+#'  \item{geometry}{The name of a spatial column. Ignored if `execmethod` is not 'spatial'}
+#'  \item{conn_name}{The name of a connection to execute this query against}
+#' }
+#'
+#' All interpreted comments except `qname` are recycled within their file, meaning
+#' that if you want to use the same values throughout, you need only set them for
+#' the first query.
+#'
+#' ```{r}
+#' readLines(
+#'   system.file("examples/cascade.sql",
+#'                 package="sqlhelper")
+#' ) |> writeLines()
+#'
+#' ```
+#'
+#' @family SQL runners
+#' @seealso [read_sql()], [prepare_sql()]
 #' @export
 runfiles <- function(filenames,
-                     ...
-                     # quotesql = TRUE,
-                     # values = parent.frame(),
-                     # execmethod = "get",
-                     # geometry = NA,
-                     # default_conn = live_connection( get_default_conn_name() ),
-                     # include_params = FALSE
-                     ){
+                     ... ){
 
   sql <- do.call(
     rbind,
