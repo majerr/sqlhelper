@@ -4,7 +4,7 @@
 #' supplied in `sql` (e.g. when `sql` is a tibble returned by [read_sql()]).
 #'
 #' The `default_conn` parameter may be used to supply a connection object that
-#' is not a configured sqlhelper connection. This can be used to interpolate
+#' is not a configured sqlhelper connection which can then be used to interpolate
 #' quoted strings.
 #'
 #' @param sql An optionally-named list or character vector containing sql

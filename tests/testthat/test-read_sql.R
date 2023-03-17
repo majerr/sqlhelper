@@ -65,6 +65,8 @@ test_that("Comments are correctly interpreted", {
                  "quoted_block")
                )
 
+  expect_equal(sql$filename[[1]], "test_read")
+
   expect_equal(sum(is.na(sql$quotesql)), 4)
 
   expect_equal(sum(is.na(sql$interpolate)), 4)

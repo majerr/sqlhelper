@@ -53,6 +53,7 @@
 #'
 #' @export
 read_sql <- function(file_name)  {
+  print(is.na(file_name))
 
   lines <- readLines(file_name, warn=FALSE)
 
@@ -229,9 +230,7 @@ comment_values <- function(comment_name,blocks,linetok){
   values
 }
 
-# take a bunch of lines and extract any interpretable comments.
-# returns list(con=<string>, names=c(...))
-# where con and names are extracted from comments
+# Extract interpretable comments from lines.
 interpret_comments <- function(lines){
 
   # semi-colons in comments confuse the sql block divisions.

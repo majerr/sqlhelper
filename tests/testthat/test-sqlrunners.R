@@ -48,6 +48,7 @@ test_that("spatial read works", {
 
   # This fails - the CRS changes during the write/read operation. Issue raised
   # with sf maintainers: https://github.com/r-spatial/sf/issues/2017
+  # ... and closed without explanation. Must have been a stupid question.
 
   expect_equal(results$congruent,
                    spData::congruent)
