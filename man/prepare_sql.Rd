@@ -2,7 +2,7 @@
 % Please edit documentation in R/prepare_sql.R
 \name{prepare_sql}
 \alias{prepare_sql}
-\title{prepare to queries and meta data for running}
+\title{prepare queries and meta data for execution}
 \usage{
 prepare_sql(
   sql,
@@ -10,7 +10,7 @@ prepare_sql(
   values = parent.frame(),
   execmethod = "get",
   geometry = NA,
-  default_conn = NA
+  default.conn = default_conn()
 )
 }
 \arguments{
@@ -18,24 +18,33 @@ prepare_sql(
 commands, or a tibble returned by \code{\link[=read_sql]{read_sql()}}}
 
 \item{quotesql}{"yes" or "no" - should interpolated characters be quoted by
-default?}
+default? Anything that isn't "no" is treated as "yes".}
 
-\item{values}{Should the SQL be parameterized from R? Defaults to the
-value of \code{parent.frame()}. Pass any object that is not an environment
-(e.g. "no" or FALSE) if interpolation is to be skipped, or another
-environment containing values to interpolate to avoid using
-\code{.GlobalEnv}.}
+\item{values}{An environment containing variables to interpolate into the
+SQL. Pass any object that is not an environment (e.g. "no", NA, FALSE or
+NULL) if interpolation is to be skipped, or another environment containing
+values to interpolate to avoid using \code{.GlobalEnv}.}
 
-\item{execmethod}{One of "get", "send" or "spatial" - which method should be
-used to execute the query? "get" means \code{\link[DBI:dbGetQuery]{DBI::dbGetQuery()}}; "send" means
-\code{\link[DBI:dbSendQuery]{DBI::dbSendQuery()}}; "spatial" means \code{\link[sf:st_read]{sf::st_read()}}.}
+\item{execmethod}{One of "get", "execute", "sendq", "sends" or "spatial" -
+which method should be used to execute the query? "get" means
+\code{\link[DBI:dbGetQuery]{DBI::dbGetQuery()}}; "execute" means \code{\link[DBI:dbExecute]{DBI::dbExecute()}}; "sendq" means
+\link[DBI:dbSendQuery]{DBI::dbSendQuery}; "sends" means \code{\link[DBI:dbSendStatement]{DBI::dbSendStatement()}}; "spatial"
+means \code{\link[sf:st_read]{sf::st_read()}}.}
 
 \item{geometry}{If \code{execmethod} is "spatial", which column contains the
-geometry? (ignored if \code{execmethod} is not spatial)}
+geometry? Ignored if \code{execmethod} is not "spatial".}
 
-\item{default_conn}{Either the name of a sqlhelper connection, or a database
-connection returned by \code{\link[DBI:dbConnect]{DBI::dbConnect()}}, or NA}
+\item{default.conn}{Either the name of a sqlhelper connection, or a database
+connection returned by \code{\link[DBI:dbConnect]{DBI::dbConnect()}}, or NA. This connection is only
+used by \code{\link[glue:glue_sql]{glue::glue_sql()}} to interpolate SQL strings, it is not used to
+execute any SQL code.}
 }
 \description{
-prepare to queries and meta data for running
+Except for \code{sql}, parameters are default values to be used when none are
+supplied in \code{sql} (e.g. when \code{sql} is a tibble returned by \code{\link[=read_sql]{read_sql()}}).
+}
+\details{
+The \code{default_conn} parameter may be used to supply a connection object that
+is not a configured sqlhelper connection which can then be used to interpolate
+quoted strings.
 }

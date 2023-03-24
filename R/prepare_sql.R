@@ -27,10 +27,12 @@
 #' @param geometry If `execmethod` is "spatial", which column contains the
 #'   geometry? Ignored if `execmethod` is not "spatial".
 #'
-#' @param default_conn Either the name of a sqlhelper connection, or a database
-#'   connection returned by [DBI::dbConnect()], or NA
+#' @param default.conn Either the name of a sqlhelper connection, or a database
+#'   connection returned by [DBI::dbConnect()], or NA. This connection is only
+#'   used by [glue::glue_sql()] to interpolate SQL strings, it is not used to
+#'   execute any SQL code.
 #'
-#' @value A tibble containing 1 row per query with the following fields:
+#' @return A tibble containing 1 row per query with the following fields:
 #' \describe{
 #'  \item{qname}{character. A name for this query}
 #'  \item{quotesql}{"yes" or "no". Should parameterized character values be quoted for this query?}
@@ -54,13 +56,32 @@ prepare_sql <- function(sql,
                         default.conn = default_conn()
                         ){
 
+  ## INPUT VALIDATION
+  sql_is_tibble <- tibble::is_tibble(sql)
+  if(sql_is_tibble){
+    correct_colnames <- (sum(names(sql) %in% sql_tbl_names) == length(sql_tbl_names))
+  }
+
+  if(!sql_is_tibble && !is.character(sql))
+      stop(
+        glue::glue("sql argument must be a character vector or a tibble, not a {typeof(sql)}")
+      )
+
+  if(sql_is_tibble && !correct_colnames){
+    stop(
+      glue::glue("sql tibbles must have these columns: {paste(sql_tbl_names, collapse=', ')},
+                  not {paste(names(sql), collapse=', ')}")
+    )
+  }
+
+  if(sql_is_tibble && sum(is.na(sql$sql)) > 0)
+    stop("sql argument contains NAs in the sql column")
+
   sql_names <- names(sql)
-  sql <- tibble::as_tibble(sql)
 
-  # sql was a list or character vector
-  if( ncol(sql) == 1 && names(sql) == "value" ){
-
-    sql <- dplyr::rename(sql, sql = value)
+  if(!sql_is_tibble){
+    sql <- tibble::as_tibble(sql)
+    colnames(sql) <- "sql"
 
     if( ! is.null(sql_names) )
       sql$qname <- sql_names
@@ -78,6 +99,7 @@ prepare_sql <- function(sql,
 
   if( sum(names(sql) %in% sql_tbl_names) != length(sql_tbl_names) )
     stop("sql table does not contain the required columns")
+
 
   # Fill NA's with default values
 
@@ -135,19 +157,20 @@ interpolate_sql <- function(interpolate,
 
 
   if( quotesql == "no" )
-
-    interpolated <- glue::glue( sql,
-                                .envir = values )
+    interpolated <- DBI::SQL(
+      glue::glue( sql,
+                  .envir = values )
+    )
 
   else {
     if( conn_name == "default")
-      live_conn <- default_conn
+      live_conn <- default.conn
     else
       live_conn <- live_connection( conn_name )
 
     interpolated <- glue::glue_sql( sql,
-                                  .envir = values,
-                                  .con = live_conn)
+                                    .envir = values,
+                                    .con = live_conn)
   }
 
   interpolated

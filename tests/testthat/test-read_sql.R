@@ -81,6 +81,21 @@ test_that("Comments are correctly interpreted", {
   expect_equal(sql$conn_name[1:2], c("a_connection","a_connection"))
   expect_equal(sql$conn_name[3:4], c("another_connection", "another_connection"))
 
+  # Test cascade gets turned off
+  sql2 <- read_sql(testthat::test_path("testfiles",
+                                      "test_read.sql"),
+                  cascade = FALSE)
+
+  expect_equal(sum(is.na(sql2$execmethod)), 3)
+  expect_equal(sql2$execmethod[3], "spatial")
+
+  expect_equal(sum(is.na(sql2$geometry)), 3)
+  expect_equal(sql2$geometry[3], "mystring")
+
+  expect_equal(sum(is.na(sql2$conn_name)), 2)
+  expect_equal(sql2$conn_name[1], c("a_connection"))
+  expect_equal(sql2$conn_name[3], c("another_connection"))
+
 })
 
 test_that("Errors will be raised for unknown interpreted comment values", {

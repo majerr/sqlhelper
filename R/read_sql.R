@@ -52,8 +52,7 @@
 #' read_sql(fn)
 #'
 #' @export
-read_sql <- function(file_name)  {
-  print(is.na(file_name))
+read_sql <- function(file_name, cascade=TRUE)  {
 
   lines <- readLines(file_name, warn=FALSE)
 
@@ -61,7 +60,7 @@ read_sql <- function(file_name)  {
 
   no_blocks <- remove_block_comments(no_quoted_strings$lines)
 
-  interpreted_comments <- interpret_comments(no_blocks)
+  interpreted_comments <- interpret_comments(no_blocks, cascade=cascade)
 
   no_inlines <- remove_inline_comments(no_blocks)
 
@@ -231,7 +230,7 @@ comment_values <- function(comment_name,blocks,linetok){
 }
 
 # Extract interpretable comments from lines.
-interpret_comments <- function(lines){
+interpret_comments <- function(lines, cascade){
 
   # semi-colons in comments confuse the sql block divisions.
   # They're not interpretable, so we drop them here.
@@ -303,19 +302,21 @@ interpret_comments <- function(lines){
   lapply(interpreted_comments$execmethod,
          function(x){
            if( ( ! x %in% recognized_methods ) && ! is.na( x ) )
-             stop( glue::glue( "No recognized method named {x}") )
+             stop( glue::glue( "execmethod must be one of {paste(recognized_methods, collapse=', ')}, not {x}") )
          }
   )
 
-  # cascade any explicit connections to subsequent queries in the file
-  interpreted_comments <- tidyr::fill(
-    tibble::as_tibble( interpreted_comments ),
-    "quotesql",
-    "interpolate",
-    "conn_name",
-    "execmethod",
-    "geometry",
-    "conn_name")
+  # cascade interpreted comments to subsequent queries in the file
+  interpreted_comments <- tibble::as_tibble( interpreted_comments )
+  if(cascade)
+    interpreted_comments <- tidyr::fill(
+      interpreted_comments,
+      "quotesql",
+      "interpolate",
+      "conn_name",
+      "execmethod",
+      "geometry",
+      "conn_name")
 
   interpreted_comments
 }

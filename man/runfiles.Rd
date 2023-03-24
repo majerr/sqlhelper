@@ -4,12 +4,12 @@
 \alias{runfiles}
 \title{Read, prepare and execute .SQL files}
 \usage{
-runfiles(filenames, ...)
+runfiles(filenames, cascade = TRUE, ...)
 }
 \arguments{
 \item{filenames}{name, or vector of names, of file(s) to be executed}
 
-\item{...}{parameters to be passed to \code{\link[=runqueries]{runqueries()}}}
+\item{...}{Arguments to be passed to \code{\link[=runqueries]{runqueries()}}}
 }
 \value{
 A list of results of sql queries found in files
@@ -32,7 +32,7 @@ CREATE TABLE iris_setosa as SELECT * FROM IRIS WHERE SPECIES = 'setosa';
 SELECT * FROM iris_setosa;
 }\if{html}{\out{</div>}}
 
-Interpreted comments precede the sql query to which the refer. Interpreted
+Interpreted comments precede the sql query to which they refer. Interpretable
 comments are:
 
 \describe{

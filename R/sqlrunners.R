@@ -65,32 +65,31 @@
 #' @export
 runqueries <- function(sql,
                        ...,
-                       default_conn = default_conn(),
+                       default.conn = default_conn(),
                        include_params = FALSE ){
 
-  if( ! (is(default_conn, "DBIConnection" ) | is(default_conn, "Pool")) ){
+  if( ! (is(default.conn, "DBIConnection" ) | is(default.conn, "Pool")) ){
 
     if( is.null( connection_info() ) )
       stop("No connections are configured")
 
-    if( ! is.character( default_conn ) )
+    if( ! is.character( default.conn ) )
       stop("default_conn must be a connection or the name of a connection")
 
-    if( default_conn %in% names( connection_cache ) )
-      default_conn <- live_connection( conn_name = default_conn )
+    if( default.conn %in% names( connection_cache ) )
+      default.conn <- live_connection( conn_name = default.conn )
 
-
-    if( ! (is(default_conn, "DBIConnection" ) | is(default_conn, "Pool")) )
+    if( ! (is(default.conn, "DBIConnection" ) | is(default.conn, "Pool")) )
       stop( glue::glue("default_conn is not a connection or the name of a connection") )
 
   }
 
-  prepped_sql <- prepare_sql( sql, quotesql, values, execmethod, geometry, default_conn )
+  prepped_sql <- prepare_sql( sql, ..., default.conn = default.conn)
 
   prepped_sql$result <- purrr::pmap(
-    dplyr::select( prepped_sql, execmethod, conn_name, geometry, prepared_sql ),
+    prepped_sql[,c("execmethod", "conn_name", "geometry", "prepared_sql" )],
 
-    function( execmethod, conn_name, geometry, prepared_sql, default_conn ){
+    function( execmethod, conn_name, geometry, prepared_sql, default.conn ){
       if(execmethod == "get")
         dispatcher <- DBI::dbGetQuery
       else if(execmethod == "execute")
@@ -105,7 +104,7 @@ runqueries <- function(sql,
         stop( glue::glue( "execmethod must be one of 'get', 'execute', 'sendq', 'sends' or 'spatial', not {execmethod}" ) )
 
       if(conn_name == "default")
-        conn <- default_conn
+        conn <- default.conn
       else
         conn <- live_connection(conn_name)
 
@@ -119,7 +118,8 @@ runqueries <- function(sql,
       }
     }, # close function definition
 
-    default_conn = parent.frame()$default_conn
+    #default.conn = parent.frame()$default.conn
+    default.conn = default.conn
   ) # close purrr::pmap
 
   execd_sql <- tibble::as_tibble(prepped_sql)
@@ -158,7 +158,7 @@ runqueries <- function(sql,
 #' SELECT * FROM iris_setosa;
 #' ```
 #'
-#' Interpreted comments precede the sql query to which the refer. Interpreted
+#' Interpreted comments precede the sql query to which they refer. Interpretable
 #' comments are:
 #'
 #' \describe{
@@ -190,6 +190,7 @@ runqueries <- function(sql,
 #' @seealso [read_sql()], [prepare_sql()]
 #' @export
 runfiles <- function(filenames,
+                     cascade=TRUE,
                      ... ){
 
   sql <- do.call(

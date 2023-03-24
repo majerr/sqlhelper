@@ -3,6 +3,7 @@
 export(config_examples)
 export(connect)
 export(connection_info)
+export(default_conn)
 export(disconnect)
 export(get_default_conn_name)
 export(is_connected)

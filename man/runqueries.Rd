@@ -4,47 +4,38 @@
 \alias{runqueries}
 \title{Execute a sequence of SQL queries}
 \usage{
-runqueries(
-  sql,
-  quotesql = "yes",
-  values = parent.frame(),
-  execmethod = "get",
-  geometry = NA,
-  default_conn = live_connection(get_default_conn_name()),
-  include_params = FALSE
-)
+runqueries(sql, ..., default.conn = default_conn(), include_params = FALSE)
 }
 \arguments{
 \item{sql}{An optionally-named list or character vector containing sql
 strings, or a tibble returned by \code{\link[=read_sql]{read_sql()}} or \code{\link[=prepare_sql]{prepare_sql()}}}
 
-\item{quotesql}{"yes" or "no" - should interpolated characters be quoted by
-default?}
-
-\item{values}{Should the SQL be parameterized using R values before
-execution? Pass a environment containing the parameters to use, or anything
-else (e.g. "no", or \code{FALSE}) to skip parameterization.}
-
-\item{execmethod}{One of "get", "execute", "sendq", "sends" or "spatial" -
-which method should be used to execute the query? "get" means
-\code{\link[DBI:dbGetQuery]{DBI::dbGetQuery()}}; "execute" means \code{\link[DBI:dbExecute]{DBI::dbExecute()}}; "sendq" means
-\code{DBI::dbSendQuery}; "sends" means \code{\link[DBI:dbSendStatement]{DBI::dbSendStatement()}}; "spatial"
-means \code{\link[sf:st_read]{sf::st_read()}}.}
-
-\item{geometry}{If \code{execmethod} is "spatial", which geometry column
-should be used (ignored if \code{execmethod} is not spatial)}
-
-\item{default_conn}{A connection against which to execute queries if no other
-is specified. Either the name of a sqlhelper connection, or a database
-connection returned by \code{\link[DBI:dbConnect]{DBI::dbConnect()}}, or NA}
+\item{...}{Arguments to be passed to \code{prepare_sql()}}
 
 \item{include_params}{\code{TRUE} or \code{FALSE}. Should the parameters be included in the output?}
 }
 \value{
-If \code{include_params} is \code{FALSE}, an named list containing
-the results of each query; the names are the same as those in the \code{sql}
-parameter. If \code{include_params} is \code{TRUE}, a tibble containing the query as executed, the above parameters,
-and the result of each query.
+If \code{include_params} is \code{FALSE}, a named list containing the
+results of each query; the names are taken from the \code{sql} parameter.
+If \code{include_params} is \code{TRUE}, a tibble containing the query as
+executed, the execution parameters, and the result of each query.
+
+A tibble containing 1 row per query with the following fields:
+\describe{
+\item{qname}{character. A name for this query}
+\item{quotesql}{"yes" or "no". Should parameterized character values be quoted for this query?}
+\item{interpolate}{"yes" or "no". Should this query be parameterized with values from R?}
+\item{execmethod}{The method to execute this query.
+One of "get" (\code{\link[DBI:dbGetQuery]{DBI::dbGetQuery()}}), "execute" (\code{\link[DBI:dbExecute]{DBI::dbExecute()}}), "sendq" (\code{\link[DBI:dbSendQuery]{DBI::dbSendQuery()}}), "sends" (\code{\link[DBI:dbSendStatement]{DBI::dbSendStatement()}}) or "spatial" (\code{\link[sf:st_read]{sf::st_read()}})}
+\item{geometry}{character. If \code{execmethod} is "spatial", which is the geometry column?}
+\item{conn_name}{character. The name of the database connection to use for this query.
+Must be the name of a configured sqlhelper connection.}
+\item{sql}{The sql query to be executed}
+\item{filename}{The value of \code{file_name}}
+\item{prepared_sql}{The sql query to be executed, i.e. with interpolations
+and quoting in place}
+\item{}
+}
 }
 \description{
 Accepts a character vector of SQL queries and runs each one

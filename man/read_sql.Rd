@@ -4,7 +4,7 @@
 \alias{read_sql}
 \title{Read a sql file and return it's contents as a tibble}
 \usage{
-read_sql(file_name)
+read_sql(file_name, cascade = TRUE)
 }
 \arguments{
 \item{file_name}{Full name and path of a file to read}
@@ -13,16 +13,19 @@ read_sql(file_name)
 A tibble containing 1 row per query with the following fields:
 \describe{
 \item{qname}{character. A name for this query}
-\item{quotesql}{"yes" or "no". Should parameterized character values be quoted for this query? Defaults to "yes".}
-\item{interpolate}{"yes" or "no". Should this query be parameterized with values from R? Defaults to "yes".}
+\item{quotesql}{"yes" or "no". Should parameterized character values be quoted for this query?}
+\item{interpolate}{"yes" or "no". Should this query be parameterized with values from R?}
 \item{execmethod}{The method to execute this query.
 One of "get" (\code{\link[DBI:dbGetQuery]{DBI::dbGetQuery()}}), "execute" (\code{\link[DBI:dbExecute]{DBI::dbExecute()}}), "sendq" (\code{\link[DBI:dbSendQuery]{DBI::dbSendQuery()}}), "sends" (\code{\link[DBI:dbSendStatement]{DBI::dbSendStatement()}}) or "spatial" (\code{\link[sf:st_read]{sf::st_read()}})}
 \item{geometry}{character. If \code{execmethod} is "spatial", which is the geometry column?}
-\item{conn_name}{The name of the database connection to use for this query.
-Must be a configured sqlhelper connection.}
-\item{sql}{The unparameterized sql query to be executed}
+\item{conn_name}{character. The name of the database connection to use for this query.
+Must be the name of a configured sqlhelper connection.}
+\item{sql}{The sql query to be executed}
 \item{filename}{The value of \code{file_name}}
 }
+
+See \code{\link[=prepare_sql]{prepare_sql()}} for the treatment of missing values in the output and their
+defaults.
 }
 \description{
 Read a sql file and return it's contents as a tibble
@@ -48,8 +51,6 @@ SELECT * FROM iris_setosa;
 With the exception of \code{qname}, the value of each interpreted comment is
 cascaded to subsequent queries. This means you may set values once for the
 first query in the file and they will apply to all the queries thereafter.
-
-See \code{prepare_sql()} for the treatment of missing values in the output.
 }
 \examples{
 
