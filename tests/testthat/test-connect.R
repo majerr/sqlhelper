@@ -11,7 +11,7 @@ test_that("connections can be added and discovered",{
   expect_equal(connection_info()$name,
                c("single_mem","pool_mem"))
 
-  add_connection("sqlite_dbi",list("server_type"="sqlite",
+  add_connection("sqlite_dbi",list("driver_type"="sqlite",
                                    "connection"=c("Server"=":memory:")))
 
   expect_true("sqlite_dbi" %in% connection_info()$name)

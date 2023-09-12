@@ -18,8 +18,8 @@ test_that("All invalidations are captured", {
                  "Connection configuration for no_server was invalid; no_server will not be available")
 
 
-  expect_equal(validate_configs(configs["no_pool"])$no_pool$pool,FALSE)
-  expect_equal(validate_configs(configs["pool_not_logical"])$pool_not_logical$pool,FALSE)
-  expect_equal(validate_configs(configs["pool_too_long"])$pool_too_long$pool,FALSE)
+  expect_false(validate_configs(configs["no_pool"])$no_pool$pool)
+  expect_false(validate_configs(configs["pool_not_logical"])$pool_not_logical$pool)
+  expect_false(validate_configs(configs["pool_too_long"])$pool_too_long$pool)
 
   })
