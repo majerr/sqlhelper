@@ -1,0 +1,48 @@
+
+R version 4.1.2 (2021-11-01) -- "Bird Hippie"
+Copyright (C) 2021 The R Foundation for Statistical Computing
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> library(testthat)
+Warning message:
+package 'testthat' was built under R version 4.1.3 
+> library(sqlhelper)
+> 
+> test_check("sqlhelper")
+Note: method with signature 'DBIObject#sf' chosen for function 'dbDataType',
+ target signature 'SQLiteConnection#sf'.
+ "SQLiteConnection#ANY" would also be valid
+[ FAIL 5 | WARN 0 | SKIP 2 | PASS 115 ]
+
+== Skipped tests ===============================================================
+* On CRAN (2)
+
+== Failed tests ================================================================
+-- Failure ('test-validate_configs.R:4'): All invalidations are captured -------
+`validate_configs(list(c = "foo"))` did not throw the expected warning.
+-- Failure ('test-validate_configs.R:9'): All invalidations are captured -------
+`validate_configs(configs["no_connection"])` did not throw the expected warning.
+-- Failure ('test-validate_configs.R:11'): All invalidations are captured ------
+`validate_configs(configs["no_server_type"])` did not throw the expected warning.
+-- Failure ('test-validate_configs.R:13'): All invalidations are captured ------
+`validate_configs(configs["conn_child_is_list"])` did not throw the expected warning.
+-- Failure ('test-validate_configs.R:15'): All invalidations are captured ------
+`validate_configs(configs["no_server"])` did not throw the expected warning.
+
+[ FAIL 5 | WARN 0 | SKIP 2 | PASS 115 ]
+Error: Test failures
+Execution halted
+Warning message:
+In (function (e)  : You have a leaked pooled object.

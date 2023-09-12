@@ -19,6 +19,7 @@ reference:
   - live_connection
   - get_default_conn_name
   - set_default_conn_name
+  - default_conn
   - is_connected
   - not_connected
   - disconnect

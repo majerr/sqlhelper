@@ -1,0 +1,16 @@
+config_examples         Examples of yaml configurations for database
+                        connections
+connect                 (Re-)Establish connections to databases
+connection_info         Browse available connections
+default_conn            Return the default connection
+disconnect              Close all connections and remove them from the
+                        connections cache
+is_connected            Test whether a database is connected
+live_connection         Return the named connection or NULL
+prepare_sql             prepare queries and meta data for execution
+read_sql                Read a sql file and return it's contents as a
+                        tibble
+runfiles                Read, prepare and execute .SQL files
+runqueries              Execute a sequence of SQL queries
+set_default_conn_name   Set/get the name of the default connection to
+                        use
