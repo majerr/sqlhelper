@@ -10,16 +10,20 @@ is_connected(conn_name)
 not_connected(conn_name)
 }
 \arguments{
-\item{conn_name}{Character. The name of a connection (run
-\code{\link[=connection_info]{connection_info()}} for options)}
+\item{conn_name}{Character. The name of a connection (run \code{\link[=connection_info]{connection_info()}}
+for options)}
 }
 \value{
-Logical, or NULL if \code{conn_name} does not identify exactly 1
-connection
+Logical
 }
 \description{
 Test whether a database is connected
 }
 \details{
-\code{not_connected} is provided for readability, and is identical to \code{!is_connected()}.
+Note that these functions only report whether you are connected to a
+database with a connection named \code{conn_name}. A value of \code{TRUE} means that
+\code{conn_name} was found in the cache and is live, but  \code{FALSE} can mean that
+you not connected to \emph{any} databases, or that \code{conn_name} is not in the
+cache, or that it is in the cache but is not live. Use \code{connection_info()}
+if you need to determine which.
 }

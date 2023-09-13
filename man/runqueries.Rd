@@ -21,6 +21,12 @@ commands, or a tibble returned by \code{\link[=read_sql]{read_sql()}}}
 \item{quotesql}{"yes" or "no" - should interpolated characters be quoted by
 default?}
 
+\item{values}{Should the SQL be parameterized from R? Defaults to the
+value of \code{\link[=parent.frame]{parent.frame()}}. Pass any object that is not an environment
+(e.g. "no" or FALSE) if interpolation is to be skipped, or another
+environment containing values to interpolate to avoid using
+\code{\link[=parent.frame]{parent.frame()}}.}
+
 \item{execmethod}{One of "get", "execute", "sendq", "sends" or "spatial" - which method should be
 used to execute the query? "get" means \code{\link[DBI:dbGetQuery]{DBI::dbGetQuery()}}; "execute" means \code{\link[DBI:dbExecute]{DBI::dbExecute()}}; "sendq" means
 \code{DBI::dbSendQuery}; "sends" means \code{\link[DBI:dbSendStatement]{DBI::dbSendStatement()}}; "spatial" means \code{\link[sf:st_read]{sf::st_read()}}.}
@@ -28,16 +34,11 @@ used to execute the query? "get" means \code{\link[DBI:dbGetQuery]{DBI::dbGetQue
 \item{geometry}{If \code{execmethod} is "spatial", which geometry column
 should be used (ignored if \code{execmethod} is not spatial)}
 
-\item{include_params}{Should the parameters be included in the output?}
-
-\item{interpolate}{Should the SQL be parameterized from R? Defaults to the
-value of \code{\link[=parent.frame]{parent.frame()}}. Pass any object that is not an environment
-(e.g. "no" or FALSE) if interpolation is to be skipped, or another
-environment containing values to interpolate to avoid using
-\code{.GlobalEnv}.}
-
-\item{conn}{Either the name of a sqlhelper connection, or a database
+\item{default_conn}{A connection against which to execute queries if no other
+is specified. Either the name of a sqlhelper connection, or a database
 connection returned by \code{\link[DBI:dbConnect]{DBI::dbConnect()}}, or NA}
+
+\item{include_params}{\code{TRUE} or \code{FALSE}. Should the parameters be included in the output?}
 }
 \value{
 If \code{include_params} is \code{FALSE}, an named list containing

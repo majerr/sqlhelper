@@ -18,7 +18,7 @@
 #' }
 #'
 #' If no connection names matched `name_str`, the tibble will be empty. If
-#' no connections have been configured, `NULL` is returned.
+#' no connections have been configured (e.g. `connect()` has not been called), `NULL` is returned.
 #'
 #' @export
 connection_info <- function(name_str = ".*"){
