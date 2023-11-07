@@ -57,6 +57,12 @@ Accepts a character vector of SQL queries and runs each one
 {
 library(sqlhelper)
 
+readLines(
+    system.file("examples/sqlhelper_db_conf.yml",
+                package="sqlhelper")
+    ) |>
+writeLines()
+
 connect(
     system.file("examples/sqlhelper_db_conf.yml", package="sqlhelper"),
     exclusive=TRUE)

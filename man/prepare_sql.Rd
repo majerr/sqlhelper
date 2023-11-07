@@ -21,39 +21,47 @@ commands, or a tibble returned by \code{\link[=read_sql]{read_sql()}}}
 default? Anything that isn't "no" is treated as "yes".}
 
 \item{values}{An environment containing variables to interpolate into the
-SQL. Pass any object that is not an environment (e.g. "no", NA, FALSE or
-NULL) if interpolation is to be skipped, or another environment containing
-values to interpolate to avoid using \code{.GlobalEnv}.}
+SQL. Pass any object that is not an environment (commonly-used options
+include "no", NA, FALSE or NULL) if interpolation is to be skipped, or
+another environment containing values to interpolate to avoid using
+\code{.GlobalEnv}.}
 
 \item{execmethod}{One of "get", "execute", "sendq", "sends" or "spatial" -
 which method should be used to execute the query? "get" means
 \code{\link[DBI:dbGetQuery]{DBI::dbGetQuery()}}; "execute" means \code{\link[DBI:dbExecute]{DBI::dbExecute()}}; "sendq" means
-\link[DBI:dbSendQuery]{DBI::dbSendQuery}; "sends" means \code{\link[DBI:dbSendStatement]{DBI::dbSendStatement()}}; "spatial"
-means \code{\link[sf:st_read]{sf::st_read()}}.}
+\link[DBI:dbSendQuery]{DBI::dbSendQuery}; "sends" means \code{\link[DBI:dbSendStatement]{DBI::dbSendStatement()}}; "spatial" means
+\code{\link[sf:st_read]{sf::st_read()}}.}
 
 \item{geometry}{If \code{execmethod} is "spatial", which column contains the
 geometry? Ignored if \code{execmethod} is not "spatial".}
 
 \item{default.conn}{Either the name of a sqlhelper connection, or a database
 connection returned by \code{\link[DBI:dbConnect]{DBI::dbConnect()}}, or NA. This connection is only
-used by \code{\link[glue:glue_sql]{glue::glue_sql()}} to interpolate SQL strings, it is not used to
-execute any SQL code.}
+used by \code{\link[glue:glue_sql]{glue::glue_sql()}} to quote SQL interpolations, this function does
+not execute any SQL code.}
 }
 \value{
 A tibble containing 1 row per query with the following fields:
+
 \describe{
 \item{qname}{character. A name for this query}
-\item{quotesql}{"yes" or "no". Should parameterized character values be quoted for this query?}
-\item{interpolate}{"yes" or "no". Should this query be parameterized with values from R?}
-\item{execmethod}{The method to execute this query.
-One of "get" (\code{\link[DBI:dbGetQuery]{DBI::dbGetQuery()}}), "execute" (\code{\link[DBI:dbExecute]{DBI::dbExecute()}}), "sendq" (\code{\link[DBI:dbSendQuery]{DBI::dbSendQuery()}}), "sends" (\code{\link[DBI:dbSendStatement]{DBI::dbSendStatement()}}) or "spatial" (\code{\link[sf:st_read]{sf::st_read()}})}
-\item{geometry}{character. If \code{execmethod} is "spatial", which is the geometry column?}
-\item{conn_name}{character. The name of the database connection to use for this query.
-Must be the name of a configured sqlhelper connection.}
+\item{quotesql}{"yes" or "no". Should parameterized character values be
+quoted for this query?}
+\item{interpolate}{"yes" or "no". Should this query
+be parameterized with values from R?}
+\item{execmethod}{The method to
+execute this query. One of "get" (\code{\link[DBI:dbGetQuery]{DBI::dbGetQuery()}}), "execute"
+(\code{\link[DBI:dbExecute]{DBI::dbExecute()}}), "sendq" (\code{\link[DBI:dbSendQuery]{DBI::dbSendQuery()}}), "sends"
+(\code{\link[DBI:dbSendStatement]{DBI::dbSendStatement()}}) or "spatial" (\code{\link[sf:st_read]{sf::st_read()}})}
+\item{geometry}{character. If \code{execmethod} is "spatial", which is the
+geometry column?}
+\item{conn_name}{character. The name of the database
+connection to use for this query. Must be the name of a configured
+sqlhelper connection.}
 \item{sql}{The sql query as entered}
 \item{filename}{The value of \code{file_name}}
-\item{prepared_sql}{The sql query to be executed, i.e. with interpolations
-and quoting in place}
+\item{prepared_sql}{The sql query
+to be executed, i.e. with interpolations and quoting in place}
 }
 }
 \description{
@@ -62,6 +70,6 @@ supplied in \code{sql} (e.g. when \code{sql} is a tibble returned by \code{\link
 }
 \details{
 The \code{default_conn} parameter may be used to supply a connection object that
-is not a configured sqlhelper connection which can then be used to interpolate
-quoted strings.
+is not a configured sqlhelper connection which can then be used to
+interpolate quoted strings.
 }

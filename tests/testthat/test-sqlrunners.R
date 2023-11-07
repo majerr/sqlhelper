@@ -72,7 +72,7 @@ test_that("spatial read works", {
   # ... and closed without explanation. Must have been a stupid question.
 
   # Turns out CRS strings are not necessarily expected to be equal:
-  # https://github.com/r-spatial_read/sf/issues/180
+  # https://github.com/r-spatial/sf/issues/180
 
   expect_equal(names(spatial_read$congruent), names(spData::congruent))
   expect_equal(spatial_read$congruent[[1]],

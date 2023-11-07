@@ -67,8 +67,14 @@ the first query.
   system.file("examples/cascade.sql",
                 package="sqlhelper")
 ) |> writeLines()
-#> Warning in file(con, "r"): file("") only supports open = "w+" and open = "w+b":
-#> using the former
+#> -- qname = first_query
+#> -- conn_name = not_the_default
+#> select * from foo;
+#> 
+#> --qname = second_query
+#> -- this query will also be executed against the
+#> -- connection called 'not_the_default'
+#> select * from bar;
 }\if{html}{\out{</div>}}
 }
 \seealso{
