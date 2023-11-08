@@ -2,7 +2,7 @@
 % Please edit documentation in R/prepare_sql.R
 \name{prepare_sql}
 \alias{prepare_sql}
-\title{prepare queries and meta data for execution}
+\title{prepare queries and assemble meta data prior to execution}
 \usage{
 prepare_sql(
   sql,
@@ -37,7 +37,7 @@ geometry? Ignored if \code{execmethod} is not "spatial".}
 
 \item{default.conn}{Either the name of a sqlhelper connection, or a database
 connection returned by \code{\link[DBI:dbConnect]{DBI::dbConnect()}}, or NA. This connection is only
-used by \code{\link[glue:glue_sql]{glue::glue_sql()}} to quote SQL interpolations, this function does
+used by \code{\link[glue:glue_sql]{glue::glue_sql()}} to quote SQL interpolations; \code{\link[=prepare_sql]{prepare_sql()}} does
 not execute any SQL code.}
 }
 \value{
@@ -66,10 +66,10 @@ to be executed, i.e. with interpolations and quoting in place}
 }
 \description{
 Except for \code{sql}, parameters are default values to be used when none are
-supplied in \code{sql} (e.g. when \code{sql} is a tibble returned by \code{\link[=read_sql]{read_sql()}}).
+supplied in \code{sql} (i.e. when \code{sql} is a tibble returned by \code{\link[=read_sql]{read_sql()}}).
 }
 \details{
-The \code{default_conn} parameter may be used to supply a connection object that
+The \code{default.conn} parameter may be used to supply a connection object that
 is not a configured sqlhelper connection which can then be used to
 interpolate quoted strings.
 }

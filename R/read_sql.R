@@ -1,32 +1,9 @@
 #' Read a sql file and return it's contents as a tibble
 #'
 #' @param file_name Full name and path of a file to read
-#' @param cascade If TRUE, fill the values of absent execution parameters with
-#'   the most recent present value. This enables you to set the connection name
-#'   once, for the first query in a file and use the same connection for all the
-#'   subsequent queries, for example.
-#'
-#' @details Multiple SQL queries in the file should be terminated by semi-colons (`;`).
-#'
-#'   The values of `qname`, `quotesql`, `interpolate`, `execmethod`, `geometry`,
-#'   and `conn_name` in the output may be controlled with comments
-#'   immediately preceding each query:
-#'
-#'   ```{sql sql1, eval=FALSE}
-#' -- qname = create_setosa_table
-#' -- execmethod = execute
-#' -- conn_name = sqlite_simple
-#' CREATE TABLE iris_setosa as SELECT * FROM IRIS WHERE SPECIES = 'setosa';
-#'
-#' -- qname = get_setosa_table
-#' -- execmethod = get
-#' -- conn_name = sqlite_simple
-#' SELECT * FROM iris_setosa;
-#' ```
-#'
-#' With the exception of `qname`, the value of each interpreted comment is
-#' cascaded to subsequent queries. This means you may set values once for the
-#' first query in the file and they will apply to all the queries thereafter.
+#' @param cascade If TRUE, specified execution parameters will be . This enables
+#'   you to set a parameter (e.g. the connection name) once, for the first query
+#'   in a file, and use it for all the subsequent queries.
 #'
 #' @return A tibble containing 1 row per query with the following fields:
 #' \describe{
@@ -42,7 +19,31 @@
 #'  \item{filename}{The value of `file_name`}
 #' }
 #'
-#' See [prepare_sql()] for the treatment of missing values in the output and their
+#' @details Multiple SQL queries in the file should be terminated by semi-colons (`;`).
+#'
+#'   The values of `qname`, `quotesql`, `interpolate`, `execmethod`, `geometry`,
+#'   and `conn_name` in the output may be specified with comments immediately
+#'   preceding each query:
+#'
+#'   ```{sql sql1, eval=FALSE}
+#' -- qname = create_setosa_table
+#' -- execmethod = execute
+#' -- conn_name = sqlite_simple
+#' CREATE TABLE iris_setosa as SELECT * FROM IRIS WHERE SPECIES = 'setosa';
+#'
+#' -- qname = get_setosa_table
+#' -- execmethod = get
+#' -- conn_name = sqlite_simple
+#' SELECT * FROM iris_setosa;
+#' ```
+#'
+#' With the exception of `qname`, the value of each interpreted comment is
+#' cascaded to subsequent queries (assuming `cascade=TRUE`). This means you may
+#' set values once for the first query in the file and they will apply to all
+#' the queries thereafter.
+#'
+#' See [run_queries()] for the implications of setting execution parameters. See
+#' [prepare_sql()] for the treatment of missing values in the output and their
 #' defaults.
 #'
 #' @examples
@@ -53,7 +54,10 @@
 #' readLines( fn ) |> writeLines()
 #'
 #' connect( system.file("examples/sqlhelper_db_conf.yml", package="sqlhelper") )
-#' read_sql(fn)
+#' sql_tibble <- read_sql(fn)
+#' sql_tibble
+#'
+#' sql_tibble$sql
 #'
 #' @export
 read_sql <- function(file_name, cascade=TRUE)  {
@@ -78,15 +82,13 @@ read_sql <- function(file_name, cascade=TRUE)  {
                    x = paste0(no_blanks, collapse = " "),
                    perl = TRUE);
 
-
-  queries <- tibble::add_column(interpreted_comments, sql = split_sql(sql_code))
-
-  queries <- tibble::add_column(queries,
-                                filename = gsub("\\..*",
-                                                "",
-                                                basename(file_name)
-                                ))
-  queries
+  # Add the sql and the filename to the tibble of interpreted comments
+  interpreted_comments |>
+    tibble::add_column(sql = split_sql(sql_code)) |>
+    tibble::add_column(filename = gsub("\\..*", # strip extension ...
+                                       "",
+                                       basename(file_name) # ... and path
+                       ))
 }
 
 #' Generate a low entropy token to temporarily replace newlines and quoted strings

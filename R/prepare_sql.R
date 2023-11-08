@@ -1,9 +1,9 @@
-#' prepare queries and meta data for execution
+#' prepare queries and assemble meta data prior to execution
 #'
 #' Except for `sql`, parameters are default values to be used when none are
-#' supplied in `sql` (e.g. when `sql` is a tibble returned by [read_sql()]).
+#' supplied in `sql` (i.e. when `sql` is a tibble returned by [read_sql()]).
 #'
-#' The `default_conn` parameter may be used to supply a connection object that
+#' The `default.conn` parameter may be used to supply a connection object that
 #' is not a configured sqlhelper connection which can then be used to
 #' interpolate quoted strings.
 #'
@@ -30,7 +30,7 @@
 #'
 #' @param default.conn Either the name of a sqlhelper connection, or a database
 #'   connection returned by [DBI::dbConnect()], or NA. This connection is only
-#'   used by [glue::glue_sql()] to quote SQL interpolations, this function does
+#'   used by [glue::glue_sql()] to quote SQL interpolations; [prepare_sql()] does
 #'   not execute any SQL code.
 #'
 #' @return A tibble containing 1 row per query with the following fields:

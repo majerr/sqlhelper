@@ -3,17 +3,20 @@
 #' Accepts a character vector of SQL queries and runs each one
 #'
 #' @param sql An optionally-named list or character vector containing sql
-#'   strings, or a tibble returned by [read_sql()] or [prepare_sql()]
+#'   strings, or a tibble returned by [read_sql()] or [prepare_sql()].
 #'
-#' @param ... Arguments to be passed to `prepare_sql()`
+#' @param ... Arguments to be passed to [read_sql()] or `prepare_sql()`
 #'
 #' @param default.conn Either the name of a sqlhelper connection, or a database
-#'   connection returned by [DBI::dbConnect()], or NA. This connection is only
-#'   used by [glue::glue_sql()] to interpolate SQL strings, it is not used to
-#'   execute any SQL code.
+#'   connection returned by [DBI::dbConnect()] or [pool::dbPool()]. This
+#'   connection is used as a fall-back when the `sql` parameter is a tibble and
+#'   no per-query connection name is supplied, or the connection name is
+#'   `default` (see [prepare_sql()]). It may be used by [glue::glue_sql()] to
+#'   interpolate SQL strings, and as the connection against which to execute SQL
+#'   queries.
 #'
 #' @param include_params \code{TRUE} or \code{FALSE}. Should the parameters be
-#'   included in the output?
+#'   included in the output? Mainly useful for debugging.
 #'
 #' @return
 #' * If \code{include_params} is \code{FALSE} and the `sql` argument is a
@@ -30,8 +33,8 @@
 #'  \item{interpolate}{"yes" or "no". Should this query be parameterized with values from R?}
 #'  \item{execmethod}{The method to execute this query.
 #'  One of "get" ([DBI::dbGetQuery()]), "execute" ([DBI::dbExecute()]), "sendq" ([DBI::dbSendQuery()]), "sends" ([DBI::dbSendStatement()]) or "spatial" ([sf::st_read()])}
-#'  \item{geometry}{character. If `execmethod` is "spatial", which is the geometry column?}
-#'  \item{conn_name}{character. The name of the database connection to use for this query.
+#'  \item{geometry}{character. If `execmethod` is "spatial", this should be the name of the geometry column.}
+#'  \item{conn_name}{character. The name of the database connection against which to execute this query.
 #'  Must be the name of a configured sqlhelper connection.}
 #'  \item{sql}{The sql query to be executed}
 #'  \item{filename}{The value of `file_name`}
@@ -59,24 +62,24 @@
 #'
 #' n <- 5
 #'
-#' runqueries(
+#' run_queries(
 #'     c(top_n = "select * from iris limit {n}", # interpolation is controlled
 #'                                               # with the 'values' argument
 #'       uniqs = "select distinct species as species from iris")
 #' )
 #'
 #' ## Use the execmethod parameter if you don't want to return results
-#' runqueries("create table iris_setosa as select * from iris where species = 'setosa'",
+#' run_queries("create table iris_setosa as select * from iris where species = 'setosa'",
 #'           execmethod = 'execute')
 #'
-#' runqueries("select distinct species as species from iris_setosa")
+#' run_queries("select distinct species as species from iris_setosa")
 #' }
 #' @family SQL runners
 #'
-#' @seealso \code{\link{runfiles}}
+#' @seealso [read_sql()], [prepare_sql()]
 #'
 #' @export
-runqueries <- function(sql,
+run_queries <- function(sql,
                        ...,
                        default.conn = default_conn(),
                        include_params = FALSE ){
@@ -88,7 +91,7 @@ runqueries <- function(sql,
       stop("No connections are configured")
 
     if( ! is.character( default.conn ) )
-      stop("default_conn must be a connection or the name of a connection")
+      stop("default.conn must be a connection or the name of a connection")
 
     if( default.conn %in% names( connection_cache ) )
       default.conn <- live_connection( conn_name = default.conn )
@@ -161,9 +164,9 @@ runqueries <- function(sql,
   out
 }
 
-#' @rdname runqueries
+#' @rdname run_queries
 #' @export
-run_queries <- runqueries
+runqueries <- run_queries
 
 #' Read, prepare and execute .SQL files
 #'
@@ -174,13 +177,16 @@ run_queries <- runqueries
 #'   the most recent present value. This enables you to set the connection name
 #'   once, for the first query in a file and use the same connection for all the
 #'   subsequent queries, for example.
-#' @param ... Arguments to be passed to [runqueries()]
+#' @param ... Arguments to be passed to [run_queries()], [prepare_sql()], or [read_sql()]
 #' @param include_params \code{TRUE} or \code{FALSE}. Should the parameters be
 #'   included in the output?
 #'
 #' @return A list of results of sql queries found in files
 #' @details
-#' [runfiles()] enables you to control the arguments accepted by [runqueries()]
+#'
+#' [run_files()] calls [read_sql()] on each file
+#'
+#' [run_files()] enables you to control the arguments accepted by [run_queries()]
 #' on a per-query basis, using interpreted comments in your sql file:
 #'
 #' ```{sql sql1, eval=FALSE}
@@ -211,7 +217,7 @@ run_queries <- runqueries
 #'  \item{conn_name}{The name of a connection to execute this query against}
 #' }
 #'
-#' All interpreted comments except `qname` are recycled within their file, meaning
+#' All interpreted comments except `qname` are recycled _within their file_, meaning
 #' that if you want to use the same values throughout, you need only set them for
 #' the first query.
 #'
@@ -226,17 +232,21 @@ run_queries <- runqueries
 #' @family SQL runners
 #' @seealso [read_sql()], [prepare_sql()]
 #' @export
-runfiles <- function(filenames,
-                     cascade=TRUE,
+run_files <- function(filenames,
                      ...,
                      include_params = FALSE){
 
+  args <- list(...)
+  if( ! ('cascade' %in% names(args)))
+    args$cascade = TRUE
+
   sql <- do.call(
     rbind,
-    lapply(filenames, read_sql, cascade = cascade)
+    lapply(filenames, read_sql, cascade = args$cascade)
   )
 
-  args <- list(...)
+  args$cascade <- NULL # drop cascade to prevent 'unused argument' errors
+
   args$sql <- sql
   args$include_params <- include_params
   if(!("values" %in% names(args))){
@@ -246,6 +256,6 @@ runfiles <- function(filenames,
           args)
 }
 
-#' @rdname runfiles
+#' @rdname run_files
 #' @export
-run_files <- runfiles
+runfiles <- run_files

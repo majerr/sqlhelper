@@ -9,10 +9,9 @@ read_sql(file_name, cascade = TRUE)
 \arguments{
 \item{file_name}{Full name and path of a file to read}
 
-\item{cascade}{If TRUE, fill the values of absent execution parameters with
-the most recent present value. This enables you to set the connection name
-once, for the first query in a file and use the same connection for all the
-subsequent queries, for example.}
+\item{cascade}{If TRUE, specified execution parameters will be . This enables
+you to set a parameter (e.g. the connection name) once, for the first query
+in a file, and use it for all the subsequent queries.}
 }
 \value{
 A tibble containing 1 row per query with the following fields:
@@ -28,9 +27,6 @@ Must be the name of a configured sqlhelper connection.}
 \item{sql}{The sql query to be executed}
 \item{filename}{The value of \code{file_name}}
 }
-
-See \code{\link[=prepare_sql]{prepare_sql()}} for the treatment of missing values in the output and their
-defaults.
 }
 \description{
 Read a sql file and return it's contents as a tibble
@@ -39,8 +35,8 @@ Read a sql file and return it's contents as a tibble
 Multiple SQL queries in the file should be terminated by semi-colons (\verb{;}).
 
 The values of \code{qname}, \code{quotesql}, \code{interpolate}, \code{execmethod}, \code{geometry},
-and \code{conn_name} in the output may be controlled with comments
-immediately preceding each query:
+and \code{conn_name} in the output may be specified with comments immediately
+preceding each query:
 
 \if{html}{\out{<div class="sourceCode sql">}}\preformatted{-- qname = create_setosa_table
 -- execmethod = execute
@@ -54,8 +50,13 @@ SELECT * FROM iris_setosa;
 }\if{html}{\out{</div>}}
 
 With the exception of \code{qname}, the value of each interpreted comment is
-cascaded to subsequent queries. This means you may set values once for the
-first query in the file and they will apply to all the queries thereafter.
+cascaded to subsequent queries (assuming \code{cascade=TRUE}). This means you may
+set values once for the first query in the file and they will apply to all
+the queries thereafter.
+
+See \code{\link[=run_queries]{run_queries()}} for the implications of setting execution parameters. See
+\code{\link[=prepare_sql]{prepare_sql()}} for the treatment of missing values in the output and their
+defaults.
 }
 \examples{
 
@@ -65,6 +66,9 @@ fn <- system.file( "examples/read_sql.sql", package="sqlhelper" )
 readLines( fn ) |> writeLines()
 
 connect( system.file("examples/sqlhelper_db_conf.yml", package="sqlhelper") )
-read_sql(fn)
+sql_tibble <- read_sql(fn)
+sql_tibble
+
+sql_tibble$sql
 
 }

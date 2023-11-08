@@ -28,8 +28,8 @@ reference:
   desc: >
     Functions for reading, preparing and executing SQL
   contents:
-  - runfiles
-  - runqueries
+  - run_files
+  - run_queries
   - read_sql
   - prepare_sql
 
