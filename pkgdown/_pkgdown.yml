@@ -37,7 +37,7 @@ reference:
 development:
   mode: auto
 
-url: https://majr-red.github.io/sqlhelper/
+url: https://majerr.github.io/sqlhelper/
 
 template:
   bootstrap: 5
