@@ -1,7 +1,7 @@
 Package: sqlhelper
 Title: Easier SQL integration
 Version: 0.1.2.9000
-Authors@R: person("Matthew", "Roberts", email = "matthew.roberts@levellingup.gov.uk", role = c("aut", "cre"))
+Authors@R: person("Matthew", "Roberts", email = "matthew.roberts@levellingup.gov.uk", role = c("aut", "cre", "cph"))
 Description: Manage database connections and SQL execution.
 Depends: R (>= 4.1.0)
 Imports:
@@ -35,5 +35,5 @@ Suggests:
     bigrquery
 Config/testthat/edition: 3
 VignetteBuilder: knitr
-URL: https://majr-red.github.io/sqlhelper/dev, https://github.com/majr-red/sqlhelper
-BugReports: https://github.com/majr-red/sqlhelper/issues
+URL: https://majerr.github.io/sqlhelper/dev, https://github.com/majerr/sqlhelper
+BugReports: https://github.com/majerr/sqlhelper/issues

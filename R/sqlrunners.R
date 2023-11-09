@@ -173,10 +173,6 @@ runqueries <- run_queries
 #' Accepts a character vector of SQL file names and attempts to execute each one.
 #'
 #' @param filenames name, or vector of names, of file(s) to be executed
-#' @param cascade If TRUE, fill the values of absent execution parameters with
-#'   the most recent present value. This enables you to set the connection name
-#'   once, for the first query in a file and use the same connection for all the
-#'   subsequent queries, for example.
 #' @param ... Arguments to be passed to [run_queries()], [prepare_sql()], or [read_sql()]
 #' @param include_params \code{TRUE} or \code{FALSE}. Should the parameters be
 #'   included in the output?

@@ -90,7 +90,7 @@ run_queries("select distinct species as species from iris_setosa")
 }
 }
 \seealso{
-\code{\link{runfiles}}
+\code{\link[=read_sql]{read_sql()}}, \code{\link[=prepare_sql]{prepare_sql()}}
 
 Other SQL runners: 
 \code{\link{run_files}()}

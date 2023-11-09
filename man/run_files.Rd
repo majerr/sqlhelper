@@ -5,17 +5,12 @@
 \alias{runfiles}
 \title{Read, prepare and execute .SQL files}
 \usage{
-run_files(filenames, cascade = TRUE, ..., include_params = FALSE)
+run_files(filenames, ..., include_params = FALSE)
 
-runfiles(filenames, cascade = TRUE, ..., include_params = FALSE)
+runfiles(filenames, ..., include_params = FALSE)
 }
 \arguments{
 \item{filenames}{name, or vector of names, of file(s) to be executed}
-
-\item{cascade}{If TRUE, fill the values of absent execution parameters with
-the most recent present value. This enables you to set the connection name
-once, for the first query in a file and use the same connection for all the
-subsequent queries, for example.}
 
 \item{...}{Arguments to be passed to \code{\link[=run_queries]{run_queries()}}, \code{\link[=prepare_sql]{prepare_sql()}}, or \code{\link[=read_sql]{read_sql()}}}
 
@@ -29,6 +24,8 @@ A list of results of sql queries found in files
 Accepts a character vector of SQL file names and attempts to execute each one.
 }
 \details{
+\code{\link[=run_files]{run_files()}} calls \code{\link[=read_sql]{read_sql()}} on each file
+
 \code{\link[=run_files]{run_files()}} enables you to control the arguments accepted by \code{\link[=run_queries]{run_queries()}}
 on a per-query basis, using interpreted comments in your sql file:
 

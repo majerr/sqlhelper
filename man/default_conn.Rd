@@ -7,7 +7,8 @@
 default_conn()
 }
 \value{
-A database connection as returned by \code{DBI::dbConnect()}
+A database connection returned by \code{DBI::dbConnect()} or
+\code{pool::dbPool()}
 }
 \description{
 A convenience wrapper around \code{live_connection()} and \code{get_default_conn_name()}

@@ -3,10 +3,8 @@
 #' @param conn_name Character. The name of a connection (run
 #'   [connection_info()] for options)
 #'
-#' @return Logical, or NULL if \code{conn_name} does not identify exactly 1
+#' @return Logical, or NULL if `conn_name` does not identify exactly 1
 #' connection
-#'
-#' @details `not_connected` is provided for readability, and is identical to \code{!is_connected()}.
 #'
 #' @export
 is_connected <- function(conn_name){
@@ -23,5 +21,11 @@ is_connected <- function(conn_name){
 #' @rdname is_connected
 #' @export
 not_connected <- function(conn_name){
-  return(!is_connected(conn_name))
+  connected <- is_connected(conn_name)
+
+  if( ! is.null(connected) ){
+    return(!connected)
+  }
+
+  connected
 }
