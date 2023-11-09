@@ -1,10 +1,11 @@
 # sqlhelper (development version)
 
-# sqlhelper 0.1.3
-
 ## Enhancements
 
-* added `run_queries()` and `run_files()` as aliases for `runqueries()` and `runfiles()`
+* renamed `runqueries()` and `runfiles()` as `run_queries()` and `run_files()`
+* added `runqueries()` and `runfiles()` as aliases for `run_queries()` and `run_files()`  
+* numerous documentation updates
+* `run_files()` no longer requires an explicit `cascade` argument 
 
 ## Bug fixes
 
