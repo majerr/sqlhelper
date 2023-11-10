@@ -1,9 +1,10 @@
 #' Read a sql file and return it's contents as a tibble
 #'
 #' @param file_name Full name and path of a file to read
-#' @param cascade If TRUE, specified execution parameters will be . This enables
-#'   you to set a parameter (e.g. the connection name) once, for the first query
-#'   in a file, and use it for all the subsequent queries.
+#' @param cascade If TRUE, execution parameters specified in the file will be
+#'   cascaded to subsequent queries where that parameter is not specified. This
+#'   enables you to set a parameter (e.g. the connection name) once, for the
+#'   first query in a file, and use it for all the subsequent queries.
 #'
 #' @return A tibble containing 1 row per query with the following fields:
 #' \describe{

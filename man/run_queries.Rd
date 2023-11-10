@@ -57,7 +57,6 @@ and quoting in place}
 Accepts a character vector of SQL queries and runs each one
 }
 \examples{
-{
 library(sqlhelper)
 
 readLines(
@@ -87,7 +86,7 @@ run_queries("create table iris_setosa as select * from iris where species = 'set
           execmethod = 'execute')
 
 run_queries("select distinct species as species from iris_setosa")
-}
+
 }
 \seealso{
 \code{\link[=read_sql]{read_sql()}}, \code{\link[=prepare_sql]{prepare_sql()}}

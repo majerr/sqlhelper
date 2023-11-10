@@ -43,7 +43,7 @@
 #'  \item{result}{The result of the query}
 #' }
 #'
-#' @examples{
+#' @examples
 #' library(sqlhelper)
 #'
 #' readLines(
@@ -73,7 +73,7 @@
 #'           execmethod = 'execute')
 #'
 #' run_queries("select distinct species as species from iris_setosa")
-#' }
+#'
 #' @family SQL runners
 #'
 #' @seealso [read_sql()], [prepare_sql()]
@@ -197,8 +197,14 @@ runqueries <- run_queries
 #' SELECT * FROM iris_setosa;
 #' ```
 #'
-#' Interpreted comments precede the sql query to which they refer. Interpretable
-#' comments are:
+#' Interpreted comments precede the sql query to which they refer. Each
+#' interpretable comment must be on a line by itself and take the form:
+#'
+#' ```sql
+#' -- keyword = value
+#' ```
+#'
+#' Keywords for interpretable comments are:
 #'
 #' \describe{
 #'  \item{qname}{A name for this query}
@@ -213,17 +219,51 @@ runqueries <- run_queries
 #'  \item{conn_name}{The name of a connection to execute this query against}
 #' }
 #'
-#' All interpreted comments except `qname` are recycled _within their file_, meaning
-#' that if you want to use the same values throughout, you need only set them for
-#' the first query.
+#' All interpreted comments except `qname` are cascaded _within their file_,
+#' meaning that if you want to use the same values throughout, you need only set
+#' them for the first query. See `read_sql()`
 #'
 #' ```{r}
 #' readLines(
 #'   system.file("examples/cascade.sql",
 #'                 package="sqlhelper")
 #' ) |> writeLines()
-#'
+#
 #' ```
+#' @examples
+#' library(sqlhelper)
+#'
+#' config_filename <- system.file("examples/sqlhelper_db_conf.yml",
+#'                 package="sqlhelper")
+#'
+#' readLines( config_filename ) |> writeLines()
+#'
+#' connect(
+#'     config_filename,
+#'     exclusive=TRUE)
+#'
+#' DBI::dbWriteTable( default_conn(), "iris", iris)
+#'
+#' sf::st_write(spData::congruent, default_conn(), "congruent")
+#' sf::st_write(spData::incongruent, live_connection("pool_sqlite"), "incongruent")
+#'
+#' run_files_ex1 <- system.file("examples/run_files_ex1.sql", package="sqlhelper")
+#' readLines( run_files_ex1 ) |> writeLines()
+#'
+#' run_files_ex2 <- system.file("examples/run_files_ex2.sql", package="sqlhelper")
+#' readLines( run_files_ex2 ) |> writeLines()
+#'
+#' n_longest_petals <- 5
+#' results <- run_files( c( run_files_ex1, run_files_ex2 ) )
+#'
+#' names(results)
+#'
+#' results$how_many_irises
+#'
+#' results$n_longest_setosa_petal_lengths
+#'
+#' plot(results$get_congruent, border = "orange")
+#' plot(results$get_incongruent, border = "blue", add=TRUE)
 #'
 #' @family SQL runners
 #' @seealso [read_sql()], [prepare_sql()]
