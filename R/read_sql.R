@@ -1,23 +1,67 @@
 #' Read a sql file and return it's contents as a tibble
 #'
-#' @param file_name Full name and path of file to read
+#' @param file_name Full name and path of a file to read
+#' @param cascade If TRUE, execution parameters specified in the file will be
+#'   cascaded to subsequent queries where that parameter is not specified. This
+#'   enables you to set a parameter (e.g. the connection name) once, for the
+#'   first query in a file, and use it for all the subsequent queries.
 #'
 #' @return A tibble containing 1 row per query with the following fields:
 #' \describe{
 #'  \item{qname}{character. A name for this query}
-#'  \item{quotesql}{"yes" or "no". Should parameterized character values be quoted for this query? Defaults to "yes".}
-#'  \item{interpolate}{"yes" or "no". Should this query be parameterized with values from R? Defaults to "yes".}
+#'  \item{quotesql}{"yes" or "no". Should parameterized character values be quoted for this query?}
+#'  \item{interpolate}{"yes" or "no". Should this query be parameterized with values from R?}
 #'  \item{execmethod}{The method to execute this query.
-#' One of "get" ([DBI::dbGetQuery()]), "execute" ([DBI::dbExecute()]), "sendq" ([DBI::dbSendQuery()]), "sends" ([DBI::dbSendStatement()]) or "spatial" ([sf::st_read()])}
+#'  One of "get" ([DBI::dbGetQuery()]), "execute" ([DBI::dbExecute()]), "sendq" ([DBI::dbSendQuery()]), "sends" ([DBI::dbSendStatement()]) or "spatial" ([sf::st_read()])}
 #'  \item{geometry}{character. If `execmethod` is "spatial", which is the geometry column?}
-#'  \item{conn}{The name of the database connection to use for this query}
-#'  \item{sql}{The unparameterized sql query to be executed}
+#'  \item{conn_name}{character. The name of the database connection to use for this query.
+#'  Must be the name of a configured sqlhelper connection.}
+#'  \item{sql}{The sql query to be executed}
 #'  \item{filename}{The value of `file_name`}
 #' }
 #'
+#' @details Multiple SQL queries in the file should be terminated by semi-colons (`;`).
+#'
+#'   The values of `qname`, `quotesql`, `interpolate`, `execmethod`, `geometry`,
+#'   and `conn_name` in the output may be specified with comments immediately
+#'   preceding each query:
+#'
+#'   ```{sql sql1, eval=FALSE}
+#' -- qname = create_setosa_table
+#' -- execmethod = execute
+#' -- conn_name = sqlite_simple
+#' CREATE TABLE iris_setosa as SELECT * FROM IRIS WHERE SPECIES = 'setosa';
+#'
+#' -- qname = get_setosa_table
+#' -- execmethod = get
+#' -- conn_name = sqlite_simple
+#' SELECT * FROM iris_setosa;
+#' ```
+#'
+#' With the exception of `qname`, the value of each interpreted comment is
+#' cascaded to subsequent queries (assuming `cascade=TRUE`). This means you may
+#' set values once for the first query in the file and they will apply to all
+#' the queries thereafter.
+#'
+#' See [run_queries()] for the implications of setting execution parameters. See
+#' [prepare_sql()] for the treatment of missing values in the output and their
+#' defaults.
+#'
+#' @examples
+#'
+#' library(sqlhelper)
+#'
+#' fn <- system.file( "examples/read_sql.sql", package="sqlhelper" )
+#' readLines( fn ) |> writeLines()
+#'
+#' connect( system.file("examples/sqlhelper_db_conf.yml", package="sqlhelper") )
+#' sql_tibble <- read_sql(fn)
+#' sql_tibble
+#'
+#' sql_tibble$sql
 #'
 #' @export
-read_sql <- function(file_name)  {
+read_sql <- function(file_name, cascade=TRUE)  {
 
   lines <- readLines(file_name, warn=FALSE)
 
@@ -25,7 +69,7 @@ read_sql <- function(file_name)  {
 
   no_blocks <- remove_block_comments(no_quoted_strings$lines)
 
-  interpreted_comments <- interpret_comments(no_blocks)
+  interpreted_comments <- interpret_comments(no_blocks, cascade=cascade)
 
   no_inlines <- remove_inline_comments(no_blocks)
 
@@ -39,15 +83,13 @@ read_sql <- function(file_name)  {
                    x = paste0(no_blanks, collapse = " "),
                    perl = TRUE);
 
-
-  queries <- tibble::add_column(interpreted_comments, sql = split_sql(sql_code))
-
-  queries <- tibble::add_column(queries,
-                                filename = gsub("\\..*",
-                                                "",
-                                                basename(file_name)
-                                ))
-  queries
+  # Add the sql and the filename to the tibble of interpreted comments
+  interpreted_comments |>
+    tibble::add_column(sql = split_sql(sql_code)) |>
+    tibble::add_column(filename = gsub("\\..*", # strip extension ...
+                                       "",
+                                       basename(file_name) # ... and path
+                       ))
 }
 
 #' Generate a low entropy token to temporarily replace newlines and quoted strings
@@ -194,10 +236,8 @@ comment_values <- function(comment_name,blocks,linetok){
   values
 }
 
-# take a bunch of lines and extract any actionable comments.
-# returns list(con=<string>, names=c(...))
-# where con and names are extracted from comments
-interpret_comments <- function(lines){
+# Extract interpretable comments from lines.
+interpret_comments <- function(lines, cascade){
 
   # semi-colons in comments confuse the sql block divisions.
   # They're not interpretable, so we drop them here.
@@ -257,30 +297,34 @@ interpret_comments <- function(lines){
           }
   )
 
+  #interpolate must be 'yes' or 'no'
+  lapply( interpreted_comments$interpolate,
+          function(x){
+            if( ( ! x %in% c("yes", "no") ) && ! is.na( x ) )
+              stop( glue::glue( "interpolate comments must be 'yes' or 'no', not {x}") )
+          }
+  )
+
   # methods must be one of 'getquery', 'execute', 'sendquery', 'sendstatement' or 'spatial'
   lapply(interpreted_comments$execmethod,
          function(x){
            if( ( ! x %in% recognized_methods ) && ! is.na( x ) )
-             stop( glue::glue( "No recognized method named {x}") )
+             stop( glue::glue( "execmethod must be one of {paste(recognized_methods, collapse=', ')}, not {x}") )
          }
   )
 
-  # connections must be connection names
-  lapply(interpreted_comments$conn_name,
-         function(x){
-           if( ( ! x %in% names( connection_cache ) ) && ! is.na( x ) )
-             stop( glue::glue( "No configured connection named {x}") )
-         }
-  )
+  # cascade interpreted comments to subsequent queries in the file
+  interpreted_comments <- tibble::as_tibble( interpreted_comments )
 
-  # cascade any explicit connections to subsequent queries in the file
-  interpreted_comments <- tidyr::fill(
-    tibble::as_tibble( interpreted_comments ),
-    "quotesql",
-    "interpolate",
-    "conn_name",
-    "execmethod",
-    "conn_name")
+  if(cascade)
+    interpreted_comments <- tidyr::fill(
+      interpreted_comments,
+      "quotesql",
+      "interpolate",
+      "conn_name",
+      "execmethod",
+      "geometry",
+      "conn_name")
 
   interpreted_comments
 }
@@ -290,13 +334,19 @@ interpret_comments <- function(lines){
 split_sql <- function(sql_statements) {
 
   # Split SQL on ";".
-  sql <- unlist(strsplit(sql_statements, split = ";"))
+  sql <- gsub(";","",
+              trimws(
+                unlist(
+                  strsplit(sql_statements, split = ";")
+                )
+              )
+  )
 
   # Remove empty queries.
   sql <- sql[nchar(sql) > 1L]
 
   # Put semicolon at end of each query.
-  sql <- paste(trimws(sql), ";",sep="")
+  #sql <- paste(trimws(sql), ";",sep="")
 
   # Return vector of SQL queries
   return(sql)

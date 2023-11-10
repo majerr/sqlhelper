@@ -4,25 +4,72 @@
 \alias{read_sql}
 \title{Read a sql file and return it's contents as a tibble}
 \usage{
-read_sql(file_name)
+read_sql(file_name, cascade = TRUE)
 }
 \arguments{
-\item{file_name}{Full name and path of file to read}
+\item{file_name}{Full name and path of a file to read}
+
+\item{cascade}{If TRUE, execution parameters specified in the file will be
+cascaded to subsequent queries where that parameter is not specified. This
+enables you to set a parameter (e.g. the connection name) once, for the
+first query in a file, and use it for all the subsequent queries.}
 }
 \value{
 A tibble containing 1 row per query with the following fields:
 \describe{
 \item{qname}{character. A name for this query}
-\item{quotesql}{"yes" or "no". Should parameterized character values be quoted for this query? Defaults to "yes".}
-\item{interpolate}{"yes" or "no". Should this query be parameterized with values from R? Defaults to "yes".}
+\item{quotesql}{"yes" or "no". Should parameterized character values be quoted for this query?}
+\item{interpolate}{"yes" or "no". Should this query be parameterized with values from R?}
 \item{execmethod}{The method to execute this query.
 One of "get" (\code{\link[DBI:dbGetQuery]{DBI::dbGetQuery()}}), "execute" (\code{\link[DBI:dbExecute]{DBI::dbExecute()}}), "sendq" (\code{\link[DBI:dbSendQuery]{DBI::dbSendQuery()}}), "sends" (\code{\link[DBI:dbSendStatement]{DBI::dbSendStatement()}}) or "spatial" (\code{\link[sf:st_read]{sf::st_read()}})}
 \item{geometry}{character. If \code{execmethod} is "spatial", which is the geometry column?}
-\item{conn}{The name of the database connection to use for this query}
-\item{sql}{The unparameterized sql query to be executed}
+\item{conn_name}{character. The name of the database connection to use for this query.
+Must be the name of a configured sqlhelper connection.}
+\item{sql}{The sql query to be executed}
 \item{filename}{The value of \code{file_name}}
 }
 }
 \description{
 Read a sql file and return it's contents as a tibble
+}
+\details{
+Multiple SQL queries in the file should be terminated by semi-colons (\verb{;}).
+
+The values of \code{qname}, \code{quotesql}, \code{interpolate}, \code{execmethod}, \code{geometry},
+and \code{conn_name} in the output may be specified with comments immediately
+preceding each query:
+
+\if{html}{\out{<div class="sourceCode sql">}}\preformatted{-- qname = create_setosa_table
+-- execmethod = execute
+-- conn_name = sqlite_simple
+CREATE TABLE iris_setosa as SELECT * FROM IRIS WHERE SPECIES = 'setosa';
+
+-- qname = get_setosa_table
+-- execmethod = get
+-- conn_name = sqlite_simple
+SELECT * FROM iris_setosa;
+}\if{html}{\out{</div>}}
+
+With the exception of \code{qname}, the value of each interpreted comment is
+cascaded to subsequent queries (assuming \code{cascade=TRUE}). This means you may
+set values once for the first query in the file and they will apply to all
+the queries thereafter.
+
+See \code{\link[=run_queries]{run_queries()}} for the implications of setting execution parameters. See
+\code{\link[=prepare_sql]{prepare_sql()}} for the treatment of missing values in the output and their
+defaults.
+}
+\examples{
+
+library(sqlhelper)
+
+fn <- system.file( "examples/read_sql.sql", package="sqlhelper" )
+readLines( fn ) |> writeLines()
+
+connect( system.file("examples/sqlhelper_db_conf.yml", package="sqlhelper") )
+sql_tibble <- read_sql(fn)
+sql_tibble
+
+sql_tibble$sql
+
 }

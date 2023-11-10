@@ -4,11 +4,15 @@
 \alias{connection_info}
 \title{Browse available connections}
 \usage{
-connection_info(name_str = ".*")
+connection_info(name_str = ".*", exact = TRUE)
 }
 \arguments{
 \item{name_str}{A regular expression to be used to identify connection names
 to include. The default ('.*') returns all of them.}
+
+\item{exact}{TRUE or FALSE. Should \code{name_str} match the name of a connection
+exactly? TRUE will identify only 1 connection if name_str does not contain
+any metacharacters}
 }
 \value{
 Null, or a tibble with 1 row per identified connection and the
@@ -24,7 +28,7 @@ following fields:
 }
 
 If no connection names matched \code{name_str}, the tibble will be empty. If
-no connections have been configured, \code{NULL} is returned.
+no connections have been configured (e.g. \code{connect()} has not been called), \code{NULL} is returned.
 }
 \description{
 Provides information about created connections.

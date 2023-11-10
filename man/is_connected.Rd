@@ -14,16 +14,9 @@ not_connected(conn_name)
 for options)}
 }
 \value{
-Logical
+Logical, or NULL if \code{conn_name} does not identify exactly 1
+connection
 }
 \description{
 Test whether a database is connected
-}
-\details{
-Note that these functions only report whether you are connected to a
-database with a connection named \code{conn_name}. A value of \code{TRUE} means that
-\code{conn_name} was found in the cache and is live, but  \code{FALSE} can mean that
-you not connected to \emph{any} databases, or that \code{conn_name} is not in the
-cache, or that it is in the cache but is not live. Use \code{connection_info()}
-if you need to determine which.
 }

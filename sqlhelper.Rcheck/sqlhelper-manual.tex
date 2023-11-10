@@ -1,0 +1,657 @@
+\nonstopmode{}
+\documentclass[a4paper]{book}
+\usepackage[times,inconsolata,hyper]{Rd}
+\usepackage{makeidx}
+\usepackage[utf8]{inputenc} % @SET ENCODING@
+% \usepackage{graphicx} % @USE GRAPHICX@
+\makeindex{}
+\begin{document}
+\chapter*{}
+\begin{center}
+{\textbf{\huge Package `sqlhelper'}}
+\par\bigskip{\large \today}
+\end{center}
+\inputencoding{utf8}
+\ifthenelse{\boolean{Rd@use@hyper}}{\hypersetup{pdftitle = {sqlhelper: Easier SQL integration}}}{}\ifthenelse{\boolean{Rd@use@hyper}}{\hypersetup{pdfauthor = {Matthew Roberts}}}{}\begin{description}
+\raggedright{}
+\item[Title]\AsIs{Easier SQL integration}
+\item[Version]\AsIs{0.1.2.9000}
+\item[Description]\AsIs{Manage database connections and SQL execution.}
+\item[Depends]\AsIs{R (>= 4.1.0)}
+\item[Imports]\AsIs{DBI, yaml, rappdirs, stringr, glue, dplyr, pool, methods,
+tibble, tidyr, purrr (>= 1.0.0), sf, spData, rlang}
+\item[License]\AsIs{GPL (>= 3)}
+\item[Encoding]\AsIs{UTF-8}
+\item[RoxygenNote]\AsIs{7.2.1}
+\item[Roxygen]\AsIs{list(markdown = TRUE)}
+\item[Suggests]\AsIs{rmarkdown, knitr, testthat (>= 3.0.0), odbc, RSQLite,
+RPostgres, RMariaDB, bigrquery}
+\item[Config/testthat/edition]\AsIs{3}
+\item[VignetteBuilder]\AsIs{knitr}
+\item[URL]\AsIs{}\url{https://majr-red.github.io/sqlhelper/dev}\AsIs{,
+}\url{https://github.com/majr-red/sqlhelper}\AsIs{}
+\item[BugReports]\AsIs{}\url{https://github.com/majr-red/sqlhelper/issues}\AsIs{}
+\item[NeedsCompilation]\AsIs{no}
+\item[Author]\AsIs{Matthew Roberts [aut, cre]}
+\item[Maintainer]\AsIs{Matthew Roberts }\email{matthew.roberts@levellingup.gov.uk}\AsIs{}
+\end{description}
+\Rdcontents{\R{} topics documented:}
+\inputencoding{utf8}
+\HeaderA{config\_examples}{Examples of yaml configurations for database connections}{config.Rul.examples}
+%
+\begin{Description}\relax
+Provides example configurations for several databases and a range of options
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+config_examples(filename = NA)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{filename}] A string. If supplied, examples are written to a file with this name.
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Details}\relax
+Irrespective of whether a filename is supplied, yaml configuration examples
+will be returned invisibly as a single string and printed if the session is
+interactive.
+\end{Details}
+%
+\begin{Value}
+A yaml string of database configuration examples, invisibly.
+\end{Value}
+%
+\begin{Examples}
+\begin{ExampleCode}
+config_examples()
+
+# to write the examples to a file called 'examples.yml'
+## Not run:  config_examples("examples.yml")
+
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{connect}{(Re-)Establish connections to databases}{connect}
+%
+\begin{Description}\relax
+Closes any open connections, reads config files as directed by
+\code{config\_filename} and \code{exclusive}, and creates new connections from the
+descriptions in those files.
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+connect(config_filename = NA, exclusive = FALSE)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{config\_filename}] String. The full name and path of a configuration
+file, or "site", or "user", or "example", or \code{NA} (the default). Cannot be
+\code{NA} if \code{exclusive = TRUE}.
+
+\item[\code{exclusive}] Logical. If \code{TRUE}, the file named by \code{config\_filename} is
+treated as the only config file. Site and user level files are not read.
+This parameter is ignored if \code{config\_filename} is missing.
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Details}\relax
+If \code{exclusive=FALSE} (the default), configuration files will be sought in the
+directory returned by \code{\LinkA{rappdirs::site\_config\_dir()}{rappdirs::site.Rul.config.Rul.dir()}}, the directory returned
+by \code{\LinkA{rappdirs::user\_config\_dir()}{rappdirs::user.Rul.config.Rul.dir()}}, and finally a file named by
+\code{config\_filename} (if not \code{NA}). If elements of those files conflict, later
+files overwrite the elements of earlier files.
+
+if \code{exclusive=TRUE}, only 1 file will be read, as indicated by the
+\code{config\_filename} parameter.
+\begin{itemize}
+
+\item{} if \code{config\_filename = "site"}, a config file called
+\code{sqlhelper\_db\_conf.yml} will be sought in the directory returned by
+\code{\LinkA{rappdirs::site\_config\_dir()}{rappdirs::site.Rul.config.Rul.dir()}}
+\item{} if \code{config\_filename = "user"}, a config file called
+\code{sqlhelper\_db\_conf.yml} will be sought in the directory returned by
+\code{\LinkA{rappdirs::user\_config\_dir()}{rappdirs::user.Rul.config.Rul.dir()}}
+\item{} if \code{config\_filename} is not \code{NULL} (but not "site" or "user"), it is
+assumed to name a file.
+
+\end{itemize}
+
+
+\code{vignette("connections")} explains how to write a
+config file and how to access the created connections.
+\end{Details}
+%
+\begin{Value}
+\code{NULL}, invisibly
+\end{Value}
+%
+\begin{Examples}
+\begin{ExampleCode}
+## Not run: 
+# Search for config files in rappdirs::site_config_dir(),
+# rappdirs::user_config_dir(), and read `my_connections.yml` in the current
+# working directory
+connect("my_connections.yml")
+
+# Read only `my_connections.yml` in the current working directory
+connect("my_connections.yml", exclusive=TRUE)
+
+## End(Not run)
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{connection\_info}{Browse available connections}{connection.Rul.info}
+%
+\begin{Description}\relax
+Provides information about created connections.
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+connection_info(name_str = ".*", exact = TRUE)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{name\_str}] A regular expression to be used to identify connection names
+to include. The default ('.*') returns all of them.
+
+\item[\code{exact}] TRUE or FALSE. Should \code{name\_str} match the name of a connection
+exactly? TRUE will identify only 1 connection if name\_str does not contain
+any metacharacters
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Value}
+Null, or a tibble with 1 row per identified connection and the
+following fields:
+
+\begin{description}
+
+\item[name] identifier (character)
+\item[description] a description of the connection, if found in the conf file (character)
+\item[live] is this connection valid and live? (logical)
+\item[driver] the name of the driver function (character)
+\item[conn\_str] the string used to parameterize the connection (character)
+\item[pool] is this a pool connection? (logical)
+
+\end{description}
+
+
+If no connection names matched \code{name\_str}, the tibble will be empty. If
+no connections have been configured, \code{NULL} is returned.
+\end{Value}
+\inputencoding{utf8}
+\HeaderA{default\_conn}{Return the default connection}{default.Rul.conn}
+%
+\begin{Description}\relax
+A convenience wrapper around \code{live\_connection()} and \code{get\_default\_conn\_name()}
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+default_conn()
+\end{verbatim}
+\end{Usage}
+%
+\begin{Value}
+A database connection as returned by \code{DBI::dbConnect()}
+\end{Value}
+\inputencoding{utf8}
+\HeaderA{disconnect}{Close all connections and remove them from the connections cache}{disconnect}
+%
+\begin{Description}\relax
+Close all connections and remove them from the connections cache
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+disconnect()
+\end{verbatim}
+\end{Usage}
+\inputencoding{utf8}
+\HeaderA{is\_connected}{Test whether a database is connected}{is.Rul.connected}
+\aliasA{not\_connected}{is\_connected}{not.Rul.connected}
+%
+\begin{Description}\relax
+Test whether a database is connected
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+is_connected(conn_name)
+
+not_connected(conn_name)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{conn\_name}] Character. The name of a connection (run
+\code{\LinkA{connection\_info()}{connection.Rul.info}} for options)
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Details}\relax
+\code{not\_connected} is provided for readability, and is identical to \code{!is\_connected()}.
+\end{Details}
+%
+\begin{Value}
+Logical, or NULL if \code{conn\_name} does not identify exactly 1
+connection
+\end{Value}
+\inputencoding{utf8}
+\HeaderA{live\_connection}{Return the named connection or NULL}{live.Rul.connection}
+%
+\begin{Description}\relax
+Return the named connection or NULL
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+live_connection(conn_name)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{conn\_name}] Chr. The name of the live connection you want (use
+\LinkA{connection\_info}{connection.Rul.info} to get names of available connections).
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Value}
+A live connection to a database, or NULL (invisibly) if
+\code{conn\_name} is not the name of a live connection
+\end{Value}
+\inputencoding{utf8}
+\HeaderA{prepare\_sql}{prepare queries and meta data for execution}{prepare.Rul.sql}
+%
+\begin{Description}\relax
+Except for \code{sql}, parameters are default values to be used when none are
+supplied in \code{sql} (e.g. when \code{sql} is a tibble returned by \code{\LinkA{read\_sql()}{read.Rul.sql}}).
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+prepare_sql(
+  sql,
+  quotesql = "yes",
+  values = parent.frame(),
+  execmethod = "get",
+  geometry = NA,
+  default.conn = default_conn()
+)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{sql}] An optionally-named list or character vector containing sql
+commands, or a tibble returned by \code{\LinkA{read\_sql()}{read.Rul.sql}}
+
+\item[\code{quotesql}] "yes" or "no" - should interpolated characters be quoted by
+default? Anything that isn't "no" is treated as "yes".
+
+\item[\code{values}] An environment containing variables to interpolate into the
+SQL. Pass any object that is not an environment (e.g. "no", NA, FALSE or
+NULL) if interpolation is to be skipped, or another environment containing
+values to interpolate to avoid using \code{.GlobalEnv}.
+
+\item[\code{execmethod}] One of "get", "execute", "sendq", "sends" or "spatial" -
+which method should be used to execute the query? "get" means
+\code{\LinkA{DBI::dbGetQuery()}{DBI::dbGetQuery()}}; "execute" means \code{\LinkA{DBI::dbExecute()}{DBI::dbExecute()}}; "sendq" means
+\LinkA{DBI::dbSendQuery}{DBI::dbSendQuery}; "sends" means \code{\LinkA{DBI::dbSendStatement()}{DBI::dbSendStatement()}}; "spatial"
+means \code{\LinkA{sf::st\_read()}{sf::st.Rul.read()}}.
+
+\item[\code{geometry}] If \code{execmethod} is "spatial", which column contains the
+geometry? Ignored if \code{execmethod} is not "spatial".
+
+\item[\code{default.conn}] Either the name of a sqlhelper connection, or a database
+connection returned by \code{\LinkA{DBI::dbConnect()}{DBI::dbConnect()}}, or NA. This connection is only
+used by \code{\LinkA{glue::glue\_sql()}{glue::glue.Rul.sql()}} to interpolate SQL strings, it is not used to
+execute any SQL code.
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Details}\relax
+The \code{default\_conn} parameter may be used to supply a connection object that
+is not a configured sqlhelper connection which can then be used to interpolate
+quoted strings.
+\end{Details}
+%
+\begin{Value}
+A tibble containing 1 row per query with the following fields:
+\begin{description}
+
+\item[qname] character. A name for this query
+\item[quotesql] "yes" or "no". Should parameterized character values be quoted for this query?
+\item[interpolate] "yes" or "no". Should this query be parameterized with values from R?
+\item[execmethod] The method to execute this query.
+One of "get" (\code{\LinkA{DBI::dbGetQuery()}{DBI::dbGetQuery()}}), "execute" (\code{\LinkA{DBI::dbExecute()}{DBI::dbExecute()}}), "sendq" (\code{\LinkA{DBI::dbSendQuery()}{DBI::dbSendQuery()}}), "sends" (\code{\LinkA{DBI::dbSendStatement()}{DBI::dbSendStatement()}}) or "spatial" (\code{\LinkA{sf::st\_read()}{sf::st.Rul.read()}})
+\item[geometry] character. If \code{execmethod} is "spatial", which is the geometry column?
+\item[conn\_name] character. The name of the database connection to use for this query.
+Must be the name of a configured sqlhelper connection.
+\item[sql] The sql query as entered
+\item[filename] The value of \code{file\_name}
+\item[prepared\_sql] The sql query to be executed, i.e. with interpolations
+and quoting in place
+
+\end{description}
+
+\end{Value}
+\inputencoding{utf8}
+\HeaderA{read\_sql}{Read a sql file and return it's contents as a tibble}{read.Rul.sql}
+%
+\begin{Description}\relax
+Read a sql file and return it's contents as a tibble
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+read_sql(file_name, cascade = TRUE)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{file\_name}] Full name and path of a file to read
+
+\item[\code{cascade}] If TRUE, fill the values of absent execution parameters with
+the most recent present value. This enables you to set the connection name
+once, for the first query in a file and use the same connection for all the
+subsequent queries, for example.
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Details}\relax
+Multiple SQL queries in the file should be terminated by semi-colons (\AsIs{;}).
+
+The values of \code{qname}, \code{quotesql}, \code{interpolate}, \code{execmethod}, \code{geometry},
+and \code{conn\_name} in the output may be controlled with comments
+immediately preceding each query:
+
+\begin{alltt}-- qname = create_setosa_table
+-- execmethod = execute
+-- conn_name = sqlite_simple
+CREATE TABLE iris_setosa as SELECT * FROM IRIS WHERE SPECIES = 'setosa';
+
+-- qname = get_setosa_table
+-- execmethod = get
+-- conn_name = sqlite_simple
+SELECT * FROM iris_setosa;
+\end{alltt}
+
+
+With the exception of \code{qname}, the value of each interpreted comment is
+cascaded to subsequent queries. This means you may set values once for the
+first query in the file and they will apply to all the queries thereafter.
+\end{Details}
+%
+\begin{Value}
+A tibble containing 1 row per query with the following fields:
+\begin{description}
+
+\item[qname] character. A name for this query
+\item[quotesql] "yes" or "no". Should parameterized character values be quoted for this query?
+\item[interpolate] "yes" or "no". Should this query be parameterized with values from R?
+\item[execmethod] The method to execute this query.
+One of "get" (\code{\LinkA{DBI::dbGetQuery()}{DBI::dbGetQuery()}}), "execute" (\code{\LinkA{DBI::dbExecute()}{DBI::dbExecute()}}), "sendq" (\code{\LinkA{DBI::dbSendQuery()}{DBI::dbSendQuery()}}), "sends" (\code{\LinkA{DBI::dbSendStatement()}{DBI::dbSendStatement()}}) or "spatial" (\code{\LinkA{sf::st\_read()}{sf::st.Rul.read()}})
+\item[geometry] character. If \code{execmethod} is "spatial", which is the geometry column?
+\item[conn\_name] character. The name of the database connection to use for this query.
+Must be the name of a configured sqlhelper connection.
+\item[sql] The sql query to be executed
+\item[filename] The value of \code{file\_name}
+
+\end{description}
+
+
+See \code{\LinkA{prepare\_sql()}{prepare.Rul.sql}} for the treatment of missing values in the output and their
+defaults.
+\end{Value}
+%
+\begin{Examples}
+\begin{ExampleCode}
+
+library(sqlhelper)
+
+fn <- system.file( "examples/read_sql.sql", package="sqlhelper" )
+readLines( fn ) |> writeLines()
+
+connect( system.file("examples/sqlhelper_db_conf.yml", package="sqlhelper") )
+read_sql(fn)
+
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{runfiles}{Read, prepare and execute .SQL files}{runfiles}
+\aliasA{run\_files}{runfiles}{run.Rul.files}
+\keyword{SQL runners}{runfiles}
+%
+\begin{Description}\relax
+Accepts a character vector of SQL file names and attempts to execute each one.
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+runfiles(filenames, cascade = TRUE, ..., include_params = FALSE)
+
+run_files(filenames, cascade = TRUE, ..., include_params = FALSE)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{filenames}] name, or vector of names, of file(s) to be executed
+
+\item[\code{cascade}] If TRUE, fill the values of absent execution parameters with
+the most recent present value. This enables you to set the connection name
+once, for the first query in a file and use the same connection for all the
+subsequent queries, for example.
+
+\item[\code{...}] Arguments to be passed to \code{\LinkA{runqueries()}{runqueries}}
+
+\item[\code{include\_params}] \code{TRUE} or \code{FALSE}. Should the parameters be
+included in the output?
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Details}\relax
+\code{\LinkA{runfiles()}{runfiles}} enables you to control the arguments accepted by \code{\LinkA{runqueries()}{runqueries}}
+on a per-query basis, using interpreted comments in your sql file:
+
+\begin{alltt}-- qname = create_setosa_table
+-- execmethod = execute
+-- conn_name = sqlite_simple
+CREATE TABLE iris_setosa as SELECT * FROM IRIS WHERE SPECIES = 'setosa';
+
+-- qname = get_setosa_table
+-- execmethod = get
+-- conn_name = sqlite_simple
+SELECT * FROM iris_setosa;
+\end{alltt}
+
+
+Interpreted comments precede the sql query to which they refer. Interpretable
+comments are:
+
+\begin{description}
+
+\item[qname] A name for this query
+\item[quotesql] "yes" or "no" - should interpolated characters be quoted?
+\item[interpolate] "yes" or "no" - should sql be interpolated?
+\item[execmethod] One of "get", "execute", "sendq", "sends" or "spatial" -
+which method should be used to execute the query? "get" means
+\code{\LinkA{DBI::dbGetQuery()}{DBI::dbGetQuery()}}; "execute" means \code{\LinkA{DBI::dbExecute()}{DBI::dbExecute()}}; "sendq" means
+\code{DBI::dbSendQuery}; "sends" means \code{\LinkA{DBI::dbSendStatement()}{DBI::dbSendStatement()}}; "spatial"
+means \code{\LinkA{sf::st\_read()}{sf::st.Rul.read()}}.
+\item[geometry] The name of a spatial column. Ignored if \code{execmethod} is not 'spatial'
+\item[conn\_name] The name of a connection to execute this query against
+
+\end{description}
+
+
+All interpreted comments except \code{qname} are recycled within their file, meaning
+that if you want to use the same values throughout, you need only set them for
+the first query.
+
+\begin{alltt}readLines(
+  system.file("examples/cascade.sql",
+                package="sqlhelper")
+) |> writeLines()
+#> Warning in file(con, "r"): file("") only supports open = "w+" and open = "w+b":
+#> using the former
+\end{alltt}
+
+\end{Details}
+%
+\begin{Value}
+A list of results of sql queries found in files
+\end{Value}
+%
+\begin{SeeAlso}\relax
+\code{\LinkA{read\_sql()}{read.Rul.sql}}, \code{\LinkA{prepare\_sql()}{prepare.Rul.sql}}
+
+Other SQL runners: 
+\code{\LinkA{runqueries}{runqueries}()}
+\end{SeeAlso}
+\inputencoding{utf8}
+\HeaderA{runqueries}{Execute a sequence of SQL queries}{runqueries}
+\aliasA{run\_queries}{runqueries}{run.Rul.queries}
+\keyword{SQL runners}{runqueries}
+%
+\begin{Description}\relax
+Accepts a character vector of SQL queries and runs each one
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+runqueries(sql, ..., default.conn = default_conn(), include_params = FALSE)
+
+run_queries(sql, ..., default.conn = default_conn(), include_params = FALSE)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{sql}] An optionally-named list or character vector containing sql
+strings, or a tibble returned by \code{\LinkA{read\_sql()}{read.Rul.sql}} or \code{\LinkA{prepare\_sql()}{prepare.Rul.sql}}
+
+\item[\code{...}] Arguments to be passed to \code{prepare\_sql()}
+
+\item[\code{default.conn}] Either the name of a sqlhelper connection, or a database
+connection returned by \code{\LinkA{DBI::dbConnect()}{DBI::dbConnect()}}, or NA. This connection is only
+used by \code{\LinkA{glue::glue\_sql()}{glue::glue.Rul.sql()}} to interpolate SQL strings, it is not used to
+execute any SQL code.
+
+\item[\code{include\_params}] \code{TRUE} or \code{FALSE}. Should the parameters be
+included in the output?
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Value}
+\begin{itemize}
+
+\item{} If \code{include\_params} is \code{FALSE} and the \code{sql} argument is a
+vector, a list containing the results of each query; element names will be
+taken from the \code{sql} argument.
+\item{} If the length of the \code{sql} argument is 1 and is not named, the result of
+that query is returned as-is (e.g. a data.frame), not as a 1-element list.
+\item{} If \code{include\_params} is \code{TRUE}, a tibble is returned containing 1
+row per query with the following fields:
+
+\end{itemize}
+
+
+\begin{description}
+
+\item[qname] character. A name for this query
+\item[quotesql] "yes" or "no". Should parameterized character values be quoted for this query?
+\item[interpolate] "yes" or "no". Should this query be parameterized with values from R?
+\item[execmethod] The method to execute this query.
+One of "get" (\code{\LinkA{DBI::dbGetQuery()}{DBI::dbGetQuery()}}), "execute" (\code{\LinkA{DBI::dbExecute()}{DBI::dbExecute()}}), "sendq" (\code{\LinkA{DBI::dbSendQuery()}{DBI::dbSendQuery()}}), "sends" (\code{\LinkA{DBI::dbSendStatement()}{DBI::dbSendStatement()}}) or "spatial" (\code{\LinkA{sf::st\_read()}{sf::st.Rul.read()}})
+\item[geometry] character. If \code{execmethod} is "spatial", which is the geometry column?
+\item[conn\_name] character. The name of the database connection to use for this query.
+Must be the name of a configured sqlhelper connection.
+\item[sql] The sql query to be executed
+\item[filename] The value of \code{file\_name}
+\item[prepared\_sql] The sql query to be executed, i.e. with interpolations
+and quoting in place
+\item[result] The result of the query
+
+\end{description}
+
+\end{Value}
+%
+\begin{SeeAlso}\relax
+\code{\LinkA{runfiles}{runfiles}}
+
+Other SQL runners: 
+\code{\LinkA{runfiles}{runfiles}()}
+\end{SeeAlso}
+%
+\begin{Examples}
+\begin{ExampleCode}
+{
+library(sqlhelper)
+
+connect(
+    system.file("examples/sqlhelper_db_conf.yml", package="sqlhelper"),
+    exclusive=TRUE)
+
+DBI::dbWriteTable( default_conn(),
+                  "iris",
+                  iris)
+
+n <- 5
+
+runqueries(
+    c(top_n = "select * from iris limit {n}", # interpolation is controlled
+                                              # with the 'values' argument
+      uniqs = "select distinct species as species from iris")
+)
+
+## Use the execmethod parameter if you don't want to return results
+runqueries("create table iris_setosa as select * from iris where species = 'setosa'",
+          execmethod = 'execute')
+
+runqueries("select distinct species as species from iris_setosa")
+}
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{set\_default\_conn\_name}{Set/get the name of the default connection to use}{set.Rul.default.Rul.conn.Rul.name}
+\aliasA{get\_default\_conn\_name}{set\_default\_conn\_name}{get.Rul.default.Rul.conn.Rul.name}
+%
+\begin{Description}\relax
+Set/get the name of the default connection to use
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+set_default_conn_name(conn_name)
+
+get_default_conn_name()
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{conn\_name}] Character string. The name a connection
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Value}
+\code{get} returns the name of the default connection; \code{set}
+returns \code{NULL}, invisibly.
+\end{Value}
+\printindex{}
+\end{document}

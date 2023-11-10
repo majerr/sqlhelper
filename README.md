@@ -27,7 +27,7 @@ You can install the development version from github:
 
 ```R
 # install.packages("devtools")
-devtools::install_github("majr-red/sqlhelper@dev")
+devtools::install_github("majerr/sqlhelper@dev")
 ```
 
 ## Usage

@@ -74,7 +74,9 @@ validate_config <- function(conf){
     }
   }
 
-
+  # conf$connection contains a Server element
+  if(!("Server" %in% names(conf$connection)))
+    return(NULL)
 
   valid_conf <- conf
 

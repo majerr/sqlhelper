@@ -4,6 +4,9 @@
 #'
 #' @param name_str A regular expression to be used to identify connection names
 #'   to include. The default ('.*') returns all of them.
+#' @param exact TRUE or FALSE. Should `name_str` match the name of a connection
+#'   exactly? TRUE will identify only 1 connection if name_str does not contain
+#'   any metacharacters
 #'
 #' @return Null, or a tibble with 1 row per identified connection and the
 #'   following fields:
@@ -21,12 +24,14 @@
 #' no connections have been configured (e.g. `connect()` has not been called), `NULL` is returned.
 #'
 #' @export
-connection_info <- function(name_str = ".*"){
+connection_info <- function(name_str = ".*", exact = TRUE){
 
   if(length(names(connection_cache)) == 0){
     return(NULL)
   }
 
+  if(exact)
+    name_str <- paste0("^",name_str, "$")
   conn_names <- stringr::str_subset(names(connection_cache),name_str)
 
   conn_table <- tibble::tibble(

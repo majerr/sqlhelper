@@ -1,0 +1,24 @@
+Package: sqlhelper
+Title: Easier SQL integration
+Version: 0.1.2.9000
+Authors@R: person("Matthew", "Roberts", email = "matthew.roberts@levellingup.gov.uk", role = c("aut", "cre"))
+Description: Manage database connections and SQL execution.
+Depends: R (>= 4.1.0)
+Imports: DBI, yaml, rappdirs, stringr, glue, dplyr, pool, methods,
+        tibble, tidyr, purrr (>= 1.0.0), sf, spData, rlang
+License: GPL (>= 3)
+Encoding: UTF-8
+RoxygenNote: 7.2.1
+Roxygen: list(markdown = TRUE)
+Suggests: rmarkdown, knitr, testthat (>= 3.0.0), odbc, RSQLite,
+        RPostgres, RMariaDB, bigrquery
+Config/testthat/edition: 3
+VignetteBuilder: knitr
+URL: https://majr-red.github.io/sqlhelper/dev,
+        https://github.com/majr-red/sqlhelper
+BugReports: https://github.com/majr-red/sqlhelper/issues
+NeedsCompilation: no
+Packaged: 2023-04-11 12:19:54 UTC; matthew.roberts
+Author: Matthew Roberts [aut, cre]
+Maintainer: Matthew Roberts <matthew.roberts@levellingup.gov.uk>
+Built: R 4.1.2; ; 2023-04-11 12:31:03 UTC; windows

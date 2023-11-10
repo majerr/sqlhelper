@@ -19,6 +19,7 @@ reference:
   - live_connection
   - get_default_conn_name
   - set_default_conn_name
+  - default_conn
   - is_connected
   - not_connected
   - disconnect
@@ -27,8 +28,8 @@ reference:
   desc: >
     Functions for reading, preparing and executing SQL
   contents:
-  - runfiles
-  - runqueries
+  - run_files
+  - run_queries
   - read_sql
   - prepare_sql
 
@@ -36,7 +37,7 @@ reference:
 development:
   mode: auto
 
-url: https://majr-red.github.io/sqlhelper/
+url: https://majerr.github.io/sqlhelper/
 
 template:
   bootstrap: 5

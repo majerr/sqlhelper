@@ -1,0 +1,23 @@
+# User wide
+
+dap:
+  server_type: sqlserver
+  pool: yes
+  description: >
+    Databases managed by ADD teams on the Data and Analytics Platform
+  connection:
+    Driver: "{ODBC Driver 17 for SQL Server}"
+    Server: "Dap-sql01"
+    Trusted_Connection: "yes"
+
+cds:
+  server_type: sqlserver
+  description: >
+    Central Data Store on the Data and Analytics Platform managed by Analytical
+    Data and Technology Services <dap.support@levellingup.gov.uk>.
+  connection:
+    Driver: "{ODBC Driver 17 for SQL Server}"
+    Server: "Dap-sql01\\cds"
+    Trusted_Connection: "yes"
+
+

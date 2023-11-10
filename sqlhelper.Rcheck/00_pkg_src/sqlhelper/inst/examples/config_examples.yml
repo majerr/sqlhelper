@@ -1,0 +1,20 @@
+sqlite_simple:
+  driver_type: sqlite
+  connection:
+    Server: ":memory:"
+
+
+sqlite_pool:
+  driver_type: sqlite
+  pool: yes
+  connection:
+    Server: ":memory:"
+
+sqlserver_simple:
+  driver_type: sqlserver
+  description: >
+    A one line description to remind you what this server is about
+  connection:
+    Driver: "{ODBC Driver 17 for SQL Server}" # See https://connectionstrings.com for other examples
+    Server: "the_server_hostname"
+    Trusted_Connection: "yes"

@@ -1,0 +1,110 @@
+* using log directory 'D:/Users/matthew.roberts/sqlhelper/sqlhelper.Rcheck'
+* using R version 4.1.2 (2021-11-01)
+* using platform: x86_64-w64-mingw32 (64-bit)
+* using session charset: ISO8859-1
+* using option '--as-cran'
+* checking for file 'sqlhelper/DESCRIPTION' ... OK
+* this is package 'sqlhelper' version '0.1.2.9000'
+* package encoding: UTF-8
+* checking CRAN incoming feasibility ... NOTE
+Maintainer: 'Matthew Roberts <matthew.roberts@levellingup.gov.uk>'
+
+Version contains large components (0.1.2.9000)
+
+Found the following (possibly) invalid URLs:
+  URL: https://majr-red.github.io/sqlhelper/dev
+    From: DESCRIPTION
+    Status: Error
+    Message: libcurl error code 56:
+      	Received HTTP code 403 from proxy after CONNECT
+  URL: https://yaml.org/
+    From: inst/doc/connections.html
+          inst/doc/sqlhelper.html
+    Status: Error
+    Message: libcurl error code 56:
+      	Received HTTP code 403 from proxy after CONNECT
+
+The Title field should be in title case. Current version is:
+'Easier SQL integration'
+In title case that is:
+'Easier SQL Integration'
+* checking package namespace information ... OK
+* checking package dependencies ... OK
+* checking if this is a source package ... OK
+* checking if there is a namespace ... OK
+* checking for .dll and .exe files ... OK
+* checking for hidden files and directories ... OK
+* checking for portable file names ... OK
+* checking whether package 'sqlhelper' can be installed ... OK
+* checking package directory ... OK
+* checking for future file timestamps ... OK
+* checking 'build' directory ... OK
+* checking DESCRIPTION meta-information ... OK
+* checking top-level files ... NOTE
+Files 'README.md' or 'NEWS.md' cannot be checked without 'pandoc' being installed.
+* checking for left-over files ... OK
+* checking index information ... OK
+* checking package subdirectories ... OK
+* checking R files for non-ASCII characters ... OK
+* checking R files for syntax errors ... OK
+* checking whether the package can be loaded ... OK
+* checking whether the package can be loaded with stated dependencies ... OK
+* checking whether the package can be unloaded cleanly ... OK
+* checking whether the namespace can be loaded with stated dependencies ... OK
+* checking whether the namespace can be unloaded cleanly ... OK
+* checking loading without being on the library search path ... OK
+* checking use of S3 registration ... OK
+* checking dependencies in R code ... OK
+* checking S3 generic/method consistency ... OK
+* checking replacement functions ... OK
+* checking foreign function calls ... OK
+* checking R code for possible problems ... OK
+* checking Rd files ... OK
+* checking Rd metadata ... OK
+* checking Rd line widths ... OK
+* checking Rd cross-references ... OK
+* checking for missing documentation entries ... OK
+* checking for code/documentation mismatches ... OK
+* checking Rd \usage sections ... OK
+* checking Rd contents ... OK
+* checking for unstated dependencies in examples ... OK
+* checking R/sysdata.rda ... OK
+ WARNING
+'qpdf' is needed for checks on size reduction of PDFs
+* checking installed files from 'inst/doc' ... OK
+* checking files in 'vignettes' ... OK
+* checking examples ... OK
+* checking for unstated dependencies in 'tests' ... OK
+* checking tests ... ERROR
+  Running 'testthat.R'
+Running the tests in 'tests/testthat.R' failed.
+Last 13 lines of output:
+  `validate_configs(list(c = "foo"))` did not throw the expected warning.
+  -- Failure ('test-validate_configs.R:9'): All invalidations are captured -------
+  `validate_configs(configs["no_connection"])` did not throw the expected warning.
+  -- Failure ('test-validate_configs.R:11'): All invalidations are captured ------
+  `validate_configs(configs["no_server_type"])` did not throw the expected warning.
+  -- Failure ('test-validate_configs.R:13'): All invalidations are captured ------
+  `validate_configs(configs["conn_child_is_list"])` did not throw the expected warning.
+  -- Failure ('test-validate_configs.R:15'): All invalidations are captured ------
+  `validate_configs(configs["no_server"])` did not throw the expected warning.
+  
+  [ FAIL 5 | WARN 0 | SKIP 2 | PASS 115 ]
+  Error: Test failures
+  Execution halted
+  Warning message:
+  In (function (e)  : You have a leaked pooled object.
+* checking for unstated dependencies in vignettes ... OK
+* checking package vignettes in 'inst/doc' ... OK
+* checking re-building of vignette outputs ... OK
+* checking PDF version of manual ... WARNING
+LaTeX errors when creating PDF version.
+This typically indicates Rd problems.
+* checking PDF version of manual without hyperrefs or index ... ERROR
+Re-running with no redirection of stdout/stderr.
+* checking for non-standard things in the check directory ... NOTE
+Found the following files/directories:
+  'sqlhelper-manual.tex'
+* checking for detritus in the temp directory ... OK
+* DONE
+Status: 2 ERRORs, 2 WARNINGs, 3 NOTEs
