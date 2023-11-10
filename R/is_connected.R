@@ -10,7 +10,7 @@
 is_connected <- function(conn_name){
   live <- connection_info(conn_name)$live
 
-  if(length(live) != 1)
+  if( !is.null(live) && length(live) != 1)
     live = FALSE
 
   live
