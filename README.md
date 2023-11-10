@@ -1,3 +1,6 @@
+[!NOTE] sqlhelper is being transferred to this repository prior to release. 
+You may find references to it's previous home at github.com/majr-red - please bear with me [!NOTE] 
+
 # sqlhelper
 Easier SQL integration with R
 
@@ -32,4 +35,4 @@ devtools::install_github("majerr/sqlhelper@dev")
 
 ## Usage
 
-See https://majr-red.github.io/sqlhelper/dev
+See https://majerr.github.io/sqlhelper/dev
