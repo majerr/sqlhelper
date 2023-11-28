@@ -41,3 +41,7 @@ See https://majerr.github.io/sqlhelper/dev
 
 > [!NOTE] 
 > this site is not live yet
+
+<!-- badges: start -->
+  [![R-CMD-check](https://github.com/majerr/sqlhelper/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/majerr/sqlhelper/actions/workflows/R-CMD-check.yaml)
+  <!-- badges: end -->
