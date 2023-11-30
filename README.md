@@ -1,8 +1,19 @@
-> [!NOTE] 
-> sqlhelper is being transferred to this repository prior to release. 
-> You may find references to it's previous home at github.com/majr-red - 
-> please bear with me
+<style>
+blockquote {
+  margin: 20px 0 30px;
+  padding-left: 20px;
+  border-left: 5px solid #1371b8;
+  color: blue;
+}
+</style>
 
+<blockquote> 
+<p> 
+ sqlhelper is being transferred to this repository prior to release. 
+ You may find references to it's previous home at github.com/majr-red - 
+ please let me know by raising an issue. Thanks in advance!
+ </p>
+</blockquote>
 # sqlhelper
 Easier SQL integration with R
 
@@ -39,8 +50,10 @@ devtools::install_github("majerr/sqlhelper@dev")
 
 See https://majerr.github.io/sqlhelper/dev
 
-> [!NOTE] 
-> this site is not live yet
+
+<blockquote>
+<p color=blue> <strong > This site is not live yet </strong> </p>
+</blockquote>
 
 <!-- badges: start -->
   [![R-CMD-check](https://github.com/majerr/sqlhelper/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/majerr/sqlhelper/actions/workflows/R-CMD-check.yaml)
