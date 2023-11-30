@@ -50,11 +50,6 @@ devtools::install_github("majerr/sqlhelper@dev")
 
 See https://majerr.github.io/sqlhelper/dev
 
-
-<blockquote>
-<p color=blue> <strong > This site is not live yet </strong> </p>
-</blockquote>
-
 <!-- badges: start -->
   [![R-CMD-check](https://github.com/majerr/sqlhelper/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/majerr/sqlhelper/actions/workflows/R-CMD-check.yaml)
   <!-- badges: end -->

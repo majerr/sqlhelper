@@ -24,9 +24,9 @@ test_that("runfiles runs files", {
   results <- runfiles(
     c(
       testthat::test_path("testfiles",
-                           "test_runfiles.sql"),
+                           "test_runfiles.SQL"),
       testthat::test_path("testfiles",
-                          "test_runfiles2.sql")
+                          "test_runfiles2.SQL")
       )
   )
   iris_char <- iris
@@ -145,7 +145,7 @@ test_that("correct connections are used", {
   # interpreted comment connection
   results <- runfiles(
       testthat::test_path("testfiles",
-                          "test_runfiles_connection.sql")
+                          "test_runfiles_connection.SQL")
   )
 
 
