@@ -46,7 +46,7 @@ test_that("inputs are valid", {
 # Check that only NAs are replaced with defaults (and that they are properly replaced)
 test_that("NAs are replaced by defaults", {
   n <- 5
-  sql <- read_sql( testthat::test_path( "testfiles", "test_prepare.sql")) |>
+  sql <- read_sql( testthat::test_path( "testfiles", "test_prepare.SQL")) |>
     prepare_sql()
   expect_equal(sql$conn_name, c('default', 'default', 'foo'))
   expect_equal(sql$quotesql, c("yes","no", "no"))
@@ -61,7 +61,7 @@ test_that("NAs are replaced by defaults", {
                )
 
 
-  sql <- read_sql( testthat::test_path( "testfiles", "test_prepare.sql")) |>
+  sql <- read_sql( testthat::test_path( "testfiles", "test_prepare.SQL")) |>
     prepare_sql(default.conn = "pool_mem", quotesql = "no", execmethod = "sendq", geometry="g")
   expect_equal(sql$conn_name, c('default', 'default', 'foo'))
   expect_equal(sql$quotesql, c("no","no", "no"))

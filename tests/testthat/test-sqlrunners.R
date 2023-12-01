@@ -10,7 +10,7 @@ test_that("runqueries runs queries in sequence", {
 
   queries <- read_sql(
     testthat::test_path("testfiles",
-                        "sequential_queries.sql")
+                        "sequential_queries.SQL")
     )
 
   runqueries( queries )
@@ -160,7 +160,7 @@ test_that("correct connections are used", {
   expect_error(
     runfiles(
       testthat::test_path("testfiles",
-                          "test_runfiles_connection_fail.sql")
+                          "test_runfiles_connection_fail.SQL")
     ),
     "no such table"
   )

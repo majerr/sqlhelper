@@ -1,13 +1,13 @@
 test_that("The correct number of queries are read", {
   sql <- read_sql(testthat::test_path("testfiles",
-                                      "test_read.sql"))
+                                      "test_read.SQL"))
   expect_equal(nrow(sql),4)
 })
 
 test_that("Comments are removed, except when quoted", {
 
   sql <- read_sql(testthat::test_path("testfiles",
-                                      "test_read.sql"))
+                                      "test_read.SQL"))
   # Expect 1 inline comment
   expect_equal(
     sum(stringr::str_detect( sql$sql, "--" ) ),
@@ -46,7 +46,7 @@ test_that("Comments are removed, except when quoted", {
 
 test_that("Comments are correctly interpreted", {
   sql <- read_sql(testthat::test_path("testfiles",
-                                      "test_read.sql"))
+                                      "test_read.SQL"))
 
   expect_equal(names(sql),
                c("qname",
@@ -83,7 +83,7 @@ test_that("Comments are correctly interpreted", {
 
   # Test cascade gets turned off
   sql2 <- read_sql(testthat::test_path("testfiles",
-                                      "test_read.sql"),
+                                      "test_read.SQL"),
                   cascade = FALSE)
 
   expect_equal(sum(is.na(sql2$execmethod)), 3)
@@ -100,11 +100,11 @@ test_that("Comments are correctly interpreted", {
 
 test_that("Errors will be raised for unknown interpreted comment values", {
   expect_error(read_sql(testthat::test_path("testfiles",
-                                            "unknown_quotesql.sql")))
+                                            "unknown_quotesql.SQL")))
 
   expect_error(read_sql(testthat::test_path("testfiles",
-                                            "unknown_interpolate.sql")))
+                                            "unknown_interpolate.SQL")))
 
   expect_error(read_sql(testthat::test_path("testfiles",
-                                            "unknown_execmethod.sql")))
+                                            "unknown_execmethod.SQL")))
 })
