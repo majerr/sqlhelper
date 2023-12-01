@@ -1,19 +1,3 @@
-<style>
-blockquote {
-  margin: 20px 0 30px;
-  padding-left: 20px;
-  border-left: 5px solid #1371b8;
-  color: blue;
-}
-</style>
-
-<blockquote> 
-<p> 
- sqlhelper is being transferred to this repository prior to release. 
- You may find references to it's previous home at github.com/majr-red - 
- please let me know by raising an issue. Thanks in advance!
- </p>
-</blockquote>
 # sqlhelper
 Easier SQL integration with R
 
