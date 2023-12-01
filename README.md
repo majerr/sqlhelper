@@ -36,4 +36,6 @@ See https://majerr.github.io/sqlhelper/dev
 
 <!-- badges: start -->
   [![R-CMD-check](https://github.com/majerr/sqlhelper/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/majerr/sqlhelper/actions/workflows/R-CMD-check.yaml)
+  
+  [![codecov](https://codecov.io/gh/majerr/sqlhelper/graph/badge.svg?token=24TM252NTZ)](https://codecov.io/gh/majerr/sqlhelper)
   <!-- badges: end -->
