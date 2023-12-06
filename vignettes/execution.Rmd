@@ -1,0 +1,36 @@
+---
+title: "Executing SQL"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Executing SQL}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+`sqlhelper`'s main aim is executing files of SQL, and has options for
+controlling the execution of individual SQL queries within each file. However,
+'sqlhelper' can also be used to execute SQL query strings interactively.
+
+## Executing SQL files
+
+### Controlling execution of individual queries
+
+### Interpolation
+
+### Accessing results of queries
+
+## Executing SQL queries
+
+## Preparing SQL files
+
+
+```{r setup}
+library(sqlhelper)
+```

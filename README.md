@@ -20,8 +20,8 @@ There are, of course, many excellent ways to interact with a database from R,
 often not involving SQL at all (e.g. [dbplyr](https://dbplyr.tidyverse.org/));
 `sqlhelper` is for the times when you *do* want to use SQL - perhaps you have
 inherited some legacy SQL, or need some specific functionality offered by your
-RDBMS, or simply prefer to write SQL. The article `vignette("use-cases")`
-describes the setup for some specific motivating cases.
+RDBMS, or simply prefer to write SQL. The article `vignette("use-case")`
+describes the setup for a specific motivating case.
 
 ## Installation
 
@@ -36,7 +36,8 @@ devtools::install_github("majerr/sqlhelper@dev")
 
 ## Quickstart
 
-If you have a `yaml` connection file in your connection search path, you can simply do:
+If you have a `yaml` connection file in your connection search path, you can
+simply do:
 
 ```r
 library(sqlhelper)
@@ -57,7 +58,7 @@ connect("connections.yml")
 # now execute run_files(...) as above
 ```
 
-For more on connection files, the search path, and managing connections see `vignette("connections")`. 
+For more on connection files, the connection search path, and managing connections see `vignette("connections")`. 
 
 For more on executing SQL see `vignette("execution")`.
 
