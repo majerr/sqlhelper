@@ -20,15 +20,17 @@ following fields:
 
 \describe{
 \item{name}{identifier (character)}
-\item{description}{a description of the connection, if found in the conf file (character)}
+\item{description}{a description of the connection, if found in the conf
+file (character)}
 \item{live}{is this connection valid and live? (logical)}
 \item{driver}{the name of the driver function (character)}
 \item{conn_str}{the string used to parameterize the connection (character)}
 \item{pool}{is this a pool connection? (logical)}
 }
 
-If no connection names matched \code{name_str}, the tibble will be empty. If
-no connections have been configured (e.g. \code{connect()} has not been called), \code{NULL} is returned.
+If no connection names matched \code{name_str}, the tibble will be empty. If no
+connections have been configured (e.g. \code{connect()} has not been called),
+\code{NULL} is returned.
 }
 \description{
 Provides information about created connections.

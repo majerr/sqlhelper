@@ -46,6 +46,7 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="articles/connections.html">Managing Connections</a>
+    <a class="dropdown-item" href="articles/execution.html">Executing SQL</a>
   </div>
 </li>
 <li class="nav-item">
@@ -86,7 +87,7 @@ This readme and the vignettes are currently under development. Expect broken lin
 <li>It <strong>provides functions for preparing and executing sql queries and files of sql queries</strong>. You simply provide a query or filename (or lists of queries or filenames).</li>
 <li>It <strong>manages connections to RDBMSs</strong>. Multiple DBI connections can be configured with YAML and stored in the background for easy access by name.</li>
 </ol>
-<p>There are, of course, many excellent ways to interact with a database from R, often not involving SQL at all (e.g. <a href="https://dbplyr.tidyverse.org/" class="external-link">dbplyr</a>); <code>sqlhelper</code> is for the times when you <em>do</em> want to use SQL - perhaps you have inherited some legacy SQL, or need some specific functionality offered by your RDBMS, or simply prefer to write SQL. The article <code>vignette("use-cases")</code> describes the setup for some specific motivating cases.</p>
+<p>There are, of course, many excellent ways to interact with a database from R, often not involving SQL at all (e.g. <a href="https://dbplyr.tidyverse.org/" class="external-link">dbplyr</a>); <code>sqlhelper</code> is for the times when you <em>do</em> want to use SQL - perhaps you have inherited some legacy SQL, or need some specific functionality offered by your RDBMS, or simply prefer to write SQL. The article <code>vignette("use-case")</code> describes the setup for a specific motivating case.</p>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
@@ -115,8 +116,8 @@ This readme and the vignettes are currently under development. Expect broken lin
 <span><span class="fu"><a href="reference/connect.html">connect</a></span><span class="op">(</span><span class="st">"connections.yml"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># now execute run_files(...) as above</span></span></code></pre></div>
-<p>For more on connection files, the search path, and managing connections see <code><a href="articles/connections.html">vignette("connections")</a></code>.</p>
-<p>For more on executing SQL see <code>vignette("execution")</code>.</p>
+<p>For more on connection files, the connection search path, and managing connections see <code><a href="articles/connections.html">vignette("connections")</a></code>.</p>
+<p>For more on executing SQL see <code><a href="articles/execution.html">vignette("execution")</a></code>.</p>
 <!-- badges: start -->
 
 </div>

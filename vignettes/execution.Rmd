@@ -14,21 +14,51 @@ knitr::opts_chunk$set(
 )
 ```
 
-`sqlhelper`'s main aim is executing files of SQL, and has options for
+`sqlhelper`'s main purpose is the execution of _files_ of SQL, with options for
 controlling the execution of individual SQL queries within each file. However,
-'sqlhelper' can also be used to execute SQL query strings interactively.
+`sqlhelper` can also be used to execute SQL query strings, and to read and
+prepare SQL files without executing them.
 
 ## Executing SQL files
+
+Executing SQL code requires a connection to a database, and `sqlhelper` provides
+ways to automate creating and managing connections. These are described in
+`vignette("connections")`.
+
+Once connections are configured, the `run_files()` command can be used to
+execute files of SQL code.
+
+```{r}
+library(sqlhelper)
+
+connect("configs/sqlhelper_db_conf.yml", exclusive = TRUE)
+
+default_conn()
+
+# DBI::dbWriteTable( default_conn(), name = "IRIS", iris)
+
+# readLines("sql/example.sql") |>
+#  writeLines()
+
+# run_files("sql/example.sql")
+
+```
+
+### Accessing results of queries
+
 
 ### Controlling execution of individual queries
 
 ### Interpolation
 
-### Accessing results of queries
+### Binding
+
 
 ## Executing SQL queries
 
 ## Preparing SQL files
+
+## Passing ad-hoc connections to functions
 
 
 ```{r setup}

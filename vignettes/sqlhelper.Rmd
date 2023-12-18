@@ -109,16 +109,16 @@ DBI::dbWriteTable(sqlite_con,
                   name = "IRIS", 
                   value = iris)
 
-n_longest_petals <- 6
+#n_longest_petals <- 6
 
 readLines("sql/example.sql") |>
   writeLines()
 
 result <- runfiles("sql/example.sql")
 
-result$how_many_irises
+#result$how_many_irises
 
-result$n_longest_setosa_petal_lengths
+#result$n_longest_setosa_petal_lengths
 ```
 
 Several aspects of SQL execution can also be controlled this way. See `vignette("sql_execution")` for complete details.
