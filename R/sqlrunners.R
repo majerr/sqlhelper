@@ -84,12 +84,16 @@ run_queries <- function(sql,
                        default.conn = default_conn(),
                        include_params = FALSE ){
 
+  if( is.null(default.conn) & is.null( connection_info() ) ){
+    connect()
+    default.conn = default_conn()
+  }
+
   if( ! (methods::is(default.conn, "DBIConnection" ) |
          methods::is(default.conn, "Pool")) ){
 
-    if( is.null( connection_info() ) ){
+    if( is.null( connection_info() ) )
       stop("No connections are configured")
-    }
 
     if( ! is.character( default.conn ) )
       stop("default.conn must be a connection or the name of a connection")
