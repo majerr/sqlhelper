@@ -14,114 +14,97 @@ knitr::opts_chunk$set(
 )
 ```
 
-## Quickstart
 
-Specify your connections to databases in a yaml file:
+## Connections
+
+Before you can execute any SQL you will need connections to the databases you
+want to use. Either define them yourself (e.g. using `DBI::dbConnect()`), or
+place their specifications in a yaml file and use `connect()`:
 
 ```{r}
-# load sqlhelper
 library(sqlhelper)
 
-# If your admin has kindly provided a site-wide config, or you have set one up 
-# in your home directory, you can connect to your all your databases with:
-# connect()
+conf_fn <- system.file("examples/sqlhelper_db_conf.yml",
+                       package = "sqlhelper")
 
-# Otherwise, you'll need to provide a config file:
-connect("configs/sqlhelper_db_conf.yml")
+readLines(conf_fn) |>
+  writeLines()
+
+connect(conf_fn)
 ```
 
-[Managing Connections] (below) and `vignette("connections")` explain how to specify connections.
+`vignette("connections")` and `connect()` describe in detail how to specify and manage
+connections. In particular, note that `sqlhelper` defines a configuration search
+path. This means that if you tend to connect to the same databases in every
+session, you can avoid supplying file names by placing yaml files in the search
+path. Similarly, if you are a database admin you can supply connections to your
+analysts by placing such a file in the site-wide directory of the search path.
 
-For data wrangling, you probably want to write SQL queries in their own files and use `runfiles()`:
+## Executing files
 
-```R
+`sqlhelper`'s principal function is `run_files()`; use it to execute files or
+list of files. If you have used `connect()` to set up your connections you can
+simply pass file names to `run_files()`.
 
-# write some queries in sql files
-files_to_run <- list("path/to/create_temporary_dataset.sql",
-                     "path/containing/final_merge.sql",
-                     "folder/enclosing/extract_subsets.sql")
+```{r}
+
+# Put IRIS in a database
+DBI::dbWriteTable(default_conn(), name = "IRIS", value = iris)
+
+# write some queries in a .sql file
+file_to_run <- system.file("examples/example.sql",
+                           package="sqlhelper")
+
+readLines(file_to_run) |> writeLines()
+
+#Define a parameter
+petal_length <- 1.3
 
 # Run the queries and save the results
-results <- runfiles(files_to_run)
+results <- run_files(file_to_run)
 
-# Inspect the results. By default, runfiles() returns a list of the results of 
+# Inspect the results. By default, run_files() returns a list of the results of 
 # each query in the files you provided. Results of a specific query can be accessed by the
 # the name of the query. See the article 'Executing SQL' for more on named queries.
+results
 
-head(results$my_extracted_subset)
+results$short-petal-setosa
 ```
 
-For exploratory work you might just want to run some short queries; in this case `runqueries()` is for you:
+This example illustrates two key aspects of `run_files()`. Queries can be
+parameterized using the familiar `glue::glue_sql()` syntax, and queries can be
+named using interpreted comments for easier access to the results. Other aspects
+of execution can also be controlled using interpreted comments; `run_files()`
+and `vignette("execution")` describe this in detail.
 
-```R
+## Exploratory queries
+
+For exploratory work you might just want to run some short queries interactively. Use the function `run_queries()` for this.
+
+```{r}
 # write some queries
-my_queries <- list(
-  usedb="use COVID19", 
-  showtabs="select * from INFORMATION_SCHEMA.TABLES" # We're using SQLServer
+my_queries <- list( 
+  showtabs = "SELECT name FROM sqlite_schema WHERE type ='table' AND name NOT LIKE 'sqlite_%'",
+  how_many_irises = "select count(*) from iris"
 )
 
 # Run the queries and save the results
-results <- runqueries(my_queries)
+results <- run_queries(my_queries)
 
 # Inspect the results. runqueries() returns a list with one element per query.
 # You can access them using the names of the queries:
-head(results$showtabs)
-``````
+results$showtabs
 
-## Managing Connections
-
-Connections are configured with [YAML](https://yaml.org/). An minimal config file could contain:
-
-```yaml
-my_sqlite_conn:
-  driver_type: sqlite
-  connection:
-    Server: ":memory:"
+results$how_many_irises
 ```
 
-A more complete config might look more like:
+`run_queries()` and `vignette("execution")` describe in detail the options for running individual queries.
 
-```yaml
-dap:
-  driver_type: sqlserver
-  pool: yes
-  description: >
-    Databases managed by ADD teams on the Data and Analytics Platform
-  connection:
-    Driver: "{ODBC Driver 17 for SQL Server}"
-    Server: "add_dap"
-    Trusted_Connection: "yes"
-```
+## Preparing SQL queries
 
-The connections article (see `vignette("connections")`) provides complete details.
-
-## Running queries
-
-Queries in SQL files can be named using comments, and SQL can be interpolated with R values.
-
-```{r}
-library(sqlhelper)
-
-connect("configs/sqlhelper_db_conf.yml")
-
-sqlite_con <- live_connection("simple_sqlite")
-DBI::dbWriteTable(sqlite_con,
-                  name = "IRIS", 
-                  value = iris)
-
-#n_longest_petals <- 6
-
-readLines("sql/example.sql") |>
-  writeLines()
-
-result <- runfiles("sql/example.sql")
-
-#result$how_many_irises
-
-#result$n_longest_setosa_petal_lengths
-```
-
-Several aspects of SQL execution can also be controlled this way. See `vignette("sql_execution")` for complete details.
-
-## Getting information
-Several functions provide information about connections and the process of reading and preparing sql.
+Prior to execution, `run_files()` reads and prepares SQL files using the
+functions `read_sql()` and `prepare_sql()` respectively. These functions can be
+also be used in isolation to read and/or prepare SQL for execution without
+actually executing it. This can be useful if you need paramaterize your SQL in a
+differently (for example by using `DBI::dbBind()`), or if you need to debug your
+parameterized SQL.

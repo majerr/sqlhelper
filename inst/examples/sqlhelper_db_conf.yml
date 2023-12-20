@@ -1,4 +1,4 @@
-## ---- sqlhelper_db_conf.yml
+#### sqlhelper_db_conf.yml ####
 
 simple_sqlite:
   driver_type: sqlite

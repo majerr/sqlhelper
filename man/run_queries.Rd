@@ -56,6 +56,14 @@ and quoting in place}
 \description{
 Accepts a character vector of SQL queries and runs each one
 }
+\details{
+If no default connection is supplied via \code{default.conn} and no
+connections have been configured using \code{connect()}, an attempt will be made
+to configure connections via \code{connect()} using the configuration search
+path. If no database connections are available after this attempt, an error
+will be raised. See \code{vignette("connections")} for details about the
+configuration search path.
+}
 \examples{
 library(sqlhelper)
 

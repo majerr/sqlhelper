@@ -5,4 +5,4 @@ SELECT count(*) as N FROM IRIS;
 select Species, `Petal.Length`
 FROM IRIS
 WHERE Species = "setosa"
-AND `Petal.Length` < 1.3
+AND `Petal.Length` < {petal_length}

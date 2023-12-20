@@ -54,9 +54,11 @@ The **driver_type** line defines the brand of database, and hence the driver
 package that will be used. This parameter is required. Current options are:
 
 * 'odbc' (odbc)
+* 'sqlserver' (odbc)
 * 'sqlite' (RSQLite)
 * 'postgresql' (RPostgres)
-* 'mysql/mariadb'(RMariaDB)
+* 'mariadb'(RMariaDB)
+* 'mysql'(RMariaDB)
 * 'bigquery' (bigquery)
 
 The **pool** line determines whether a single connection is required (as
@@ -149,10 +151,13 @@ After `connect()` has been called, you may inspect the created connections with
 ```{r}
 library(sqlhelper)
 
-readLines("configs/sqlhelper_db_conf.yml") |>
+conf_fn <- system.file("examples/sqlhelper_db_conf.yml",
+                       package = "sqlhelper")
+
+readLines(conf_fn) |>
   writeLines()
 
-connect("configs/sqlhelper_db_conf.yml", exclusive = TRUE)
+connect(conf_fn, exclusive = TRUE)
 
 
 connection_info()

@@ -34,6 +34,7 @@ vars <- list(
 
   # acceptable server_types found in yml configs
   "driver_types" = c("odbc",
+                "sqlserver",
                 "sqlite",
                 "postgresql",
                 "mysql",
@@ -50,6 +51,7 @@ vars <- list(
 
   # functions in db_driver_pkgs corresponding to db_types
   "driver_funcs" = c("odbc",
+                     "odbc",
                        "SQLite",
                        "Postgres",
                        "MariaDB",

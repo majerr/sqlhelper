@@ -77,6 +77,18 @@ them for the first query. See \code{read_sql()}
 #> -- this query will also be executed against the
 #> -- connection called 'not_the_default'
 #> select * from bar;
+
+queries <- read_sql(
+  system.file("examples/cascade.sql",
+                package="sqlhelper")
+)
+
+queries[c("qname", "conn_name", "sql")]
+#> # A tibble: 2 x 3
+#>   qname        conn_name       sql              
+#>   <chr>        <chr>           <chr>            
+#> 1 first_query  not_the_default select * from foo
+#> 2 second_query not_the_default select * from bar
 }\if{html}{\out{</div>}}
 }
 \examples{

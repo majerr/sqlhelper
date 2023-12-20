@@ -9,9 +9,9 @@ Easier SQL integration with R
 
 In particular, `sqlhelper` does two things:
 
-1. It **provides functions for preparing and executing sql queries and files of
-sql queries**. You simply provide a query or filename (or lists of queries or
-filenames). 
+1. It provides **functions for preparing and executing sql queries and files of
+sql queries**. You simply provide a query or filename, or lists of queries or
+filenames. 
 1. It **manages connections to RDBMSs**. Multiple DBI connections
 can be configured with YAML and stored in the background for easy access by
 name.
@@ -34,33 +34,14 @@ You can install the development version from github:
 devtools::install_github("majerr/sqlhelper@dev")
 ```
 
-## Quickstart
+## Getting Started
 
-If you have a `yaml` connection file in your connection search path, you can
-simply do:
+Basic functionality is described at `vignette("sqlhelper")`
 
-```r
-library(sqlhelper)
-results <- run_files(
-  c(
-    "path/to/extract.SQL",
-    "folder/with/transform.SQL",
-    "uri/of/load.SQL")
-  )
-```
+Details of database connection setup and management are described at
+`vignette("connections")`
 
-If not, you will need to provide one:
-
-```r
-library(sqlhelper)
-connect("connections.yml")
-
-# now execute run_files(...) as above
-```
-
-For more on connection files, the connection search path, and managing connections see `vignette("connections")`. 
-
-For more on executing SQL see `vignette("execution")`.
+Details of SQL execution are described at `vignette("execution")`
 
 
 <!-- badges: start -->

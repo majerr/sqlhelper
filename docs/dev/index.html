@@ -84,7 +84,7 @@ This readme and the vignettes are currently under development. Expect broken lin
 <p><code>sqlhelper</code> facilitates preparing and executing <em>files</em> of SQL code from R.</p>
 <p>In particular, <code>sqlhelper</code> does two things:</p>
 <ol style="list-style-type: decimal">
-<li>It <strong>provides functions for preparing and executing sql queries and files of sql queries</strong>. You simply provide a query or filename (or lists of queries or filenames).</li>
+<li>It provides <strong>functions for preparing and executing sql queries and files of sql queries</strong>. You simply provide a query or filename, or lists of queries or filenames.</li>
 <li>It <strong>manages connections to RDBMSs</strong>. Multiple DBI connections can be configured with YAML and stored in the background for easy access by name.</li>
 </ol>
 <p>There are, of course, many excellent ways to interact with a database from R, often not involving SQL at all (e.g. <a href="https://dbplyr.tidyverse.org/" class="external-link">dbplyr</a>); <code>sqlhelper</code> is for the times when you <em>do</em> want to use SQL - perhaps you have inherited some legacy SQL, or need some specific functionality offered by your RDBMS, or simply prefer to write SQL. The article <code>vignette("use-case")</code> describes the setup for a specific motivating case.</p>
@@ -99,25 +99,11 @@ This readme and the vignettes are currently under development. Expect broken lin
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/remotes/man/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"majerr/sqlhelper@dev"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="quickstart">Quickstart<a class="anchor" aria-label="anchor" href="#quickstart"></a>
+<h2 id="getting-started">Getting Started<a class="anchor" aria-label="anchor" href="#getting-started"></a>
 </h2>
-<p>If you have a <code>yaml</code> connection file in your connection search path, you can simply do:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://majr-red.github.io/sqlhelper/dev" class="external-link">sqlhelper</a></span><span class="op">)</span></span>
-<span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/run_files.html">run_files</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>    <span class="st">"path/to/extract.SQL"</span>,</span>
-<span>    <span class="st">"folder/with/transform.SQL"</span>,</span>
-<span>    <span class="st">"uri/of/load.SQL"</span><span class="op">)</span></span>
-<span>  <span class="op">)</span></span></code></pre></div>
-<p>If not, you will need to provide one:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://majr-red.github.io/sqlhelper/dev" class="external-link">sqlhelper</a></span><span class="op">)</span></span>
-<span><span class="fu"><a href="reference/connect.html">connect</a></span><span class="op">(</span><span class="st">"connections.yml"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># now execute run_files(...) as above</span></span></code></pre></div>
-<p>For more on connection files, the connection search path, and managing connections see <code><a href="articles/connections.html">vignette("connections")</a></code>.</p>
-<p>For more on executing SQL see <code><a href="articles/execution.html">vignette("execution")</a></code>.</p>
+<p>Basic functionality is described at <code><a href="articles/sqlhelper.html">vignette("sqlhelper")</a></code></p>
+<p>Details of database connection setup and management are described at <code><a href="articles/connections.html">vignette("connections")</a></code></p>
+<p>Details of SQL execution are described at <code><a href="articles/execution.html">vignette("execution")</a></code></p>
 <!-- badges: start -->
 
 </div>

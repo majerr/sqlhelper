@@ -1,6 +1,6 @@
 #' Execute a sequence of SQL queries
 #'
-#' Accepts a character vector of SQL queries and runs each one
+#' Accepts a character vector of SQL queries and attempts to execute each
 #'
 #' @param sql An optionally-named list or character vector containing sql
 #'   strings, or a tibble returned by [read_sql()] or [prepare_sql()].
@@ -17,6 +17,13 @@
 #'
 #' @param include_params \code{TRUE} or \code{FALSE}. Should the parameters be
 #'   included in the output? Mainly useful for debugging.
+#'
+#' @details If no default connection is supplied via `default.conn` and no
+#'   connections have been configured using `connect()`, an attempt will be made
+#'   to configure connections via `connect()` using the configuration search
+#'   path. If no database connections are available after this attempt, an error
+#'   will be raised. See `vignette("connections")` for details about the
+#'   configuration search path.
 #'
 #' @return
 #' * If \code{include_params} is \code{FALSE} and the `sql` argument is a
@@ -175,7 +182,8 @@ runqueries <- run_queries
 
 #' Read, prepare and execute .SQL files
 #'
-#' Accepts a character vector of SQL file names and attempts to execute each one.
+#' Accepts a character vector of SQL file names and attempts to execute the
+#' queries in each one.
 #'
 #' @param filenames name, or vector of names, of file(s) to be executed
 #' @param ... Arguments to be passed to [run_queries()], [prepare_sql()], or [read_sql()]
@@ -183,12 +191,20 @@ runqueries <- run_queries
 #'   included in the output?
 #'
 #' @return A list of results of sql queries found in files
-#' @details
+#' @details If no default connection is supplied via `default.conn` and no
+#'   connections have been configured using `connect()`, an attempt will be made
+#'   to configure connections via `connect()` using the configuration search
+#'   path. If no database connections are available after this attempt, an error
+#'   will be raised. See `vignette("connections")` for details about the
+#'   configuration search path.
 #'
-#' [run_files()] calls [read_sql()] on each file
+#' [run_files()] calls [read_sql()] on each file, and [prepare_sql()] on the
+#' queries read from those files. Queries are executed with [run_queries()]. The
+#' behaviour of those functions can be controlled by passing the relevant
+#' parameters to [run_files()] as the `...` argument.
 #'
-#' [run_files()] enables you to control the arguments accepted by [run_queries()]
-#' on a per-query basis, using interpreted comments in your sql file:
+#' [run_files()] also enables control of the arguments accepted by [run_queries()]
+#' on a per-query basis, using interpreted comments in your sql file. For example:
 #'
 #' ```{sql sql1, eval=FALSE}
 #' -- qname = create_setosa_table
@@ -226,13 +242,20 @@ runqueries <- run_queries
 #'
 #' All interpreted comments except `qname` are cascaded _within their file_,
 #' meaning that if you want to use the same values throughout, you need only set
-#' them for the first query. See `read_sql()`
+#' them for the first query. See `read_sql()` for details.
 #'
 #' ```{r}
 #' readLines(
 #'   system.file("examples/cascade.sql",
 #'                 package="sqlhelper")
 #' ) |> writeLines()
+#'
+#' queries <- read_sql(
+#'   system.file("examples/cascade.sql",
+#'                 package="sqlhelper")
+#' )
+#'
+#' queries[c("qname", "conn_name", "sql")]
 #
 #' ```
 #' @examples
