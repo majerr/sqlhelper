@@ -21,13 +21,24 @@ included in the output?}
 A list of results of sql queries found in files
 }
 \description{
-Accepts a character vector of SQL file names and attempts to execute each one.
+Accepts a character vector of SQL file names and attempts to execute the
+queries in each one.
 }
 \details{
-\code{\link[=run_files]{run_files()}} calls \code{\link[=read_sql]{read_sql()}} on each file
+If no default connection is supplied via \code{default.conn} and no
+connections have been configured using \code{connect()}, an attempt will be made
+to configure connections via \code{connect()} using the configuration search
+path. If no database connections are available after this attempt, an error
+will be raised. See \code{vignette("connections")} for details about the
+configuration search path.
 
-\code{\link[=run_files]{run_files()}} enables you to control the arguments accepted by \code{\link[=run_queries]{run_queries()}}
-on a per-query basis, using interpreted comments in your sql file:
+\code{\link[=run_files]{run_files()}} calls \code{\link[=read_sql]{read_sql()}} on each file, and \code{\link[=prepare_sql]{prepare_sql()}} on the
+queries read from those files. Queries are executed with \code{\link[=run_queries]{run_queries()}}. The
+behaviour of those functions can be controlled by passing the relevant
+parameters to \code{\link[=run_files]{run_files()}} as the \code{...} argument.
+
+\code{\link[=run_files]{run_files()}} also enables control of the arguments accepted by \code{\link[=run_queries]{run_queries()}}
+on a per-query basis, using interpreted comments in your sql file. For example:
 
 \if{html}{\out{<div class="sourceCode sql">}}\preformatted{-- qname = create_setosa_table
 -- execmethod = execute
@@ -63,7 +74,7 @@ means \code{\link[sf:st_read]{sf::st_read()}}.}
 
 All interpreted comments except \code{qname} are cascaded \emph{within their file},
 meaning that if you want to use the same values throughout, you need only set
-them for the first query. See \code{read_sql()}
+them for the first query. See \code{read_sql()} for details.
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{readLines(
   system.file("examples/cascade.sql",

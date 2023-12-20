@@ -12,8 +12,11 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
-```
 
+
+```{r setup}
+
+```
 
 ## Connections
 
@@ -24,8 +27,7 @@ place their specifications in a yaml file and use `connect()`:
 ```{r}
 library(sqlhelper)
 
-conf_fn <- system.file("examples/sqlhelper_db_conf.yml",
-                       package = "sqlhelper")
+conf_fn <- "examples/sqlhelper_db_conf.yml"
 
 readLines(conf_fn) |>
   writeLines()
@@ -48,12 +50,11 @@ simply pass file names to `run_files()`.
 
 ```{r}
 
-# Put IRIS in a database
+# Write iris to sqlhelper's default connection
 DBI::dbWriteTable(default_conn(), name = "IRIS", value = iris)
 
 # write some queries in a .sql file
-file_to_run <- system.file("examples/example.sql",
-                           package="sqlhelper")
+file_to_run <- "examples/example.sql"
 
 readLines(file_to_run) |> writeLines()
 
@@ -68,7 +69,7 @@ results <- run_files(file_to_run)
 # the name of the query. See the article 'Executing SQL' for more on named queries.
 results
 
-results$short-petal-setosa
+results$short_petal_setosa
 ```
 
 This example illustrates two key aspects of `run_files()`. Queries can be
@@ -77,13 +78,13 @@ named using interpreted comments for easier access to the results. Other aspects
 of execution can also be controlled using interpreted comments; `run_files()`
 and `vignette("execution")` describe this in detail.
 
-## Exploratory queries
+## Executing queries
 
 For exploratory work you might just want to run some short queries interactively. Use the function `run_queries()` for this.
 
 ```{r}
 # write some queries
-my_queries <- list( 
+my_queries <- c( 
   showtabs = "SELECT name FROM sqlite_schema WHERE type ='table' AND name NOT LIKE 'sqlite_%'",
   how_many_irises = "select count(*) from iris"
 )
@@ -100,7 +101,7 @@ results$how_many_irises
 
 `run_queries()` and `vignette("execution")` describe in detail the options for running individual queries.
 
-## Preparing SQL queries
+## Preparing queries
 
 Prior to execution, `run_files()` reads and prepares SQL files using the
 functions `read_sql()` and `prepare_sql()` respectively. These functions can be

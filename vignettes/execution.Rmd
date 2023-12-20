@@ -31,17 +31,17 @@ execute files of SQL code.
 ```{r}
 library(sqlhelper)
 
-connect("configs/sqlhelper_db_conf.yml", exclusive = TRUE)
+# connect and write iris to the default connection
+# for this demo
+connect("examples/sqlhelper_db_conf.yml", exclusive = TRUE)
+DBI::dbWriteTable( default_conn(), name = "IRIS", iris)
 
-default_conn()
+readLines("examples/example.sql") |>
+writeLines()
 
-# DBI::dbWriteTable( default_conn(), name = "IRIS", iris)
+petal_length <- 1.3
 
-# readLines("sql/example.sql") |>
-#  writeLines()
-
-# run_files("sql/example.sql")
-
+run_files("examples/example.sql")
 ```
 
 ### Accessing results of queries

@@ -54,7 +54,7 @@ and quoting in place}
 }
 }
 \description{
-Accepts a character vector of SQL queries and runs each one
+Accepts a character vector of SQL queries and attempts to execute each
 }
 \details{
 If no default connection is supplied via \code{default.conn} and no

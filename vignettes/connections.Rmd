@@ -24,16 +24,24 @@ You can define database connections in config files which are read and processed
 by the `connect()` function. For example, if your config file is called
 `my_db_config.yml`, you might run:
 
-``` r
+``` {r connect}
 library(sqlhelper)
 
-connect("my_db_config.yml")
+connect("examples/sqlhelper_db_conf.yml")
 ```
 
 ### Config files
 
-A config file can contain one or more connection definitions.
-Connection definitions are [YAML](https://yaml.org/). The following YAML chunk defines a connection called 'dap'. 
+A config file can contain one or more connection definitions. The above example
+defines two simple connections:
+
+```{r config}
+readLines("examples/sqlhelper_db_conf.yml") |>
+  writeLines()
+```
+
+Connection definitions are [YAML](https://yaml.org/). The following YAML chunk
+defines a connection called 'dap'.
 
 ```yaml
 dap:
@@ -79,10 +87,11 @@ always be required but see `DBI::dbConnect()` for more details.
 In summary, the elements needed for every connection are:
 
 #. The connection **name**, and
-#. The **driver_type**, and
-#. A **connection** section containing a **Server** element
+#. the **driver_type**, and
+#. a **connection** section containing a **Server** element
 
-The others *may* be needed for some connections or may be omitted entirely. The function `config_examples()` provides several example configurations. 
+The others *may* be needed for some connections or may be omitted entirely. The
+function `config_examples()` provides several example configurations.
 
 ### The config search path
 
@@ -100,13 +109,23 @@ without arguments. Nonetheless, in the case where you require additional
 connections to those provided by user- and site-wide configurations, you may
 provide a `config_filename` argument.
 
+### Suppressing the config search path
+
+If only one config file is wanted, the config search path may be suppressed by
+supplying the `exclusive = TRUE` argument.
+
+If `exclusive = TRUE`, then `connect()` will check whether the `config_filename`
+parameter is 'user' or 'site'. If `config_filename` is one of those, the user-
+or site-wide config file will be sought; if it is not, it will be treated as the
+name of a config file, and that file will be sought.
+
 ### File precedence, inheritance, and conflicts across config files
 
-Site-wide config files are read first, then user-wide, then named files. If
-conflicting connection names or connection elements are encountered between
-config files, values from later files overwrite those from earlier. This
-operates on an element-by-element basis; for example, if your site-wide config
-contains:
+If `exclusive == FALSE`, site-wide config files will be read first, then
+user-wide, then named files. If conflicting connection names or connection
+elements are encountered between config files, values from later files overwrite
+those from earlier. This mechanism operates element-wise; for example,
+if your site-wide config contains:
 
 ```yaml
 my_conn:
@@ -133,33 +152,12 @@ my_conn:
     Server: "my_alternate_server_host"
 ```
 
-### Suppressing the config search path
-
-If only one config file is wanted, the config search path may be suppressed by
-supplying the `exclusive = TRUE` argument.
-
-If `exclusive = TRUE`, then `connect()` will check whether the `config_filename`
-is one of 'user' or 'site'. If it is, the user- or site-wide config file will be
-sought; if it is not 'user' or 'site', it will be treated as the name of a
-config file.
-
 ## Browsing the connection cache
 
 After `connect()` has been called, you may inspect the created connections with
 `connection_info()`.
 
-```{r}
-library(sqlhelper)
-
-conf_fn <- system.file("examples/sqlhelper_db_conf.yml",
-                       package = "sqlhelper")
-
-readLines(conf_fn) |>
-  writeLines()
-
-connect(conf_fn, exclusive = TRUE)
-
-
+```{r connection_info}
 connection_info()
 ```
 
@@ -219,7 +217,7 @@ connection_info()
 
 if(not_connected(conn_name)){
   message(glue::glue("{conn_name} is not available, reconnecting..."))
-  connect("configs/sqlhelper_db_conf.yml", exclusive = TRUE)
+  connect("examples/sqlhelper_db_conf.yml", exclusive = TRUE)
 }
 
 connection_info()
