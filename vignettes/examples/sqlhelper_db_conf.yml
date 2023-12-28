@@ -6,7 +6,6 @@ simple_sqlite:
   connection:
     Server: ":memory:"
 
-
 pool_sqlite:
   driver_type: sqlite
   pool: yes
