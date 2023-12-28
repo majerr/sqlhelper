@@ -77,10 +77,11 @@ cause an error because R will interpret `-` as a subtraction.
 
 ### Controlling execution of individual queries
 
-As well as naming queries, interpreted comments can be used to control aspects
-of execution on a per-query basis. For example, queries are executed with
-`DBI::dbGetQuery()` by default, but `sqlite` will complain if you use this to
-send a statement to the database. You can control the execution function with the `execmethod` keyword:
+As well as naming queries, interpreted comments can be used to control
+aspects of execution on a per-query basis. For example, queries are
+executed with `DBI::dbGetQuery()` by default, but `sqlite` will
+complain if you use this to send a statement to the database. You can
+control the execution function with the `execmethod` keyword:
 
 ```sql
 -- qname = bobby_tables
@@ -164,13 +165,16 @@ your users' `globalenv()`. To supply interpolation values to `run_files()` and
 ```{r values}
 ## values example
 ```
-
 ### Binding
 
 Binding is not currently implemented in `sqlhelper`. As a workaround you can
 read and prepare queries from files with `read_sql()` and `prepare_sql()`, bind
 values to them yourself (e.g. using `DBI::dbBind()`) and execute them using
 `run_queries()`.
+
+```{r binding}
+## binding example
+```
 
 ## Reading and preparing SQL files
 
