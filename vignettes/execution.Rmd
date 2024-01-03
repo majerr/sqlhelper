@@ -18,27 +18,20 @@ knitr::opts_chunk$set(
 controlling the execution of individual SQL queries within each file. The
 function `run_files()` executes .SQL files. Internally, `run_files()` calls the
 functions `read_sql()`, `prepare_sql()` and `run_queries()` and these functions
-can be used to read and prepare SQL files without executing them, or to execute
-SQL query strings.
+can be used to read and prepare SQL files without executing them, and to execute SQL query strings.
 
 ## Executing SQL files
 
-Executing SQL code requires a connection to a database, and `sqlhelper` provides
-ways to automate creating and managing connections. These are described in
-`vignette("connections")`.
+Executing SQL code requires a connection to a database, and `sqlhelper` provides ways to automate creating and managing connections. These are described in `vignette("connections")`.
 
 Once connections are configured, the `run_files()` command can be used to
 execute files of SQL code.
 
 ```{r execute_file}
 library(sqlhelper)
-
-# set up connections and write iris to the default connection
-# for this example
 connect("examples/sqlhelper_db_conf.yml", exclusive = TRUE)
 DBI::dbWriteTable( default_conn(), name = "IRIS", iris)
 
-# inspect a sql file
 readLines("examples/example.sql") |>
 writeLines()
 
@@ -62,9 +55,7 @@ can be accessed by the same name:
 results$short_petal_setosa
 ```
 
-Results returned as list may also be accessed by index, of course. However, if a
-file contains a single query, the result of that query will be returned as a
-single object, not a list.
+Results returned as list may also be accessed by index, of course. However, if a file contains a single query, the result of that query will be returned as is, (i.e. an object, not a single element list).
 
 Beware of the usual gotchas around list names. `sqlhelper` will not complain if
 you give two queries the same name, but if you then try to access the results by
@@ -171,8 +162,7 @@ result_from_globalenv <-
   run_files("examples/petal_length_params.sql")
 result_from_globalenv$short_petal_setosa
 
-# but we need to use a different value within a package, so we pass a bespoke
-# interpolation environment
+# a bespoke environment can provide a specific set of values for interpolation
 my_values <- new.env()
 my_values$petal_length <- 1.4
 result_from_my_values <-
@@ -181,19 +171,71 @@ result_from_my_values$short_petal_setosa
 ```
 ### Binding
 
-Binding is not currently implemented in `sqlhelper`. As a workaround you can
-read and prepare queries from files with `read_sql()` and `prepare_sql()`, bind
-values to them yourself (e.g. using `DBI::dbBind()`) and execute them using
-`run_queries()`.
+Binding can be performed alongside interpolation. Queries and statements are
+first interpolated and then should then be executed with `DBI::dbSendQuery()` or
+`DBI::dbSendStatement()`. They may then be bound and the result fetched.
 
 ```{r binding}
-## binding example
+readLines("examples/binding.SQL") |>
+  writeLines()
+
+petal_width <- 0.2
+
+result <- run_files("examples/binding.SQL")
+
+DBI::dbBind(result$binding_example, list("setosa"))
+
+DBI::dbFetch(result$binding_example)
+
+DBI::dbClearResult(result$binding_example)
+
 ```
 
 ## Reading and preparing SQL files
 
+SQL files and strings can be read and prepared without being executed by the
+`read_sql()` and `prepare_sql()` functions. These functions return tibbles
+containing the prepared SQL, associated metadata (e.g. filename), and execution
+parameters. These functions enable both inspection of prepared SQL and
+parameters for debugging, and further manipulation of SQL queries prior to
+execution.
 
-## Executing individual SQL queries
+```{r read_prep}
+
+## read_example <- read_sql("examples/read_example.sql")
+
+```
+
+## Executing SQL strings
+
+One of the main objectives of SQL helper is to reduce the incidence of SQL
+written as strings in R code. However, it is occasionally convenient for
+interactive exploratory work to type a query as a string. For this you may use
+`run_queries()`.
+
+```{r runqueries}
+## run queries example
+```
 
 ## Passing ad-hoc connections to functions
+
+It may not always be possible or desire-able to have `sqlhelper` manage your
+database connections. For example, the use of secrets is not yet supported in
+`sqlhelper` connections. In these cases, you may pass your own connections to
+`run_files()` or `run_queries()`.
+
+```{r conns}
+
+con <- DBI::dbConnect(RSQLite::SQLite(), ":memory:")
+
+cars <- mtcars
+cars$model <- row.names(mtcars)
+DBI::dbWriteTable(con, "cars", cars)
+
+minmpg = 30
+
+run_queries("SELECT model, mpg, cyl FROM CARS WHERE mpg >= {minmpg}",
+            default.conn = con)
+
+```
 
