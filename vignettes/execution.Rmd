@@ -127,7 +127,7 @@ You can prevent cascading by passing `cascade = FALSE`.
 ### Interpolation
 
 By default, `sqlhelper` will attempt to parameterize SQL queries with
-`glue::glue_sql()` using values from the current environment. This means that values from R can be easily deployed in your SQL code, and also be calculated in situ:
+`glue::glue_sql()` using values from the current environment. This means that values from R can be easily inserted in your SQL code, or calculated in situ:
 
 ```{r}
 readLines("examples/petal_length_params.sql") |>
@@ -138,32 +138,46 @@ petal_length = 1.2
 run_files("examples/petal_length_params.sql")
 ```
 
-Interpolation behaviour can be controlled using interpreted comment keywords
+Interpolation behaviour can be controlled using the keywords
 __interpolate__ and __quotesql__, and the `values` parameter of `prepare_sql()`
 (which can be also passed to `run_files()` and `run_queries()`).
 
 The default behaviour is to quote SQL strings (i.e. interpolate with
-`glue::glue_sql()`); if this is not desired it can be avoided with `-- quotesql = no` 
-(for an individual query in a file; but see [the example above](#cascade) on
-cascaded comments) or by passing `quotesql = "no"` as a parameter to
+`glue::glue_sql()`); if this is not desired it can be avoided with `-- quotesql
+= no` (for an individual query in a file; but see [the 'cascaded comments'
+example, above](#cascade)) or by passing `quotesql = "no"` as a parameter to
 `run_files()` (for all queries). If strings are not quoted they will be inserted
-bare.
+bare; whilst this is occasionally useful, great care should be taken to sanitize
+any interpolated values.
 
 If you want to skip interpolation for an individual query, precede it with 
 `-- interplate = no`. If you want to skip interpolation altogether, pass
-`interpolate = "no"` as a parameter. Again, see See [the example
-above](#cascade) on cascaded comments.
+`interpolate = "no"` as a parameter and see also [the 'cascaded comments'
+example, above](#cascade).
 
 #### Passing parameter values {#values}
 
 Sometimes you may need to parameterize your SQL with values that are not in the
 calling environment. This is particularly important if your are executing SQL
-code from within a package and you cannot rely on (and don't want to pollute)
+code from within a package: you cannot rely on, and should not risk writing to,
 your users' `globalenv()`. To supply interpolation values to `run_files()` and
 `run_queries()`, pass a populated environment as the `values` parameter.
 
 ```{r values}
-## values example
+# reusing the petal length parameter example
+# A user may have a petal_length parameter in the globalenv already
+print(petal_length)
+result_from_globalenv <-
+  run_files("examples/petal_length_params.sql")
+result_from_globalenv$short_petal_setosa
+
+# but we need to use a different value within a package, so we pass a bespoke
+# interpolation environment
+my_values <- new.env()
+my_values$petal_length <- 1.4
+result_from_my_values <-
+  run_files("examples/petal_length_params.sql", values = my_values)
+result_from_my_values$short_petal_setosa
 ```
 ### Binding
 
@@ -177,6 +191,7 @@ values to them yourself (e.g. using `DBI::dbBind()`) and execute them using
 ```
 
 ## Reading and preparing SQL files
+
 
 ## Executing individual SQL queries
 

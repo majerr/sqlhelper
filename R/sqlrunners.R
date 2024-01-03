@@ -87,91 +87,102 @@
 #'
 #' @export
 run_queries <- function(sql,
-                       ...,
-                       default.conn = default_conn(),
-                       include_params = FALSE ){
-
-  if( is.null(default.conn) & is.null( connection_info() ) ){
+                        ...,
+                        default.conn = default_conn(),
+                        include_params = FALSE) {
+  if (is.null(default.conn) & is.null(connection_info())) {
     connect()
     default.conn = default_conn()
   }
 
-  if( ! (methods::is(default.conn, "DBIConnection" ) |
-         methods::is(default.conn, "Pool")) ){
-
-    if( is.null( connection_info() ) )
+  if (!(methods::is(default.conn, "DBIConnection") |
+        methods::is(default.conn, "Pool"))) {
+    if (is.null(connection_info()))
       stop("No connections are configured")
 
-    if( ! is.character( default.conn ) )
+    if (!is.character(default.conn))
       stop("default.conn must be a connection or the name of a connection")
 
-    if( default.conn %in% names( connection_cache ) )
-      default.conn <- live_connection( conn_name = default.conn )
+    if (default.conn %in% names(connection_cache))
+      default.conn <- live_connection(conn_name = default.conn)
 
-    if( ! (methods::is(default.conn, "DBIConnection" ) |
-           methods::is(default.conn, "Pool")) )
-      stop( glue::glue("default_conn is not a connection or the name of a connection") )
+    if (!(methods::is(default.conn, "DBIConnection") |
+          methods::is(default.conn, "Pool")))
+      stop(glue::glue("default_conn is not a connection or the name of a connection"))
 
   }
 
   args <- list(...)
   args$sql <- sql
   args$default.conn <- default.conn
-  if(!("values" %in% names(args))){
+  if (!("values" %in% names(args))) {
     args$values <- parent.frame()
   }
   prepped_sql <- do.call(prepare_sql,
                          args)
 
-  prepped_sql$result <- purrr::pmap(
-    prepped_sql[,c("execmethod", "conn_name", "geometry", "prepared_sql" )],
+  reqd_cols <-
+    c("execmethod", "conn_name", "geometry", "prepared_sql")
+  prepped_sql$result <- purrr::pmap(prepped_sql[, reqd_cols],
 
-    function( execmethod, conn_name, geometry, prepared_sql, default.conn ){
-      if(execmethod == "get")
-        dispatcher <- DBI::dbGetQuery
-      else if(execmethod == "execute")
-        dispatcher <- DBI::dbExecute
-      else if(execmethod == "sendq")
-        dispatcher <- DBI::dbSendQuery
-      else if(execmethod == "sends")
-        dispatcher <- DBI::dbSendStatement
-      else if(execmethod == "spatial")
-        dispatcher <- sf::st_read
-      else
-        stop( glue::glue( "execmethod must be one of 'get', 'execute', 'sendq', 'sends' or 'spatial', not {execmethod}" ) )
+                                    function(execmethod,
+                                             conn_name,
+                                             geometry,
+                                             prepared_sql,
+                                             default.conn) {
+                                      if (execmethod == "get")
+                                        dispatcher <-
+                                          DBI::dbGetQuery
+                                      else if (execmethod == "execute")
+                                        dispatcher <- DBI::dbExecute
+                                      else if (execmethod == "sendq")
+                                        dispatcher <-
+                                          DBI::dbSendQuery
+                                      else if (execmethod == "sends")
+                                        dispatcher <-
+                                          DBI::dbSendStatement
+                                      else if (execmethod == "spatial")
+                                        dispatcher <- sf::st_read
+                                      else
+                                        stop(
+                                          glue::glue(
+                                            "execmethod must be one of 'get', 'execute', 'sendq', 'sends' or 'spatial', not {execmethod}"
+                                          )
+                                        )
 
-      if(conn_name == "default")
-        conn <- default.conn
-      else
-        conn <- live_connection(conn_name)
+                                      if (conn_name == "default")
+                                        conn <- default.conn
+                                      else
+                                        conn <-
+                                          live_connection(conn_name)
 
-      if( execmethod == "spatial" && !is.na(geometry)){
-        result <- dispatcher(dsn = conn,
-                             query = prepared_sql,
-                             geometry_column = geometry)
-      } else if( execmethod == "spatial" ) {
-        result <- dispatcher(dsn = conn,
-                             query = prepared_sql)
-      } else {
-        result <- dispatcher(conn = conn,
-                             statement = prepared_sql)
-      }
-    }, # close function definition
+                                      if (execmethod == "spatial" &&
+                                          !is.na(geometry)) {
+                                        result <- dispatcher(dsn = conn,
+                                                             query = prepared_sql,
+                                                             geometry_column = geometry)
+                                      } else if (execmethod == "spatial") {
+                                        result <- dispatcher(dsn = conn,
+                                                             query = prepared_sql)
+                                      } else {
+                                        result <- dispatcher(conn = conn,
+                                                             statement = prepared_sql)
+                                      }
+                                    }, # close function definition
 
-    #default.conn = parent.frame()$default.conn
-    default.conn = default.conn
-  ) # close purrr::pmap
+                                    #default.conn = parent.frame()$default.conn
+                                    default.conn = default.conn) # close purrr::pmap
 
   execd_sql <- tibble::as_tibble(prepped_sql)
 
-  if( include_params ){
+  if (include_params) {
     out <- execd_sql
   } else {
     out <- execd_sql$result
-    names( out ) <- execd_sql$qname
+    names(out) <- execd_sql$qname
   }
 
-  if(length(out) == 1 && is.na( names(out) ))
+  if (length(out) == 1 && is.na(names(out)))
     out <- out[[1]]
   out
 }
@@ -297,23 +308,21 @@ runqueries <- run_queries
 #' @seealso [read_sql()], [prepare_sql()]
 #' @export
 run_files <- function(filenames,
-                     ...,
-                     include_params = FALSE){
-
+                      ...,
+                      include_params = FALSE) {
   args <- list(...)
-  if( ! ('cascade' %in% names(args)))
+  if (!('cascade' %in% names(args)))
     args$cascade = TRUE
 
-  sql <- do.call(
-    rbind,
-    lapply(filenames, read_sql, cascade = args$cascade)
-  )
+  sql <- do.call(rbind,
+                 lapply(filenames, read_sql, cascade = args$cascade))
 
-  args$cascade <- NULL # drop cascade to prevent 'unused argument' errors
+  args$cascade <-
+    NULL # drop cascade to prevent 'unused argument' errors
 
   args$sql <- sql
   args$include_params <- include_params
-  if(!("values" %in% names(args))){
+  if (!("values" %in% names(args))) {
     args$values <- parent.frame()
   }
   do.call(runqueries,
