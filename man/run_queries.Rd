@@ -84,12 +84,28 @@ DBI::dbWriteTable( default_conn(),
 n <- 5
 
 run_queries(
-    c(top_n = "select * from iris limit {n}", # interpolation is controlled
-                                              # with the 'values' argument
+    c(top_n = "select * from iris limit {n}",
       uniqs = "select distinct species as species from iris")
 )
 
-## Use the execmethod parameter if you don't want to return results
+## use include_params to review the execution context
+run_queries(
+    c(top_n = "select * from iris limit {n}",
+      uniqs = "select distinct species as species from iris"),
+   include_params = TRUE
+)
+
+## pass an env of interpolation values to the 'values' parameter
+## result of a single, unnamed query is returned as an object, not a
+## 1-element list
+e <- new.env()
+e$n <- 2
+run_queries(
+    "select * from iris limit {n}",
+    values = e
+)
+
+## Use the execmethod parameter for statements
 run_queries("create table iris_setosa as select * from iris where species = 'setosa'",
           execmethod = 'execute')
 

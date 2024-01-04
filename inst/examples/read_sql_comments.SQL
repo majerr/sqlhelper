@@ -1,11 +1,11 @@
 -- Run some queries against the newly-created iris table
 
 
--- conn_name=simple_sqlite
+-- conn_name = simple_sqlite
 -- ------------------------------------------------------------
 
 -- what tables have we got?
--- qname=showtabs
+-- qname = showtabs
 SELECT name FROM
 
 /* a multi-
@@ -28,10 +28,10 @@ the end of the
 block*/
 
 -- ------------------------------------------------------------
-
+-- spaces are allowed in interpreted comments
 -- conn_name = pool_sqlite
 -- execmethod = spatial
--- geometry = mystring
+-- geometry = myString
 -- make sure quoted double dashes survive the comment strip
 -- qname=quoted_doubledash
 select
@@ -44,6 +44,8 @@ where 'foo' = '-- oops';
 -- ------------------------------------------------------------
 
 -- make sure quoted block comments survive the comment strip
+-- 'conn_name', 'execmethod' and 'geometry' values can be
+-- cascaded from the previous query
 -- qname=quoted_block
 select
 'stringvar' as myString

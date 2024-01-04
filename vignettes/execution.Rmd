@@ -200,29 +200,20 @@ parameters. These functions enable both inspection of prepared SQL and
 parameters for debugging, and further manipulation of SQL queries prior to
 execution.
 
-```{r read_prep}
-
-## read_example <- read_sql("examples/read_example.sql")
-
-```
-
 ## Executing SQL strings
 
-One of the main objectives of SQL helper is to reduce the incidence of SQL
+One of the main objectives of `sqlhelper` is to reduce the incidence of SQL
 written as strings in R code. However, it is occasionally convenient for
 interactive exploratory work to type a query as a string. For this you may use
-`run_queries()`.
-
-```{r runqueries}
-## run queries example
-```
+`run_queries()`. This function can also be used to execute queries that have
+been read from files (e.g. with `read_sql()`) and then manipulated
+programmatically before execution.
 
 ## Passing ad-hoc connections to functions
 
-It may not always be possible or desire-able to have `sqlhelper` manage your
+It may not always be possible or desirable to have `sqlhelper` manage your
 database connections. For example, the use of secrets is not yet supported in
-`sqlhelper` connections. In these cases, you may pass your own connections to
-`run_files()` or `run_queries()`.
+`sqlhelper` connections. In these cases, connections created outside `sqlhelper` may be passed to to `run_files()` or `run_queries()`.
 
 ```{r conns}
 

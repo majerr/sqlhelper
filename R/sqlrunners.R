@@ -70,12 +70,28 @@
 #' n <- 5
 #'
 #' run_queries(
-#'     c(top_n = "select * from iris limit {n}", # interpolation is controlled
-#'                                               # with the 'values' argument
+#'     c(top_n = "select * from iris limit {n}",
 #'       uniqs = "select distinct species as species from iris")
 #' )
 #'
-#' ## Use the execmethod parameter if you don't want to return results
+#' ## use include_params to review the execution context
+#' run_queries(
+#'     c(top_n = "select * from iris limit {n}",
+#'       uniqs = "select distinct species as species from iris"),
+#'    include_params = TRUE
+#' )
+#'
+#' ## pass an env of interpolation values to the 'values' parameter
+#' ## result of a single, unnamed query is returned as an object, not a
+#' ## 1-element list
+#' e <- new.env()
+#' e$n <- 2
+#' run_queries(
+#'     "select * from iris limit {n}",
+#'     values = e
+#' )
+#'
+#' ## Use the execmethod parameter for statements
 #' run_queries("create table iris_setosa as select * from iris where species = 'setosa'",
 #'           execmethod = 'execute')
 #'
@@ -210,33 +226,21 @@ runqueries <- run_queries
 #'   configuration search path.
 #'
 #' [run_files()] calls [read_sql()] on each file, and [prepare_sql()] on the
-#' queries read from those files. Queries are executed with [run_queries()]. The
+#' queries read from those files. Prepared queries are executed with [run_queries()]. The
 #' behaviour of those functions can be controlled by passing the relevant
 #' parameters to [run_files()] as the `...` argument.
 #'
-#' [run_files()] also enables control of the arguments accepted by [run_queries()]
-#' on a per-query basis, using interpreted comments in your sql file. For example:
-#'
-#' ```{sql sql1, eval=FALSE}
-#' -- qname = create_setosa_table
-#' -- execmethod = execute
-#' -- conn_name = sqlite_simple
-#' CREATE TABLE iris_setosa as SELECT * FROM IRIS WHERE SPECIES = 'setosa';
-#'
-#' -- qname = get_setosa_table
-#' -- execmethod = get
-#' -- conn_name = sqlite_simple
-#' SELECT * FROM iris_setosa;
-#' ```
-#'
-#' Interpreted comments precede the sql query to which they refer. Each
-#' interpretable comment must be on a line by itself and take the form:
+#' [run_files()] also enables control of the arguments accepted by [run_queries()] on
+#' a per-query basis, by interpreting comments in SQL files as described
+#' for `read_sql()`. Interpreted comments precede the sql query to which they
+#' refer. Each interpretable comment must be on a line by itself and take the
+#' form:
 #'
 #' ```sql
 #' -- keyword = value
 #' ```
 #'
-#' Keywords for interpretable comments are:
+#' Keywords and possible values for interpretable comments are:
 #'
 #' \describe{
 #'  \item{qname}{A name for this query}
@@ -255,20 +259,6 @@ runqueries <- run_queries
 #' meaning that if you want to use the same values throughout, you need only set
 #' them for the first query. See `read_sql()` for details.
 #'
-#' ```{r}
-#' readLines(
-#'   system.file("examples/cascade.sql",
-#'                 package="sqlhelper")
-#' ) |> writeLines()
-#'
-#' queries <- read_sql(
-#'   system.file("examples/cascade.sql",
-#'                 package="sqlhelper")
-#' )
-#'
-#' queries[c("qname", "conn_name", "sql")]
-#
-#' ```
 #' @examples
 #' library(sqlhelper)
 #'

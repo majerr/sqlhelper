@@ -9,6 +9,15 @@ home:
   title: Easier SQL integration with R
 
 reference:
+- title: Execution
+  desc: >
+    Functions for reading, preparing and executing SQL
+  contents:
+  - run_files
+  - run_queries
+  - read_sql
+  - prepare_sql
+
 - title: Connections
   desc: >
     Functions for creating and managing database connections
@@ -23,16 +32,6 @@ reference:
   - is_connected
   - not_connected
   - disconnect
-
-- title: Execution
-  desc: >
-    Functions for reading, preparing and executing SQL
-  contents:
-  - run_files
-  - run_queries
-  - read_sql
-  - prepare_sql
-
 
 development:
   mode: auto
