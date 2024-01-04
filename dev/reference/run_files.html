@@ -31,6 +31,7 @@ queries in each one."><meta name="robots" content="noindex"><!-- mathjax --><scr
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/connections.html">Managing Connections</a>
     <a class="dropdown-item" href="../articles/execution.html">Executing SQL</a>
+    <a class="dropdown-item" href="../articles/use_case.html">Using sqlhelper in packages</a>
   </div>
 </li>
 <li class="nav-item">
@@ -99,24 +100,16 @@ path. If no database connections are available after this attempt, an error
 will be raised. See <code><a href="../articles/connections.html">vignette("connections")</a></code> for details about the
 configuration search path.</p>
 <p><code>run_files()</code> calls <code><a href="read_sql.html">read_sql()</a></code> on each file, and <code><a href="prepare_sql.html">prepare_sql()</a></code> on the
-queries read from those files. Queries are executed with <code><a href="run_queries.html">run_queries()</a></code>. The
+queries read from those files. Prepared queries are executed with <code><a href="run_queries.html">run_queries()</a></code>. The
 behaviour of those functions can be controlled by passing the relevant
 parameters to <code>run_files()</code> as the <code>...</code> argument.</p>
-<p><code>run_files()</code> also enables control of the arguments accepted by <code><a href="run_queries.html">run_queries()</a></code>
-on a per-query basis, using interpreted comments in your sql file. For example:</p>
-<p></p><div class="sourceCode sql"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">-- qname = create_setosa_table</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co">-- execmethod = execute</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">-- conn_name = sqlite_simple</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> <span class="kw">TABLE</span> iris_setosa <span class="kw">as</span> <span class="kw">SELECT</span> <span class="op">*</span> <span class="kw">FROM</span> IRIS <span class="kw">WHERE</span> SPECIES <span class="op">=</span> <span class="st">'setosa'</span>;</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co">-- qname = get_setosa_table</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co">-- execmethod = get</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co">-- conn_name = sqlite_simple</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> <span class="op">*</span> <span class="kw">FROM</span> iris_setosa;</span></code></pre><p></p></div>
-<p>Interpreted comments precede the sql query to which they refer. Each
-interpretable comment must be on a line by itself and take the form:</p>
+<p><code>run_files()</code> also enables control of the arguments accepted by <code><a href="run_queries.html">run_queries()</a></code> on
+a per-query basis, by interpreting comments in SQL files as described
+for <code><a href="read_sql.html">read_sql()</a></code>. Interpreted comments precede the sql query to which they
+refer. Each interpretable comment must be on a line by itself and take the
+form:</p>
 <p></p><div class="sourceCode sql"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">-- keyword = value</span></span></code></pre><p></p></div>
-<p>Keywords for interpretable comments are:</p>
+<p>Keywords and possible values for interpretable comments are:</p>
 <dl><dt>qname</dt>
 <dd><p>A name for this query</p></dd>
 
@@ -143,30 +136,6 @@ means <code><a href="https://r-spatial.github.io/sf/reference/st_read.html" clas
 </dl><p>All interpreted comments except <code>qname</code> are cascaded <em>within their file</em>,
 meaning that if you want to use the same values throughout, you need only set
 them for the first query. See <code><a href="read_sql.html">read_sql()</a></code> for details.</p>
-<p></p><div class="sourceCode r"><pre><code><span><span class="fu"><a href="https://rdrr.io/r/base/readLines.html" class="external-link">readLines</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"examples/cascade.sql"</span>,</span>
-<span>                package<span class="op">=</span><span class="st">"sqlhelper"</span><span class="op">)</span></span>
-<span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/writeLines.html" class="external-link">writeLines</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; -- qname = first_query</span></span>
-<span><span class="co">#&gt; -- conn_name = not_the_default</span></span>
-<span><span class="co">#&gt; select * from foo;</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; --qname = second_query</span></span>
-<span><span class="co">#&gt; -- this query will also be executed against the</span></span>
-<span><span class="co">#&gt; -- connection called 'not_the_default'</span></span>
-<span><span class="co">#&gt; select * from bar;</span></span>
-<span></span>
-<span><span class="va">queries</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_sql.html">read_sql</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"examples/cascade.sql"</span>,</span>
-<span>                package<span class="op">=</span><span class="st">"sqlhelper"</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">queries</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"qname"</span>, <span class="st">"conn_name"</span>, <span class="st">"sql"</span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="co">#&gt; # A tibble: 2 x 3</span></span>
-<span><span class="co">#&gt;   qname        conn_name       sql              </span></span>
-<span><span class="co">#&gt;   &lt;chr&gt;        &lt;chr&gt;           &lt;chr&gt;            </span></span>
-<span><span class="co">#&gt; 1 first_query  not_the_default select * from foo</span></span>
-<span><span class="co">#&gt; 2 second_query not_the_default select * from bar</span></span></code></pre><p></p></div>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
