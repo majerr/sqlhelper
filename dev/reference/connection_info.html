@@ -28,6 +28,7 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/connections.html">Managing Connections</a>
+    <a class="dropdown-item" href="../articles/execution.html">Executing SQL</a>
   </div>
 </li>
 <li class="nav-item">
@@ -88,7 +89,8 @@ following fields:</p>
 <dd><p>identifier (character)</p></dd>
 
 <dt>description</dt>
-<dd><p>a description of the connection, if found in the conf file (character)</p></dd>
+<dd><p>a description of the connection, if found in the conf
+file (character)</p></dd>
 
 <dt>live</dt>
 <dd><p>is this connection valid and live? (logical)</p></dd>
@@ -103,8 +105,9 @@ following fields:</p>
 <dd><p>is this a pool connection? (logical)</p></dd>
 
 
-</dl><p>If no connection names matched <code>name_str</code>, the tibble will be empty. If
-no connections have been configured (e.g. <code><a href="connect.html">connect()</a></code> has not been called), <code>NULL</code> is returned.</p>
+</dl><p>If no connection names matched <code>name_str</code>, the tibble will be empty. If no
+connections have been configured (e.g. <code><a href="connect.html">connect()</a></code> has not been called),
+<code>NULL</code> is returned.</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

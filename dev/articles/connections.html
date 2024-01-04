@@ -46,6 +46,7 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/connections.html">Managing Connections</a>
+    <a class="dropdown-item" href="../articles/execution.html">Executing SQL</a>
   </div>
 </li>
 <li class="nav-item">
@@ -86,7 +87,7 @@
     
 <p><code>sqlhelper</code> can maintain one or many database connections
 internally. This article describes how to configure and create
-connections, and the methods for inspecting and accessing them.</p>
+connections, and the functions for inspecting and accessing them.</p>
 <div class="section level2">
 <h2 id="creating-connections">Creating connections<a class="anchor" aria-label="anchor" href="#creating-connections"></a>
 </h2>
@@ -97,32 +98,52 @@ run:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://majerr.github.io/sqlhelper/dev">sqlhelper</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="../reference/connect.html">connect</a></span><span class="op">(</span><span class="st">"my_db_config.yml"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/connect.html">connect</a></span><span class="op">(</span><span class="st">"examples/sqlhelper_db_conf.yml"</span><span class="op">)</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="config-files">Config files<a class="anchor" aria-label="anchor" href="#config-files"></a>
 </h3>
-<p>A config file can contain one or more connection definitions.
-Connection definitions are <a href="https://yaml.org/" class="external-link">YAML</a>. The
+<p>A config file can contain one or more connection definitions. The
+above example defines two simple connections:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/readLines.html" class="external-link">readLines</a></span><span class="op">(</span><span class="st">"examples/sqlhelper_db_conf.yml"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/writeLines.html" class="external-link">writeLines</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; #### sqlhelper_db_conf.yml ####</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; simple_sqlite:</span></span>
+<span><span class="co">#&gt;   driver_type: sqlite</span></span>
+<span><span class="co">#&gt;   description: "A simple connection to an in-memory database"</span></span>
+<span><span class="co">#&gt;   connection:</span></span>
+<span><span class="co">#&gt;     Server: ":memory:"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; pool_sqlite:</span></span>
+<span><span class="co">#&gt;   driver_type: sqlite</span></span>
+<span><span class="co">#&gt;   pool: yes</span></span>
+<span><span class="co">#&gt;   description: "A pooled connection to an in-memory database"</span></span>
+<span><span class="co">#&gt;   connection:</span></span>
+<span><span class="co">#&gt;     Server: ":memory:"</span></span></code></pre></div>
+<p>Connection definitions are <a href="https://yaml.org/" class="external-link">YAML</a>. The
 following YAML chunk defines a connection called ‘dap’.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dap</span><span class="kw">:</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">driver_type</span><span class="kw">:</span><span class="at"> sqlserver</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">pool</span><span class="kw">:</span><span class="at"> </span><span class="ch">yes</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">  description</span><span class="kw">: </span><span class="ch">&gt;</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    Databases managed by ADD teams on the Data and Analytics Platform</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">connection</span><span class="kw">:</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">Driver</span><span class="kw">:</span><span class="at"> </span><span class="st">"{ODBC Driver 17 for SQL Server}"</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">Server</span><span class="kw">:</span><span class="at"> </span><span class="st">"Dap-sql01"</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">Trusted_Connection</span><span class="kw">:</span><span class="at"> </span><span class="st">"yes"</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dap</span><span class="kw">:</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">driver_type</span><span class="kw">:</span><span class="at"> sqlserver</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">pool</span><span class="kw">:</span><span class="at"> </span><span class="ch">yes</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">  description</span><span class="kw">: </span><span class="ch">&gt;</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    Databases managed by ADD teams on the Data and Analytics Platform</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">connection</span><span class="kw">:</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">Driver</span><span class="kw">:</span><span class="at"> </span><span class="st">"{ODBC Driver 17 for SQL Server}"</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">Server</span><span class="kw">:</span><span class="at"> </span><span class="st">"Dap-sql01"</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">Trusted_Connection</span><span class="kw">:</span><span class="at"> </span><span class="st">"yes"</span></span></code></pre></div>
 <p>The first line is a name for this connection; subsequent lines
 contain information about the connection.</p>
-<p>The <strong>driver_type</strong> line defines the flavour of
-database, and hence the driver package that will be used. This parameter
-is required. Current options are:</p>
+<p>The <strong>driver_type</strong> line defines the brand of database,
+and hence the driver package that will be used. This parameter is
+required. Current options are:</p>
 <ul>
+<li>‘odbc’ (odbc)</li>
 <li>‘sqlserver’ (odbc)</li>
 <li>‘sqlite’ (RSQLite)</li>
 <li>‘postgresql’ (RPostgres)</li>
-<li>‘mysql/mariadb’(RMariaDB)</li>
+<li>‘mariadb’(RMariaDB)</li>
+<li>‘mysql’(RMariaDB)</li>
 <li>‘bigquery’ (bigquery)</li>
 </ul>
 <p>The <strong>pool</strong> line determines whether a single connection
@@ -143,8 +164,8 @@ more details.</p>
 <p>In summary, the elements needed for every connection are:</p>
 <ol>
 <li>The connection <strong>name</strong>, and</li>
-<li>The <strong>driver_type</strong>, and</li>
-<li>A <strong>connection</strong> section containing a
+<li>the <strong>driver_type</strong>, and</li>
+<li>a <strong>connection</strong> section containing a
 <strong>Server</strong> element</li>
 </ol>
 <p>The others <em>may</em> be needed for some connections or may be
@@ -170,40 +191,41 @@ connections to those provided by user- and site-wide configurations, you
 may provide a <code>config_filename</code> argument.</p>
 </div>
 <div class="section level3">
-<h3 id="file-precedence-and-conflicts-across-config-files">File precedence and conflicts across config files<a class="anchor" aria-label="anchor" href="#file-precedence-and-conflicts-across-config-files"></a>
-</h3>
-<p>Site-wide config files are read first, then user-wide, then named
-files. If conflicting connection names or connection elements are
-encountered between config files, values from later files overwrite
-those from earlier. This operates on an element-by-element basis; for
-example, if your site-wide config contains:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">my_conn</span><span class="kw">:</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">server_type</span><span class="kw">:</span><span class="at"> mysql</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">connection</span><span class="kw">:</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">Server</span><span class="kw">:</span><span class="at"> </span><span class="st">"organization_server_host"</span></span></code></pre></div>
-<p>but your named file contains:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">my_conn</span><span class="kw">:</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">description</span><span class="kw">:</span><span class="at"> Private MySQL database</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">connection</span><span class="kw">:</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">Server</span><span class="kw">:</span><span class="at"> </span><span class="st">"my_alternate_server_host"</span></span></code></pre></div>
-<p>then <code>sqlhelper</code> will attempt to create a connection
-described by:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">my_conn</span><span class="kw">:</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">server_type</span><span class="kw">:</span><span class="at"> mysql</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">description</span><span class="kw">:</span><span class="at"> Private MySQL database</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">connection</span><span class="kw">:</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">Server</span><span class="kw">:</span><span class="at"> </span><span class="st">"my_alternate_server_host"</span></span></code></pre></div>
-</div>
-<div class="section level3">
 <h3 id="suppressing-the-config-search-path">Suppressing the config search path<a class="anchor" aria-label="anchor" href="#suppressing-the-config-search-path"></a>
 </h3>
 <p>If only one config file is wanted, the config search path may be
 suppressed by supplying the <code>exclusive = TRUE</code> argument.</p>
 <p>If <code>exclusive = TRUE</code>, then <code><a href="../reference/connect.html">connect()</a></code> will
-check whether the <code>config_filename</code> is one of ‘user’ or
-‘site’. If it is, the user- or site-wide config file will be sought; if
-it is not ‘user’ or ‘site’, it will be treated as the name of a config
-file.</p>
+check whether the <code>config_filename</code> parameter is ‘user’ or
+‘site’. If <code>config_filename</code> is one of those, the user- or
+site-wide config file will be sought; if it is not, it will be treated
+as the name of a config file, and that file will be sought.</p>
+</div>
+<div class="section level3">
+<h3 id="file-precedence-inheritance-and-conflicts-across-config-files">File precedence, inheritance, and conflicts across config files<a class="anchor" aria-label="anchor" href="#file-precedence-inheritance-and-conflicts-across-config-files"></a>
+</h3>
+<p>If <code>exclusive == FALSE</code>, site-wide config files will be
+read first, then user-wide, then named files. If conflicting connection
+names or connection elements are encountered between config files,
+values from later files overwrite those from earlier. This mechanism
+operates element-wise; for example, if your site-wide config
+contains:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">my_conn</span><span class="kw">:</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">server_type</span><span class="kw">:</span><span class="at"> mysql</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">connection</span><span class="kw">:</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">Server</span><span class="kw">:</span><span class="at"> </span><span class="st">"organization_server_host"</span></span></code></pre></div>
+<p>but your named file contains:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">my_conn</span><span class="kw">:</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">description</span><span class="kw">:</span><span class="at"> Private MySQL database</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">connection</span><span class="kw">:</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">Server</span><span class="kw">:</span><span class="at"> </span><span class="st">"my_alternate_server_host"</span></span></code></pre></div>
+<p>then <code>sqlhelper</code> will attempt to create a connection
+described by:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">my_conn</span><span class="kw">:</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">server_type</span><span class="kw">:</span><span class="at"> mysql</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">description</span><span class="kw">:</span><span class="at"> Private MySQL database</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">connection</span><span class="kw">:</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">Server</span><span class="kw">:</span><span class="at"> </span><span class="st">"my_alternate_server_host"</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -211,29 +233,8 @@ file.</p>
 </h2>
 <p>After <code><a href="../reference/connect.html">connect()</a></code> has been called, you may inspect the
 created connections with <code><a href="../reference/connection_info.html">connection_info()</a></code>.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://majerr.github.io/sqlhelper/dev">sqlhelper</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/readLines.html" class="external-link">readLines</a></span><span class="op">(</span><span class="st">"configs/sqlhelper_db_conf.yml"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/writeLines.html" class="external-link">writeLines</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; simple_sqlite:</span></span>
-<span><span class="co">#&gt;   driver_type: sqlite</span></span>
-<span><span class="co">#&gt;   description: "A simple connection to an in-memory database"</span></span>
-<span><span class="co">#&gt;   connection:</span></span>
-<span><span class="co">#&gt;     Server: ":memory:"</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; pool_sqlite:</span></span>
-<span><span class="co">#&gt;   driver_type: sqlite</span></span>
-<span><span class="co">#&gt;   pool: yes</span></span>
-<span><span class="co">#&gt;   description: "A pooled connection to an in-memory database"</span></span>
-<span><span class="co">#&gt;   connection:</span></span>
-<span><span class="co">#&gt;     Server: ":memory:"</span></span>
-<span></span>
-<span><span class="fu"><a href="../reference/connect.html">connect</a></span><span class="op">(</span><span class="st">"configs/sqlhelper_db_conf.yml"</span>, exclusive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span></span>
-<span></span>
-<span><span class="fu"><a href="../reference/connection_info.html">connection_info</a></span><span class="op">(</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/connection_info.html">connection_info</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 7</span></span></span>
 <span><span class="co">#&gt;   name          description                  live  default driver conn_str pool </span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                        <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;glue&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span></span></span>
@@ -245,7 +246,7 @@ created connections with <code><a href="../reference/connection_info.html">conne
 </h2>
 <p>Connections may be accessed by name, with
 <code><a href="../reference/live_connection.html">live_connection()</a></code></p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">myconn</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/live_connection.html">live_connection</a></span><span class="op">(</span><span class="st">"simple_sqlite"</span><span class="op">)</span></span>
 <span><span class="va">myconn</span></span>
 <span><span class="co">#&gt; &lt;SQLiteConnection&gt;</span></span>
@@ -263,7 +264,7 @@ explicitly stating which connection to use.</p>
 <p>You can check the default connection with
 <code><a href="../reference/connection_info.html">connection_info()</a></code> or <code><a href="../reference/set_default_conn_name.html">get_default_conn_name()</a></code>
 and change it with <code><a href="../reference/set_default_conn_name.html">set_default_conn_name()</a></code>.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/set_default_conn_name.html">get_default_conn_name</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "simple_sqlite"</span></span>
 <span></span>
@@ -282,13 +283,7 @@ and change it with <code><a href="../reference/set_default_conn_name.html">set_d
 <p>The last of these - combining <code><a href="../reference/set_default_conn_name.html">get_default_conn_name()</a></code>
 with <code><a href="../reference/live_connection.html">live_connection()</a></code> to obtain the default connection -
 is common enough to warrant a convenience function,
-<code><a href="../reference/default_conn.html">default_conn()</a></code>:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="../reference/live_connection.html">live_connection</a></span><span class="op">(</span> <span class="fu"><a href="../reference/set_default_conn_name.html">get_default_conn_name</a></span><span class="op">(</span><span class="op">)</span> <span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="../reference/default_conn.html">default_conn</a></span><span class="op">(</span><span class="op">)</span></span>
-<span>  <span class="op">)</span></span>
-<span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
+<code><a href="../reference/default_conn.html">default_conn()</a></code>.</p>
 </div>
 <div class="section level2">
 <h2 id="checking-closing-and-re-opening-connections">Checking, closing and re-opening connections<a class="anchor" aria-label="anchor" href="#checking-closing-and-re-opening-connections"></a>
@@ -327,7 +322,7 @@ config files.</p>
 <span></span>
 <span><span class="kw">if</span><span class="op">(</span><span class="fu"><a href="../reference/is_connected.html">not_connected</a></span><span class="op">(</span><span class="va">conn_name</span><span class="op">)</span><span class="op">)</span><span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">message</a></span><span class="op">(</span><span class="fu">glue</span><span class="fu">::</span><span class="fu"><a href="https://glue.tidyverse.org/reference/glue.html" class="external-link">glue</a></span><span class="op">(</span><span class="st">"{conn_name} is not available, reconnecting..."</span><span class="op">)</span><span class="op">)</span></span>
-<span>  <span class="fu"><a href="../reference/connect.html">connect</a></span><span class="op">(</span><span class="st">"configs/sqlhelper_db_conf.yml"</span>, exclusive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="../reference/connect.html">connect</a></span><span class="op">(</span><span class="st">"examples/sqlhelper_db_conf.yml"</span>, exclusive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span><span class="co">#&gt; simple_sqlite is not available, reconnecting...</span></span>
 <span></span>

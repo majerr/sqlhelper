@@ -28,6 +28,7 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/connections.html">Managing Connections</a>
+    <a class="dropdown-item" href="../articles/execution.html">Executing SQL</a>
   </div>
 </li>
 <li class="nav-item">
@@ -70,10 +71,12 @@
 
 
 <dt>cascade</dt>
-<dd><p>If TRUE, execution parameters specified in the file will be
-cascaded to subsequent queries where that parameter is not specified. This
-enables you to set a parameter (e.g. the connection name) once, for the
-first query in a file, and use it for all the subsequent queries.</p></dd>
+<dd><p>Parameters for executing each query may be specified as
+comments in the SQL file. If <code>cascade=TRUE</code>, execution parameters specified
+in the file will be cascaded to subsequent queries where that parameter is
+not specified. This enables you to set a parameter (e.g. the connection
+name) once, for the first query in a file, and use it for all the
+subsequent queries.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -110,26 +113,19 @@ Must be the name of a configured sqlhelper connection.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>Multiple SQL queries in the file should be terminated by semi-colons (<code>;</code>).</p>
+    <p>Multiple SQL queries in files should be terminated by semi-colons
+(<code>;</code>), as usual.</p>
 <p>The values of <code>qname</code>, <code>quotesql</code>, <code>interpolate</code>, <code>execmethod</code>, <code>geometry</code>,
 and <code>conn_name</code> in the output may be specified with comments immediately
-preceding each query:</p>
-<p></p><div class="sourceCode sql"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">-- qname = create_setosa_table</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co">-- execmethod = execute</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">-- conn_name = sqlite_simple</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> <span class="kw">TABLE</span> iris_setosa <span class="kw">as</span> <span class="kw">SELECT</span> <span class="op">*</span> <span class="kw">FROM</span> IRIS <span class="kw">WHERE</span> SPECIES <span class="op">=</span> <span class="st">'setosa'</span>;</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co">-- qname = get_setosa_table</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co">-- execmethod = get</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co">-- conn_name = sqlite_simple</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> <span class="op">*</span> <span class="kw">FROM</span> iris_setosa;</span></code></pre><p></p></div>
+preceding each query (see examples).</p>
 <p>With the exception of <code>qname</code>, the value of each interpreted comment is
-cascaded to subsequent queries (assuming <code>cascade=TRUE</code>). This means you may
-set values once for the first query in the file and they will apply to all
-the queries thereafter.</p>
-<p>See <code><a href="run_queries.html">run_queries()</a></code> for the implications of setting execution parameters. See
-<code><a href="prepare_sql.html">prepare_sql()</a></code> for the treatment of missing values in the output and their
-defaults.</p>
+cascaded to subsequent queries (assuming <code>cascade=TRUE</code>). This means you
+may set values once for the first query in the file and they will apply to
+all the queries thereafter.</p>
+<p>See <code><a href="run_queries.html">run_queries()</a></code> for the implications of setting execution parameters.
+See <code><a href="prepare_sql.html">prepare_sql()</a></code> for the treatment of missing values in the output and
+their defaults. The article <code><a href="../articles/execution.html">vignette("execution")</a></code> has further examples of
+using these parameters to control execution.</p>
     </div>
 
     <div class="section level2">
@@ -137,16 +133,40 @@ defaults.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://majerr.github.io/sqlhelper/dev">sqlhelper</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">fn</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span> <span class="st">"examples/read_sql.sql"</span>, package<span class="op">=</span><span class="st">"sqlhelper"</span> <span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">fn</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span> <span class="st">"examples/read_sql_execution_params.SQL"</span>,</span></span>
+<span class="r-in"><span>                   package<span class="op">=</span><span class="st">"sqlhelper"</span> <span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/readLines.html" class="external-link">readLines</a></span><span class="op">(</span> <span class="va">fn</span> <span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/writeLines.html" class="external-link">writeLines</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -- qname = create_setosa_table</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -- execmethod = execute</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -- conn_name = sqlite_simple</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> CREATE TABLE iris_setosa as SELECT * FROM IRIS WHERE SPECIES = 'setosa';</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -- qname = get_setosa_table</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -- execmethod = get</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -- conn_name = sqlite_simple</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> SELECT * FROM iris_setosa;</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">sql_tibble</span> <span class="op">&lt;-</span> <span class="fu">read_sql</span><span class="op">(</span><span class="va">fn</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sql_tibble</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2 × 8</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   qname        quotesql interpolate execmethod geometry conn_name sql   filename</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> create_seto… <span style="color: #BB0000;">NA</span>       <span style="color: #BB0000;">NA</span>          execute    <span style="color: #BB0000;">NA</span>       sqlite_s… CREA… read_sq…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> get_setosa_… <span style="color: #BB0000;">NA</span>       <span style="color: #BB0000;">NA</span>          get        <span style="color: #BB0000;">NA</span>       sqlite_s… SELE… read_sq…</span>
+<span class="r-in"><span><span class="va">sql_tibble</span><span class="op">$</span><span class="va">sql</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "CREATE TABLE iris_setosa as SELECT * FROM IRIS WHERE SPECIES = 'setosa'"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "SELECT * FROM iris_setosa"                                              </span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">fn</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span> <span class="st">"examples/read_sql_comments.SQL"</span>, package<span class="op">=</span><span class="st">"sqlhelper"</span> <span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/readLines.html" class="external-link">readLines</a></span><span class="op">(</span> <span class="va">fn</span> <span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/writeLines.html" class="external-link">writeLines</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -- Run some queries against the newly-created iris table</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -- conn_name=simple_sqlite</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -- conn_name = simple_sqlite</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -- ------------------------------------------------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -- what tables have we got?</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -- qname=showtabs</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -- qname = showtabs</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> SELECT name FROM</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> /* a multi-</span>
@@ -169,10 +189,10 @@ defaults.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> block*/</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -- ------------------------------------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -- spaces are allowed in interpreted comments</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -- conn_name = pool_sqlite</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -- execmethod = spatial</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -- geometry = mystring</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -- geometry = myString</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -- make sure quoted double dashes survive the comment strip</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -- qname=quoted_doubledash</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> select</span>
@@ -185,6 +205,8 @@ defaults.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -- ------------------------------------------------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -- make sure quoted block comments survive the comment strip</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -- 'conn_name', 'execmethod' and 'geometry' values can be</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -- cascaded from the previous query</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -- qname=quoted_block</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> select</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 'stringvar' as myString</span>
@@ -198,17 +220,15 @@ defaults.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -- line comments at the</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -- very end</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu"><a href="connect.html">connect</a></span><span class="op">(</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"examples/sqlhelper_db_conf.yml"</span>, package<span class="op">=</span><span class="st">"sqlhelper"</span><span class="op">)</span> <span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">sql_tibble</span> <span class="op">&lt;-</span> <span class="fu">read_sql</span><span class="op">(</span><span class="va">fn</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">sql_tibble</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 4 × 8</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   qname        quotesql interpolate execmethod geometry conn_name sql   filename</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> showtabs     <span style="color: #BB0000;">NA</span>       <span style="color: #BB0000;">NA</span>          <span style="color: #BB0000;">NA</span>         <span style="color: #BB0000;">NA</span>       simple_s… SELE… read_sql</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> sample       <span style="color: #BB0000;">NA</span>       <span style="color: #BB0000;">NA</span>          <span style="color: #BB0000;">NA</span>         <span style="color: #BB0000;">NA</span>       simple_s… sele… read_sql</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> quoted_doub… <span style="color: #BB0000;">NA</span>       <span style="color: #BB0000;">NA</span>          spatial    mystring pool_sql… sele… read_sql</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> quoted_block <span style="color: #BB0000;">NA</span>       <span style="color: #BB0000;">NA</span>          spatial    mystring pool_sql… sele… read_sql</span>
-<span class="r-in"><span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> showtabs     <span style="color: #BB0000;">NA</span>       <span style="color: #BB0000;">NA</span>          <span style="color: #BB0000;">NA</span>         <span style="color: #BB0000;">NA</span>       simple_s… SELE… read_sq…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> sample       <span style="color: #BB0000;">NA</span>       <span style="color: #BB0000;">NA</span>          <span style="color: #BB0000;">NA</span>         <span style="color: #BB0000;">NA</span>       simple_s… sele… read_sq…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> quoted_doub… <span style="color: #BB0000;">NA</span>       <span style="color: #BB0000;">NA</span>          spatial    myString pool_sql… sele… read_sq…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> quoted_block <span style="color: #BB0000;">NA</span>       <span style="color: #BB0000;">NA</span>          spatial    myString pool_sql… sele… read_sq…</span>
 <span class="r-in"><span><span class="va">sql_tibble</span><span class="op">$</span><span class="va">sql</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "SELECT name FROM sqlite_schema WHERE type='table'"                        </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [2] "select * from iris limit 10"                                              </span>

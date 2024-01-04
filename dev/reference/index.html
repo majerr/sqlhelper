@@ -28,6 +28,7 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/connections.html">Managing Connections</a>
+    <a class="dropdown-item" href="../articles/execution.html">Executing SQL</a>
   </div>
 </li>
 <li class="nav-item">
@@ -53,6 +54,37 @@
     </div>
 
     <div class="section level2">
+      <h2 id="execution">Execution<a class="anchor" aria-label="anchor" href="#execution"></a></h2>
+      
+      <p class="section-desc"></p><p>Functions for reading, preparing and executing SQL</p>
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="run_files.html">run_files()</a></code> <code><a href="run_files.html">runfiles()</a></code> 
+        </dt>
+        <dd>Read, prepare and execute .SQL files</dd>
+      </dl><dl><dt>
+          
+          <code><a href="run_queries.html">run_queries()</a></code> <code><a href="run_queries.html">runqueries()</a></code> 
+        </dt>
+        <dd>Execute a sequence of SQL queries</dd>
+      </dl><dl><dt>
+          
+          <code><a href="read_sql.html">read_sql()</a></code> 
+        </dt>
+        <dd>Read a sql file and return it's contents as a tibble</dd>
+      </dl><dl><dt>
+          
+          <code><a href="prepare_sql.html">prepare_sql()</a></code> 
+        </dt>
+        <dd>prepare queries and assemble meta data prior to execution</dd>
+      </dl></div><div class="section level2">
       <h2 id="connections">Connections<a class="anchor" aria-label="anchor" href="#connections"></a></h2>
       
       <p class="section-desc"></p><p>Functions for creating and managing database connections</p>
@@ -103,37 +135,6 @@
           <code><a href="disconnect.html">disconnect()</a></code> 
         </dt>
         <dd>Close all connections and remove them from the connections cache</dd>
-      </dl></div><div class="section level2">
-      <h2 id="execution">Execution<a class="anchor" aria-label="anchor" href="#execution"></a></h2>
-      
-      <p class="section-desc"></p><p>Functions for reading, preparing and executing SQL</p>
-
-      
-    </div><div id="" class="section level2">
-      
-      
-      
-
-      <dl><dt>
-          
-          <code><a href="run_files.html">run_files()</a></code> <code><a href="run_files.html">runfiles()</a></code> 
-        </dt>
-        <dd>Read, prepare and execute .SQL files</dd>
-      </dl><dl><dt>
-          
-          <code><a href="run_queries.html">run_queries()</a></code> <code><a href="run_queries.html">runqueries()</a></code> 
-        </dt>
-        <dd>Execute a sequence of SQL queries</dd>
-      </dl><dl><dt>
-          
-          <code><a href="read_sql.html">read_sql()</a></code> 
-        </dt>
-        <dd>Read a sql file and return it's contents as a tibble</dd>
-      </dl><dl><dt>
-          
-          <code><a href="prepare_sql.html">prepare_sql()</a></code> 
-        </dt>
-        <dd>prepare queries and assemble meta data prior to execution</dd>
       </dl></div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
