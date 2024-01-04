@@ -33,31 +33,20 @@ will be raised. See \code{vignette("connections")} for details about the
 configuration search path.
 
 \code{\link[=run_files]{run_files()}} calls \code{\link[=read_sql]{read_sql()}} on each file, and \code{\link[=prepare_sql]{prepare_sql()}} on the
-queries read from those files. Queries are executed with \code{\link[=run_queries]{run_queries()}}. The
+queries read from those files. Prepared queries are executed with \code{\link[=run_queries]{run_queries()}}. The
 behaviour of those functions can be controlled by passing the relevant
 parameters to \code{\link[=run_files]{run_files()}} as the \code{...} argument.
 
-\code{\link[=run_files]{run_files()}} also enables control of the arguments accepted by \code{\link[=run_queries]{run_queries()}}
-on a per-query basis, using interpreted comments in your sql file. For example:
-
-\if{html}{\out{<div class="sourceCode sql">}}\preformatted{-- qname = create_setosa_table
--- execmethod = execute
--- conn_name = sqlite_simple
-CREATE TABLE iris_setosa as SELECT * FROM IRIS WHERE SPECIES = 'setosa';
-
--- qname = get_setosa_table
--- execmethod = get
--- conn_name = sqlite_simple
-SELECT * FROM iris_setosa;
-}\if{html}{\out{</div>}}
-
-Interpreted comments precede the sql query to which they refer. Each
-interpretable comment must be on a line by itself and take the form:
+\code{\link[=run_files]{run_files()}} also enables control of the arguments accepted by \code{\link[=run_queries]{run_queries()}} on
+a per-query basis, by interpreting comments in SQL files as described
+for \code{read_sql()}. Interpreted comments precede the sql query to which they
+refer. Each interpretable comment must be on a line by itself and take the
+form:
 
 \if{html}{\out{<div class="sourceCode sql">}}\preformatted{-- keyword = value
 }\if{html}{\out{</div>}}
 
-Keywords for interpretable comments are:
+Keywords and possible values for interpretable comments are:
 
 \describe{
 \item{qname}{A name for this query}
@@ -75,32 +64,6 @@ means \code{\link[sf:st_read]{sf::st_read()}}.}
 All interpreted comments except \code{qname} are cascaded \emph{within their file},
 meaning that if you want to use the same values throughout, you need only set
 them for the first query. See \code{read_sql()} for details.
-
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{readLines(
-  system.file("examples/cascade.sql",
-                package="sqlhelper")
-) |> writeLines()
-#> -- qname = first_query
-#> -- conn_name = not_the_default
-#> select * from foo;
-#> 
-#> --qname = second_query
-#> -- this query will also be executed against the
-#> -- connection called 'not_the_default'
-#> select * from bar;
-
-queries <- read_sql(
-  system.file("examples/cascade.sql",
-                package="sqlhelper")
-)
-
-queries[c("qname", "conn_name", "sql")]
-#> # A tibble: 2 x 3
-#>   qname        conn_name       sql              
-#>   <chr>        <chr>           <chr>            
-#> 1 first_query  not_the_default select * from foo
-#> 2 second_query not_the_default select * from bar
-}\if{html}{\out{</div>}}
 }
 \examples{
 library(sqlhelper)
