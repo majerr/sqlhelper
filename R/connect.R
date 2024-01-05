@@ -45,7 +45,7 @@ assign("defaults",
 #' @returns `NULL`, invisibly
 #' @export
 #' @examples
-#' \dontrun{
+#' if(FALSE){
 #' # Search for config files in rappdirs::site_config_dir(),
 #' # rappdirs::user_config_dir(), and read `my_connections.yml` in the current
 #' # working directory

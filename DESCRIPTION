@@ -1,8 +1,8 @@
 Package: sqlhelper
 Title: Easier SQL integration
 Version: 0.1.2.9000
-Authors@R: person("Matthew", "Roberts", email = "matthew.roberts@levellingup.gov.uk", role = c("aut", "cre", "cph"))
-Description: Manage database connections and SQL execution.
+Authors@R: person("Matthew", "Roberts", email = "matthew@zsmr.uk", role = c("aut", "cre", "cph"))
+Description: Execute files of SQL and manage database connections.
 Depends: R (>= 4.1.0)
 Imports:
     DBI,

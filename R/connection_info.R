@@ -8,7 +8,7 @@
 #'   exactly? TRUE will identify only 1 connection if name_str does not contain
 #'   any metacharacters
 #'
-#' @return Null, or a tibble with 1 row per identified connection and the
+#' @returns Null, or a tibble with 1 row per identified connection and the
 #'   following fields:
 #'
 #'\describe{
@@ -25,8 +25,20 @@
 #' connections have been configured (e.g. `connect()` has not been called),
 #' `NULL` is returned.
 #'
-#' @export
+#' @examples
+#' library(sqlhelper)
 #'
+#' connect(
+#'     system.file(
+#'         "examples/sqlhelper_db_conf.yml",
+#'         package="sqlhelper"
+#'         ),
+#'     exclusive=TRUE
+#'    )
+#'
+#'  connection_info()
+#'
+#' @export
 connection_info <- function(name_str = ".*", exact = TRUE){
 
   if(length(names(connection_cache)) == 0){

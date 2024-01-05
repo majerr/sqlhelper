@@ -32,3 +32,23 @@ test_that("connections can be closed",{
   expect_null(connection_info())
 })
 
+test_that("messages and warnings are raised on failure", {
+  expect_message(
+    suppressWarnings(
+      connect(config_filename = testthat::test_path("testfiles",
+                                                    "sqlhelper_db_conf_fail.yml"),
+              exclusive=TRUE)
+    ),
+    "Error whilst connecting sqlserver_fail"
+    )
+
+  expect_warning(
+    suppressMessages(
+      connect(config_filename = testthat::test_path("testfiles",
+                                                    "sqlhelper_db_conf_fail.yml"),
+              exclusive=TRUE)
+    ),
+    "sqlserver_fail is not available"
+  )
+})
+

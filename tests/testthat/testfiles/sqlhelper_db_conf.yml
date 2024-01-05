@@ -2,6 +2,7 @@
 
 single_mem:
   driver_type: sqlite
+  description: "A simple (i.e. not pooled) sqlite connection"
   connection:
     Server: ":memory:"
 

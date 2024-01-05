@@ -32,7 +32,7 @@ vars <- list(
                     "sql",
                     "filename"),
 
-  # acceptable server_types found in yml configs
+  # acceptable driver_types found in yml configs
   "driver_types" = c("odbc",
                 "sqlserver",
                 "sqlite",
@@ -43,11 +43,12 @@ vars <- list(
 
   # packages corresponding to db_types
   "driver_pkgs" = c("odbc",
-                      "RSQLite",
-                      "RPostgres",
-                      "RMariaDB",
-                      "RMariaDB",
-                      "bigrquery"),
+                    "odbc",
+                    "RSQLite",
+                    "RPostgres",
+                    "RMariaDB",
+                    "RMariaDB",
+                    "bigrquery"),
 
   # functions in db_driver_pkgs corresponding to db_types
   "driver_funcs" = c("odbc",
