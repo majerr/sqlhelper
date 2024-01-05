@@ -38,6 +38,8 @@
 #'
 #'  connection_info()
 #'
+#'  connection_info("pool_sqlite")
+#'
 #' @export
 connection_info <- function(name_str = ".*", exact = TRUE){
 

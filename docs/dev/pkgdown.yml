@@ -5,7 +5,8 @@ articles:
   connections: connections.html
   execution: execution.html
   sqlhelper: sqlhelper.html
-last_built: 2024-01-04T10:53Z
+  use_case: use_case.html
+last_built: 2024-01-05T17:53Z
 urls:
   reference: https://majerr.github.io/sqlhelper/reference
   article: https://majerr.github.io/sqlhelper/articles

@@ -35,3 +35,19 @@ connections have been configured (e.g. \code{connect()} has not been called),
 \description{
 Provides information about created connections.
 }
+\examples{
+library(sqlhelper)
+
+connect(
+    system.file(
+        "examples/sqlhelper_db_conf.yml",
+        package="sqlhelper"
+        ),
+    exclusive=TRUE
+   )
+
+ connection_info()
+
+ connection_info("pool_sqlite")
+
+}
