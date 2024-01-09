@@ -10,7 +10,6 @@ Imports:
     rappdirs,
     stringr,
     glue,
-    dplyr,
     pool,
     methods,
     tibble,
@@ -24,6 +23,7 @@ LazyData: true
 RoxygenNote: 7.2.1
 Roxygen: list(markdown = TRUE)
 Suggests: 
+    dplyr,
     rmarkdown,
     knitr,
     testthat (>= 3.0.0),

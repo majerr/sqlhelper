@@ -69,10 +69,9 @@ connection_info <- function(name_str = ".*", exact = TRUE){
     conn_data$name <- name
     conn_data$default <- ( name == get_default_conn_name() )
 
-    conn_data <- dplyr::relocate(
-      tibble::as_tibble_row(conn_data),
-        names(conn_table)
-    )[1:ncol(conn_table)] #Drop any cols not required
+    # put the right cols in the right order
+    conn_data <-
+      tibble::as_tibble_row(conn_data)[names(conn_table)][1:ncol(conn_table)]
 
     conn_table <- tibble::add_row(conn_table,conn_data)
   }
