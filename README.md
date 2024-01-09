@@ -23,36 +23,33 @@ describes the setup for a specific motivating case.
 
 ## Installation
 
-A stable version of `sqlhelper` has not yet been released.
+A stable version of `sqlhelper` has not yet been released. The current
+development version is being prepared for submission to CRAN.
 
-The current stable version is available from CRAN:
+Pending acceptance, the future stable version will be available from CRAN:
 
 ```R
 install.packages("sqlhelper")
 ```
 
-Alternatively, you can install the stable or development versions from github:
+Alternatively, you can install development versions from github:
 
 ```R
 # install.packages("devtools")
 
-## stable
-# devtools::install_github("majerr/sqlhelper")
-
-## dev
-# devtools::install_github("majerr/sqlhelper@dev")
+devtools::install_github("majerr/sqlhelper@dev")
 ```
 
 ## Getting Started
 
-Basic functionality is described in `vignette("sqlhelper")`
+Basic functionality is described in [`vignette("sqlhelper")`](https://majerr.github.io/sqlhelper/dev/articles/sqlhelper.html)
 
-Execution of SQL files is described in detail in `vignette("execution")`
+Execution of SQL files is described in detail in [`vignette("execution")`](https://majerr.github.io/sqlhelper/dev/articles/execution.html)
 
 Setup and management of database connections is described in
-`vignette("connections")`
+[`vignette("connections")`](https://majerr.github.io/sqlhelper/dev/articles/connections.html)
 
-There are some details about using `sqlhelper` within other packages in `vignette("use_case")`
+There are some details about using `sqlhelper` within other packages in [`vignette("use_case")`](https://majerr.github.io/sqlhelper/dev/articles/use_case.html)
 
 
 <!-- badges: start -->
