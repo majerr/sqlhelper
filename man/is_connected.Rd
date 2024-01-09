@@ -20,3 +20,21 @@ connection
 \description{
 Test whether a database is connected
 }
+\examples{
+library(sqlhelper)
+
+connect(
+  system.file("examples/sqlhelper_db_conf.yml",
+              package="sqlhelper")
+)
+connection_info()
+
+is_connected("simple_sqlite")
+is_connected("foo")
+DBI::dbDisconnect(live_connection("simple_sqlite"))
+is_connected("simple_sqlite")
+not_connected("simple_sqlite")
+disconnect()
+is_connected("simple_sqlite")
+not_connected("simple_sqlite")
+}

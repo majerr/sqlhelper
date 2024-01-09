@@ -6,12 +6,29 @@
 #' @return Logical, or NULL if `conn_name` does not identify exactly 1
 #' connection
 #'
+#' @examples
+#' library(sqlhelper)
+#'
+#' connect(
+#'   system.file("examples/sqlhelper_db_conf.yml",
+#'               package="sqlhelper")
+#' )
+#' connection_info()
+#'
+#' is_connected("simple_sqlite")
+#' is_connected("foo")
+#' DBI::dbDisconnect(live_connection("simple_sqlite"))
+#' is_connected("simple_sqlite")
+#' not_connected("simple_sqlite")
+#' disconnect()
+#' is_connected("simple_sqlite")
+#' not_connected("simple_sqlite")
 #' @export
 is_connected <- function(conn_name){
   live <- connection_info(conn_name)$live
 
-  if( !is.null(live) && length(live) != 1)
-    live = FALSE
+  if( !is.logical(live) || length(live) != 1)
+    live = NULL
 
   live
 }

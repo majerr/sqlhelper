@@ -9,3 +9,8 @@ disconnect()
 \description{
 Close all connections and remove them from the connections cache
 }
+\examples{
+if(FALSE){
+ disconnect()
+}
+}

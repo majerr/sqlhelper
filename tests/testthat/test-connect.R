@@ -17,12 +17,31 @@ test_that("connections can be added and discovered",{
   expect_true("sqlite_dbi" %in% connection_info()$name)
 })
 
+test_that("live_connection returns invisible nulls as expected",{
+  expect_null(
+    live_connection("foo")
+  )
+
+  DBI::dbDisconnect(live_connection("sqlite_dbi"))
+
+  expect_null(
+    live_connection("sqlite_dbi")
+  )
+})
+
 test_that("default_conn returns the expected connection", {
 
   defcon1 <- default_conn()
   defcon2 <- get_default_conn_name() |> live_connection()
 
   expect_equal(defcon1, defcon2)
+})
+
+test_that("pruning an unnamed connection raises the right error",{
+  expect_error(
+    sqlhelper:::prune("foo"),
+    "No connection named foo"
+  )
 })
 
 test_that("connections can be closed",{
