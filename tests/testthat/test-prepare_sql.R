@@ -9,7 +9,7 @@ test_that("names are preserved", {
 })
 
 # Check errors are raised for improperly formed inputs (wrong cols, wrong rows)
-test_that("inputs are valid", {
+test_that("inputs are validated", {
   expect_error(prepare_sql(tibble::tibble(a=c(1,2),b=c(3,4))), "must have these columns")
   expect_error(prepare_sql(list(one="SELECT 1", two="SELECT2")), "must be a character vector or a tibble")
   expect_error(prepare_sql(c(one=1, two=2)), "must be a character vector or a tibble")
@@ -40,6 +40,28 @@ test_that("inputs are valid", {
                      filename=NA)
     ),
     "sql argument contains NAs"
+  )
+
+  expect_identical(
+    prepare_sql(
+      tibble::tibble(qname=NA,
+                     quotesql=NA,
+                     interpolate=NA,
+                     execmethod=NA,
+                     geometry=NA,
+                     conn_name=NA,
+                     sql=c("SELECT 'foo'"),
+                     filename=NA)
+    ),
+    tibble::tibble(qname=as.character(NA),
+                   quotesql="yes",
+                   interpolate="yes",
+                   execmethod="get",
+                   geometry=as.character(NA),
+                   conn_name="default",
+                   sql=c("SELECT 'foo'"),
+                   filename=as.character(NA),
+                   prepared_sql=list(DBI::SQL("SELECT 'foo'")))
   )
 })
 
@@ -92,11 +114,58 @@ test_that("defaults are properly set", {
   expect_equal(sql$prepared_sql[[1]], DBI::SQL("select 1"))
 
   # change defaults
+  sql <- prepare_sql(c(one="select 1"),
+                     quotesql = "no",
+                     values = "no",
+                     execmethod = "sendq",
+                     default.conn = "pool_mem"
+                     )
 
+  expect_equal(sql$quotesql, "no")
+  expect_equal(sql$interpolate, "no")
+  expect_equal(sql$execmethod, "sendq")
+  #expect_equal(sql$conn_name, "pool_mem")
+})
+
+test_that("correct connections are used for interpolation",{
+  skip_on_cran()
+  foo <- "noo"
+  bar <- "baz"
+  sql <- "select {`bar`} from {`foo`}"
+  expect_equal(
+    sqlhelper:::interpolate_sql(
+      interpolate = "yes",
+      quotesql = "yes",
+      conn_name = "default",
+      sql = sql,
+      values = environment(),
+      default.conn = default_conn()),
+
+    DBI::SQL("select `baz` from `noo`")
+  )
+
+  # Local sqlserver install
+  con <- DBI::dbConnect(odbc::odbc(),
+                        Driver = "{ODBC Driver 17 for SQL Server}",
+                        Server = "Dap-sql01\\cds",
+                        Trusted_Connection = "yes")
+
+  expect_equal(
+    sqlhelper:::interpolate_sql(
+      interpolate = "yes",
+      quotesql = "yes",
+      conn_name = "default",
+      sql = sql,
+      values = environment(),
+      default.conn = con),
+
+    DBI::SQL("select \"baz\" from \"noo\"")
+  )
 })
 
 # interpolation is correct
 test_that("interpolation is correct", {
+
 
   # value not available
   expect_error(prepare_sql(c(one="select {x}")))
@@ -111,10 +180,12 @@ test_that("interpolation is correct", {
   expect_true(sql$prepared_sql[[1]] == "select 3")
 
   # parent.env vs alt env
+  n <- 5
+  foo <- "fye"
   env <- new.env()
   env$n <- 2
   env$foo <- "bar"
-  sql <- prepare_sql(c(one="select {n}", twi="select {foo}"), values = env)
+  sql <- prepare_sql(c(one="select {n}", two="select {foo}"), values = env)
   expect_equal(sql$prepared_sql,list(DBI::SQL("select 2"),DBI::SQL("select 'bar'")))
 
   # settings are obeyed: quotesql

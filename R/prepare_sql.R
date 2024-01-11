@@ -29,9 +29,9 @@
 #'   geometry? Ignored if `execmethod` is not "spatial".
 #'
 #' @param default.conn Either the name of a sqlhelper connection, or a database
-#'   connection returned by [DBI::dbConnect()], or NA. This connection is only
-#'   used by [glue::glue_sql()] to quote SQL interpolations; [prepare_sql()] does
-#'   not execute any SQL code.
+#'   connection returned by [DBI::dbConnect()] or [pool::pool()], or NA. This
+#'   connection is only used by [glue::glue_sql()] to quote SQL interpolations;
+#'   [prepare_sql()] does not execute any SQL code.
 #'
 #' @return A tibble containing 1 row per query with the following fields:
 #'
@@ -77,7 +77,7 @@ prepare_sql <- function(sql,
 
   if(sql_is_tibble && !correct_colnames){
     stop(
-      glue::glue("sql tibbles must have these columns: {paste(sql_tbl_names, collapse=', ')},
+      glue::glue("sql tibbles must have these columns: {paste(sql_tbl_names, collapse=', ')};
                   not {paste(names(sql), collapse=', ')}")
     )
   }
@@ -102,11 +102,7 @@ prepare_sql <- function(sql,
     new_cols <- rep(NA, length(new_col_names))
     names(new_cols) <- new_col_names
     sql <- tibble::add_column( sql, !!!new_cols )[,sql_tbl_names]
-
   }
-
-  if( sum(names(sql) %in% sql_tbl_names) != length(sql_tbl_names) )
-    stop("sql table does not contain the required columns")
 
   # Fill NA's with default values
 
@@ -173,6 +169,8 @@ interpolate_sql <- function(interpolate,
     )
 
   else {
+    #This switch doesn't cater for the situation where default.conn names
+    #an alternative sqlhelper connection
     if( conn_name == "default")
       live_conn <- default.conn
     else
