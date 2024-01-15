@@ -63,6 +63,27 @@ test_that("inputs are validated", {
                    filename=as.character(NA),
                    prepared_sql=list(DBI::SQL("SELECT 'foo'")))
   )
+
+  expect_error(prepare_sql("select 1", default.conn = "foo"),
+               "is not a valid connection")
+
+  bust <- DBI::dbConnect(RSQLite::SQLite(), ":memory:")
+  DBI::dbDisconnect(bust)
+  expect_error(prepare_sql("select 1", default.conn = bust),
+               "is not a valid connection")
+
+  foo <- "bar"
+  expect_equal(prepare_sql("select {`foo`}")$prepared_sql[[1]],
+               DBI::SQL("select `bar`"))
+  DBI::dbDisconnect(live_connection("single_mem"))
+  expect_error(prepare_sql("select {`foo`}"),
+               "is not a valid connection")
+  expect_error(prepare_sql("select {`foo`}",default.conn = "single_mem"),
+               "is not a valid connection")
+
+  connect(config_filename = testthat::test_path("testfiles",
+                                                "sqlhelper_db_conf.yml"),
+          exclusive=TRUE)
 })
 
 # Check that only NAs are replaced with defaults (and that they are properly replaced)
@@ -70,7 +91,7 @@ test_that("NAs are replaced by defaults", {
   n <- 5
   sql <- read_sql( testthat::test_path( "testfiles", "test_prepare.SQL")) |>
     prepare_sql()
-  expect_equal(sql$conn_name, c('default', 'default', 'foo'))
+  expect_equal(sql$conn_name, c('default', 'default', 'pool_mem'))
   expect_equal(sql$quotesql, c("yes","no", "no"))
   expect_equal(sql$execmethod, c("get","execute", "spatial"))
   expect_equal(sql$geometry, c(NA, NA, "geom"))
@@ -85,7 +106,7 @@ test_that("NAs are replaced by defaults", {
 
   sql <- read_sql( testthat::test_path( "testfiles", "test_prepare.SQL")) |>
     prepare_sql(default.conn = "pool_mem", quotesql = "no", execmethod = "sendq", geometry="g")
-  expect_equal(sql$conn_name, c('default', 'default', 'foo'))
+  expect_equal(sql$conn_name, c('default', 'default', 'pool_mem'))
   expect_equal(sql$quotesql, c("no","no", "no"))
   expect_equal(sql$execmethod, c("sendq","execute", "spatial"))
   expect_equal(sql$geometry, c("g", "g", "geom"))

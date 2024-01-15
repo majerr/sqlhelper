@@ -6,8 +6,8 @@ SELECT {n};
 -- execmethod = execute
 SELECT 1;
 
--- qname = foocon
--- conn_name = foo
+-- qname = poolcon
+-- conn_name = pool_mem
 -- execmethod = spatial
 -- geometry = geom
 select 'foo';

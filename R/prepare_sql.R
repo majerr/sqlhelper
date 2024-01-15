@@ -120,6 +120,20 @@ prepare_sql <- function(sql,
   if( is.environment( values ) ){
     sql$interpolate[ is.na( sql$interpolate ) ] <- "yes"
 
+    #default.conn is a string - reassign as a connection
+    if(methods::is(default.conn, "character")){
+      default.conn <- live_connection(default.conn)
+    }
+
+    #check whether default.conn is a connection - error if not
+    tryCatch({
+      stopifnot(DBI::dbIsValid(default.conn))
+      },
+      error = function(e){
+        stop("default.conn is not a valid connection")
+      }
+    )
+
     sql$prepared_sql <- sql[, c("interpolate", "quotesql", "conn_name", "sql")] |>
       purrr::pmap( interpolate_sql,
                    values = values,
@@ -175,6 +189,9 @@ interpolate_sql <- function(interpolate,
       live_conn <- default.conn
     else
       live_conn <- live_connection( conn_name )
+
+    if(is.null(live_conn))
+      stop(glue::glue("{conn_name} is not the name of a valid connection"))
 
     interpolated <- glue::glue_sql( sql,
                                     .envir = values,

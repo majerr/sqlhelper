@@ -36,9 +36,9 @@ which method should be used to execute the query? "get" means
 geometry? Ignored if \code{execmethod} is not "spatial".}
 
 \item{default.conn}{Either the name of a sqlhelper connection, or a database
-connection returned by \code{\link[DBI:dbConnect]{DBI::dbConnect()}}, or NA. This connection is only
-used by \code{\link[glue:glue_sql]{glue::glue_sql()}} to quote SQL interpolations; \code{\link[=prepare_sql]{prepare_sql()}} does
-not execute any SQL code.}
+connection returned by \code{\link[DBI:dbConnect]{DBI::dbConnect()}} or \code{\link[pool:pool-package]{pool::pool()}}, or NA. This
+connection is only used by \code{\link[glue:glue_sql]{glue::glue_sql()}} to quote SQL interpolations;
+\code{\link[=prepare_sql]{prepare_sql()}} does not execute any SQL code.}
 }
 \value{
 A tibble containing 1 row per query with the following fields:
