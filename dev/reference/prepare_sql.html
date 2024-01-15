@@ -110,9 +110,9 @@ geometry? Ignored if <code>execmethod</code> is not "spatial".</p></dd>
 
 <dt>default.conn</dt>
 <dd><p>Either the name of a sqlhelper connection, or a database
-connection returned by <code><a href="https://dbi.r-dbi.org/reference/dbConnect.html" class="external-link">DBI::dbConnect()</a></code>, or NA. This connection is only
-used by <code><a href="https://glue.tidyverse.org/reference/glue_sql.html" class="external-link">glue::glue_sql()</a></code> to quote SQL interpolations; <code>prepare_sql()</code> does
-not execute any SQL code.</p></dd>
+connection returned by <code><a href="https://dbi.r-dbi.org/reference/dbConnect.html" class="external-link">DBI::dbConnect()</a></code> or <code><a href="http://rstudio.github.io/pool/reference/pool-package.html" class="external-link">pool::pool()</a></code>, or NA. This
+connection is only used by <code><a href="https://glue.tidyverse.org/reference/glue_sql.html" class="external-link">glue::glue_sql()</a></code> to quote SQL interpolations;
+<code>prepare_sql()</code> does not execute any SQL code.</p></dd>
 
 </dl></div>
     <div class="section level2">
