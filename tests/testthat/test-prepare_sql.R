@@ -191,6 +191,13 @@ test_that("correct connections are used for interpolation",{
 # interpolation is correct
 test_that("interpolation is correct", {
 
+  # connection specified in comment is bad
+  expect_error(
+    read_sql(
+      testthat::test_path( "testfiles", "test_prepare.SQL")
+    ) |>
+      prepare_sql()
+  )
 
   # value not available
   expect_error(prepare_sql(c(one="select {x}")))
