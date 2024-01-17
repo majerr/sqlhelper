@@ -60,7 +60,8 @@
 #' library(sqlhelper)
 #' connect(
 #'     system.file("examples/sqlhelper_db_conf.yml",
-#'                 package="sqlhelper")
+#'                 package="sqlhelper"),
+#'     exclusive = TRUE
 #' )
 #'
 #' n <- 5
