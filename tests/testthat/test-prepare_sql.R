@@ -91,14 +91,16 @@ test_that("NAs are replaced by defaults", {
   n <- 5
   sql <- read_sql( testthat::test_path( "testfiles", "test_prepare.SQL")) |>
     prepare_sql()
-  expect_equal(sql$conn_name, c('default', 'default', 'pool_mem'))
-  expect_equal(sql$quotesql, c("yes","no", "no"))
-  expect_equal(sql$execmethod, c("get","execute", "spatial"))
-  expect_equal(sql$geometry, c(NA, NA, "geom"))
+  expect_equal(sql$conn_name, c('default', 'default', 'default', 'default', 'pool_mem'))
+  expect_equal(sql$quotesql, c("yes", "yes", "yes", "no", "no"))
+  expect_equal(sql$execmethod, c("get", "get", "get", "execute", "spatial"))
+  expect_equal(sql$geometry, c(NA, NA, NA, NA, "geom"))
   expect_equal(sql$prepared_sql,
                list(
                  DBI::SQL("SELECT 5"),
-                 DBI::SQL("SELECT 1"),
+                 DBI::SQL("SELECT `bar`"),
+                 DBI::SQL("SELECT {`foo`}"),
+                 DBI::SQL("SELECT bar"),
                  DBI::SQL("select 'foo'")
                  )
                )
@@ -106,16 +108,14 @@ test_that("NAs are replaced by defaults", {
 
   sql <- read_sql( testthat::test_path( "testfiles", "test_prepare.SQL")) |>
     prepare_sql(default.conn = "pool_mem", quotesql = "no", execmethod = "sendq", geometry="g")
-  expect_equal(sql$conn_name, c('default', 'default', 'pool_mem'))
-  expect_equal(sql$quotesql, c("no","no", "no"))
-  expect_equal(sql$execmethod, c("sendq","execute", "spatial"))
-  expect_equal(sql$geometry, c("g", "g", "geom"))
+  expect_equal(sql$conn_name, c('default', 'default', 'default', 'default', 'pool_mem'))
+  expect_equal(sql$quotesql, c("no", "no","no", "no", "no"))
+  expect_equal(sql$execmethod, c("sendq", "sendq","sendq", "execute", "spatial"))
+  expect_equal(sql$geometry, c("g", "g", "g", "g", "geom"))
 
 })
 
 # Check interpolations
-
-
 test_that("defaults are properly set", {
   connect(config_filename = testthat::test_path("testfiles",
                                                 "sqlhelper_db_conf.yml"),
