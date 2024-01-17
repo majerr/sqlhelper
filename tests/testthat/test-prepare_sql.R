@@ -194,7 +194,7 @@ test_that("interpolation is correct", {
   # connection specified in comment is bad
   expect_error(
     read_sql(
-      testthat::test_path( "testfiles", "test_prepare.SQL")
+      testthat::test_path( "testfiles", "test_prepare_badconn.SQL")
     ) |>
       prepare_sql()
   )
