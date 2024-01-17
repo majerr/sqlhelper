@@ -149,7 +149,7 @@ test_that("defaults are properly set", {
 })
 
 test_that("correct connections are used for interpolation",{
-  skip("Requires local SQL Server instance") # comment if local
+  #skip("Requires local SQL Server instance") # comment if local
   foo <- "noo"
   bar <- "baz"
   sql <- "select {`bar`} from {`foo`}"
