@@ -187,7 +187,7 @@ interpolate_sql <- function(interpolate,
 ){
 
   if( interpolate == "no" )
-    return( sql )
+    return( DBI::SQL(sql) )
 
 
   if( quotesql == "no" )
@@ -203,8 +203,6 @@ interpolate_sql <- function(interpolate,
     })
 
   else {
-    #This switch doesn't cater for the situation where default.conn names
-    #an alternative sqlhelper connection
     if( conn_name == "default")
       live_conn <- default.conn
     else

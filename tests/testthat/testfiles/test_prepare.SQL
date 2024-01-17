@@ -1,10 +1,18 @@
 -- qname = selectn
 SELECT {n};
 
--- qname = select1
+-- qname = selectfoo
+SELECT {`foo`};
+
+-- qname = nointerpolate
+-- interpolate = no
+SELECT {`foo`};
+
+-- interpolate = yes
+-- qname = noquote
 -- quotesql = no
 -- execmethod = execute
-SELECT 1;
+SELECT {`foo`};
 
 -- qname = poolcon
 -- conn_name = pool_mem
