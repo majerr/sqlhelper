@@ -147,6 +147,9 @@ test_that("defaults are properly set", {
   expect_equal(sql$interpolate, "no")
   expect_equal(sql$execmethod, "sendq")
   #expect_equal(sql$conn_name, "pool_mem")
+
+  expect_error(prepare_sql("SELECT {`foo`}"))
+  expect_error(prepare_sql("SELECT {`foo`}", quotesql = "no"))
 })
 
 test_that("correct connections are used for interpolation",{
