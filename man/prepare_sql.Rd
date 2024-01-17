@@ -73,3 +73,19 @@ The \code{default.conn} parameter may be used to supply a connection object that
 is not a configured sqlhelper connection which can then be used to
 interpolate quoted strings.
 }
+\examples{
+library(sqlhelper)
+connect(
+    system.file("examples/sqlhelper_db_conf.yml",
+                package="sqlhelper")
+)
+
+n <- 5
+foo <- 'bar'
+prepped <- prepare_sql(c("select {`foo`}", "select {`n`}"))
+
+prepped <- prepare_sql(c("select {`foo`}", "select {n}"))
+prepped
+prepped$prepared_sql
+
+}
