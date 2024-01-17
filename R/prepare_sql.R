@@ -55,6 +55,20 @@
 #'   \item{prepared_sql}{The sql query
 #'   to be executed, i.e. with interpolations and quoting in place}
 #'   }
+#'
+#' @examples
+#' library(sqlhelper)
+#' connect(
+#'     system.file("examples/sqlhelper_db_conf.yml",
+#'                 package="sqlhelper")
+#' )
+#'
+#' n <- 5
+#' foo <- 'bar'
+#' prepped <- prepare_sql(c("select {`foo`}", "select {n}"))
+#' prepped
+#' prepped$prepared_sql
+#'
 #' @export
 prepare_sql <- function(sql,
                         quotesql = "yes",
@@ -170,17 +184,23 @@ interpolate_sql <- function(interpolate,
                             sql,
                             values,
                             default.conn
-                            ){
+){
 
   if( interpolate == "no" )
     return( sql )
 
 
   if( quotesql == "no" )
-    interpolated <- DBI::SQL(
-      glue::glue( sql,
-                  .envir = values )
-    )
+    tryCatch({
+      interpolated <- DBI::SQL(
+        glue::glue( sql,
+                    .envir = values )
+      )
+    },
+    error = function(e){
+      stop(glue::glue("Could not interpolate '{sql}'. glue::glue error was:
+                        {e}"))
+    })
 
   else {
     #This switch doesn't cater for the situation where default.conn names
@@ -193,9 +213,15 @@ interpolate_sql <- function(interpolate,
     if(is.null(live_conn))
       stop(glue::glue("{conn_name} is not the name of a valid connection"))
 
-    interpolated <- glue::glue_sql( sql,
-                                    .envir = values,
-                                    .con = live_conn)
+    tryCatch({
+      interpolated <- glue::glue_sql( sql,
+                                      .envir = values,
+                                      .con = live_conn)
+    },
+    error = function(e){
+      stop(glue::glue("Could not interpolate '{sql}'. glue::glue_sql error was:
+                        {e}"))
+    })
   }
 
   interpolated
