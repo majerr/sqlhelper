@@ -6,6 +6,9 @@
 \usage{
 disconnect()
 }
+\value{
+\code{NULL}, invisibly
+}
 \description{
 Close all connections and remove them from the connections cache
 }

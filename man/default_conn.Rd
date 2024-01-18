@@ -13,3 +13,16 @@ A database connection returned by \code{DBI::dbConnect()} or
 \description{
 A convenience wrapper around \code{live_connection()} and \code{get_default_conn_name()}
 }
+\examples{
+library(sqlhelper)
+
+connect(
+    system.file(
+        "examples/sqlhelper_db_conf.yml",
+        package="sqlhelper"
+        ),
+    exclusive=TRUE
+   )
+
+default_conn()
+}

@@ -20,17 +20,21 @@ assign("defaults",
 #' `config_filename` (if not `NA`). If elements of those files conflict, later
 #' files overwrite the elements of earlier files.
 #'
-#' if `exclusive=TRUE`, only 1 file will be read, as indicated by the
-#' `config_filename` parameter.
+#' If `exclusive=TRUE`, only 1 file, indicated by the
+#' `config_filename` parameter,  will be read.
 #'
-#'   * if `config_filename = "site"`, a config file called
+#'   * If `config_filename = "site"`, a config file called
 #'   `sqlhelper_db_conf.yml` will be sought in the directory returned by
 #'   [rappdirs::site_config_dir()]
-#'   * if `config_filename = "user"`, a config file called
+#'   * If `config_filename = "user"`, a config file called
 #'   `sqlhelper_db_conf.yml` will be sought in the directory returned by
 #'   [rappdirs::user_config_dir()]
-#'   * if `config_filename` is not `NULL` (but not "site" or "user"), it is
+#'   * If `config_filename` is not `NULL` (but not "site" or "user"), it is
 #'   assumed to name a file.
+#'
+#' A warning is raised if no valid configurations are found (e.g. `connect()` is
+#' called without arguments and no site- or user-wide files are present, or the
+#' connections in those files are invalid)
 #'
 #' `vignette("connections")` explains how to write a
 #' config file and how to access the created connections.
@@ -67,6 +71,8 @@ connect <- function(config_filename=NA, exclusive=FALSE){
       add_connection( conn_name,
                       conf[[conn_name]] )
     }
+  } else {
+    warning("No connections were configured")
   }
 
   if( length( names( connection_cache )))

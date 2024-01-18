@@ -1,5 +1,6 @@
 #' Close all connections and remove them from the connections cache
 #'
+#' @return `NULL`, invisibly
 #' @examples
 #' if(FALSE){
 #'  disconnect()
