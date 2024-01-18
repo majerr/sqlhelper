@@ -13,9 +13,28 @@ get_default_conn_name()
 \item{conn_name}{Character string. The name a connection}
 }
 \value{
-\code{get} returns the name of the default connection; \code{set}
-returns \code{NULL}, invisibly.
+\code{get} returns the name of the default connection;
+\code{set} returns \code{NULL}, invisibly.
 }
 \description{
 Set/get the name of the default connection to use
+}
+\examples{
+library(sqlhelper)
+connect(
+    system.file("examples/sqlhelper_db_conf.yml",
+                package="sqlhelper"),
+    exclusive = TRUE
+)
+
+connection_info()
+
+get_default_conn_name()
+
+set_default_conn_name("pool_sqlite")
+
+connection_info()
+
+get_default_conn_name()
+
 }

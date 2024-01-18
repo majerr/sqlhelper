@@ -1,0 +1,14 @@
+#### sqlhelper_db_conf.yml ####
+
+simple_sqlite:
+  driver_type: sqlite
+  description: "A simple connection to an in-memory database"
+  connection:
+    Server: ":memory:"
+
+pool_sqlite:
+  driver_type: sqlite
+  pool: yes
+  description: "A pooled connection to an in-memory database"
+  connection:
+    Server: ":memory:"

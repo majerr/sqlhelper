@@ -1,0 +1,244 @@
+
+R version 4.1.2 (2021-11-01) -- "Bird Hippie"
+Copyright (C) 2021 The R Foundation for Statistical Computing
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> pkgname <- "sqlhelper"
+> source(file.path(R.home("share"), "R", "examples-header.R"))
+> options(warn = 1)
+> options(pager = "console")
+> base::assign(".ExTimings", "sqlhelper-Ex.timings", pos = 'CheckExEnv')
+> base::cat("name\tuser\tsystem\telapsed\n", file=base::get(".ExTimings", pos = 'CheckExEnv'))
+> base::assign(".format_ptime",
++ function(x) {
++   if(!is.na(x[4L])) x[1L] <- x[1L] + x[4L]
++   if(!is.na(x[5L])) x[2L] <- x[2L] + x[5L]
++   options(OutDec = '.')
++   format(x[1L:3L], digits = 7L)
++ },
++ pos = 'CheckExEnv')
+> 
+> ### * </HEADER>
+> library('sqlhelper')
+> 
+> base::assign(".oldSearch", base::search(), pos = 'CheckExEnv')
+> base::assign(".old_wd", base::getwd(), pos = 'CheckExEnv')
+> cleanEx()
+> nameEx("config_examples")
+> ### * config_examples
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: config_examples
+> ### Title: Examples of yaml configurations for database connections
+> ### Aliases: config_examples
+> 
+> ### ** Examples
+> 
+> config_examples()
+> 
+> # to write the examples to a file called 'examples.yml'
+> ## Not run:  config_examples("examples.yml")
+> 
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("config_examples", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> cleanEx()
+> nameEx("connect")
+> ### * connect
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: connect
+> ### Title: (Re-)Establish connections to databases
+> ### Aliases: connect
+> 
+> ### ** Examples
+> 
+> ## Not run: 
+> ##D # Search for config files in rappdirs::site_config_dir(),
+> ##D # rappdirs::user_config_dir(), and read `my_connections.yml` in the current
+> ##D # working directory
+> ##D connect("my_connections.yml")
+> ##D 
+> ##D # Read only `my_connections.yml` in the current working directory
+> ##D connect("my_connections.yml", exclusive=TRUE)
+> ## End(Not run)
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("connect", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> cleanEx()
+> nameEx("read_sql")
+> ### * read_sql
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: read_sql
+> ### Title: Read a sql file and return it's contents as a tibble
+> ### Aliases: read_sql
+> 
+> ### ** Examples
+> 
+> 
+> library(sqlhelper)
+> 
+> fn <- system.file( "examples/read_sql.sql", package="sqlhelper" )
+> readLines( fn ) |> writeLines()
+-- Run some queries against the newly-created iris table
+
+
+-- conn_name=simple_sqlite
+-- ------------------------------------------------------------
+
+-- what tables have we got?
+-- qname=showtabs
+SELECT name FROM
+
+/* a multi-
+line comment in the
+middle of the
+block*/
+
+sqlite_schema WHERE type='table';
+
+-- ------------------------------------------------------------
+
+-- qname=sample
+select * -- with a comment on a code line
+-- and another on a line by itself in the middle of a block
+from iris limit 10;
+
+/* a multi-
+line comment at
+the end of the
+block*/
+
+-- ------------------------------------------------------------
+
+-- conn_name = pool_sqlite
+-- execmethod = spatial
+-- geometry = mystring
+-- make sure quoted double dashes survive the comment strip
+-- qname=quoted_doubledash
+select
+'stringvar' as myString
+from iris
+where 'foo' = '-- oops';
+
+/* a single-line block comment */
+
+-- ------------------------------------------------------------
+
+-- make sure quoted block comments survive the comment strip
+-- qname=quoted_block
+select
+'stringvar' as myString
+from iris
+where 'foo' = ' /* KEEP ME! */ ';
+
+-- ------------------------------------------------------------
+
+
+-- a few single
+-- line comments at the
+-- very end
+> 
+> connect( system.file("examples/sqlhelper_db_conf.yml", package="sqlhelper") )
+> read_sql(fn)
+# A tibble: 4 x 8
+  qname             quotesql interpolate execmet~1 geome~2 conn_~3 sql   filen~4
+  <chr>             <chr>    <chr>       <chr>     <chr>   <chr>   <chr> <chr>  
+1 showtabs          <NA>     <NA>        <NA>      <NA>    simple~ SELE~ read_s~
+2 sample            <NA>     <NA>        <NA>      <NA>    simple~ sele~ read_s~
+3 quoted_doubledash <NA>     <NA>        spatial   mystri~ pool_s~ sele~ read_s~
+4 quoted_block      <NA>     <NA>        spatial   mystri~ pool_s~ sele~ read_s~
+# ... with abbreviated variable names 1: execmethod, 2: geometry, 3: conn_name,
+#   4: filename
+> 
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("read_sql", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> cleanEx()
+> nameEx("runqueries")
+> ### * runqueries
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: runqueries
+> ### Title: Execute a sequence of SQL queries
+> ### Aliases: runqueries run_queries
+> 
+> ### ** Examples
+> 
+> {
++ library(sqlhelper)
++ 
++ connect(
++     system.file("examples/sqlhelper_db_conf.yml", package="sqlhelper"),
++     exclusive=TRUE)
++ 
++ DBI::dbWriteTable( default_conn(),
++                   "iris",
++                   iris)
++ 
++ n <- 5
++ 
++ runqueries(
++     c(top_n = "select * from iris limit {n}", # interpolation is controlled
++                                               # with the 'values' argument
++       uniqs = "select distinct species as species from iris")
++ )
++ 
++ ## Use the execmethod parameter if you don't want to return results
++ runqueries("create table iris_setosa as select * from iris where species = 'setosa'",
++           execmethod = 'execute')
++ 
++ runqueries("select distinct species as species from iris_setosa")
++ }
+  species
+1  setosa
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("runqueries", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> ### * <FOOTER>
+> ###
+> cleanEx()
+> options(digits = 7L)
+> base::cat("Time elapsed: ", proc.time() - base::get("ptime", pos = 'CheckExEnv'),"\n")
+Time elapsed:  1.95 0.27 2.42 NA NA 
+> grDevices::dev.off()
+null device 
+          1 
+> ###
+> ### Local variables: ***
+> ### mode: outline-minor ***
+> ### outline-regexp: "\\(> \\)?### [*]+" ***
+> ### End: ***
+> quit('no')
+Warning in (function (e)  : You have a leaked pooled object.

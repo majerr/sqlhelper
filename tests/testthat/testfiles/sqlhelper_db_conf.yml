@@ -2,9 +2,14 @@
 
 single_mem:
   driver_type: sqlite
+  description: "A simple (i.e. not pooled) sqlite connection"
   connection:
     Server: ":memory:"
 
+single_mem2:
+  driver_type: sqlite
+  connection:
+    Server: ":memory:"
 
 pool_mem:
   driver_type: sqlite

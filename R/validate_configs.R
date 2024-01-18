@@ -61,6 +61,11 @@ validate_config <- function(conf){
     return(NULL)
   }
 
+  # conf$connection contains a server element
+  if(!("server" %in% tolower(names(conf$connection)))){
+    return(NULL)
+  }
+
   # all the children of conf$connection are strings of length 1
   for(name in names(conf$connection)){
     if(!(is.character(conf$connection[[name]])) |
@@ -68,6 +73,10 @@ validate_config <- function(conf){
       return(NULL)
     }
   }
+
+  # conf$connection contains a Server element
+  if(!("Server" %in% names(conf$connection)))
+    return(NULL)
 
   valid_conf <- conf
 

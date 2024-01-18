@@ -30,24 +30,28 @@ by \code{\link[rappdirs:user_data_dir]{rappdirs::user_config_dir()}}, and finall
 \code{config_filename} (if not \code{NA}). If elements of those files conflict, later
 files overwrite the elements of earlier files.
 
-if \code{exclusive=TRUE}, only 1 file will be read, as indicated by the
-\code{config_filename} parameter.
+If \code{exclusive=TRUE}, only 1 file, indicated by the
+\code{config_filename} parameter,  will be read.
 \itemize{
-\item if \code{config_filename = "site"}, a config file called
+\item If \code{config_filename = "site"}, a config file called
 \code{sqlhelper_db_conf.yml} will be sought in the directory returned by
 \code{\link[rappdirs:site_data_dir]{rappdirs::site_config_dir()}}
-\item if \code{config_filename = "user"}, a config file called
+\item If \code{config_filename = "user"}, a config file called
 \code{sqlhelper_db_conf.yml} will be sought in the directory returned by
 \code{\link[rappdirs:user_data_dir]{rappdirs::user_config_dir()}}
-\item if \code{config_filename} is not \code{NULL} (but not "site" or "user"), it is
+\item If \code{config_filename} is not \code{NULL} (but not "site" or "user"), it is
 assumed to name a file.
 }
+
+A warning is raised if no valid configurations are found (e.g. \code{connect()} is
+called without arguments and no site- or user-wide files are present, or the
+connections in those files are invalid)
 
 \code{vignette("connections")} explains how to write a
 config file and how to access the created connections.
 }
 \examples{
-\dontrun{
+if(FALSE){
 # Search for config files in rappdirs::site_config_dir(),
 # rappdirs::user_config_dir(), and read `my_connections.yml` in the current
 # working directory

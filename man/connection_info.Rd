@@ -4,11 +4,15 @@
 \alias{connection_info}
 \title{Browse available connections}
 \usage{
-connection_info(name_str = ".*")
+connection_info(name_str = ".*", exact = TRUE)
 }
 \arguments{
 \item{name_str}{A regular expression to be used to identify connection names
 to include. The default ('.*') returns all of them.}
+
+\item{exact}{TRUE or FALSE. Should \code{name_str} match the name of a connection
+exactly? TRUE will identify only 1 connection if name_str does not contain
+any metacharacters}
 }
 \value{
 Null, or a tibble with 1 row per identified connection and the
@@ -16,16 +20,34 @@ following fields:
 
 \describe{
 \item{name}{identifier (character)}
-\item{description}{a description of the connection, if found in the conf file (character)}
+\item{description}{a description of the connection, if found in the conf
+file (character)}
 \item{live}{is this connection valid and live? (logical)}
 \item{driver}{the name of the driver function (character)}
 \item{conn_str}{the string used to parameterize the connection (character)}
 \item{pool}{is this a pool connection? (logical)}
 }
 
-If no connection names matched \code{name_str}, the tibble will be empty. If
-no connections have been configured, \code{NULL} is returned.
+If no connection names matched \code{name_str}, the tibble will be empty. If no
+connections have been configured (e.g. \code{connect()} has not been called),
+\code{NULL} is returned.
 }
 \description{
 Provides information about created connections.
+}
+\examples{
+library(sqlhelper)
+
+connect(
+    system.file(
+        "examples/sqlhelper_db_conf.yml",
+        package="sqlhelper"
+        ),
+    exclusive=TRUE
+   )
+
+ connection_info()
+
+ connection_info("pool_sqlite")
+
 }

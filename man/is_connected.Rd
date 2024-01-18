@@ -10,8 +10,8 @@ is_connected(conn_name)
 not_connected(conn_name)
 }
 \arguments{
-\item{conn_name}{Character. The name of a connection (run
-\code{\link[=connection_info]{connection_info()}} for options)}
+\item{conn_name}{Character. The name of a connection (run \code{\link[=connection_info]{connection_info()}}
+for options)}
 }
 \value{
 Logical, or NULL if \code{conn_name} does not identify exactly 1
@@ -20,6 +20,21 @@ connection
 \description{
 Test whether a database is connected
 }
-\details{
-\code{not_connected} is provided for readability, and is identical to \code{!is_connected()}.
+\examples{
+library(sqlhelper)
+
+connect(
+  system.file("examples/sqlhelper_db_conf.yml",
+              package="sqlhelper")
+)
+connection_info()
+
+is_connected("simple_sqlite")
+is_connected("foo")
+DBI::dbDisconnect(live_connection("simple_sqlite"))
+is_connected("simple_sqlite")
+not_connected("simple_sqlite")
+disconnect()
+is_connected("simple_sqlite")
+not_connected("simple_sqlite")
 }
