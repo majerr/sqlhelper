@@ -2,7 +2,7 @@ Package: sqlhelper
 Title: Easier SQL Integration
 Version: 0.1.2.9000
 Authors@R: person("Matthew", "Roberts", email = "matthew@zsmr.uk", role = c("aut", "cre", "cph"))
-Description: Execute files of SQL and manage database connections. SQL statements and queries may be interpolated with string literals. Execution of individual statements and queries may be controlled with keywords. Multiple connections may be defined with yaml and accessed by name. 
+Description: Execute files of SQL and manage database connections. SQL statements and queries may be interpolated with string literals. Execution of individual statements and queries may be controlled with keywords. Multiple connections may be defined with YAML and accessed by name. 
 Depends: R (>= 4.1.0)
 Imports:
     DBI,

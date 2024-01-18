@@ -72,7 +72,7 @@ package that will be used. This parameter is required. Current options are:
 The **pool** line determines whether a single connection is required (as
 returned by `DBI::dbConnect()`) or a pool of connections (as returned by
 `pool::dbPool()`). The latter is recommended for
-[shiny](https://shiny.rstudio.com/) applications. This parameter defaults to
+[shiny](https://shiny.posit.co/) applications. This parameter defaults to
 'no', meaning a single connection will be provided.
 
 The **description** line provides a short description of this connection. This

@@ -54,5 +54,5 @@ There are some details about using `sqlhelper` within other packages in [`vignet
 
 <!-- badges: start -->
   [![R-CMD-check](https://github.com/majerr/sqlhelper/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/majerr/sqlhelper/actions/workflows/R-CMD-check.yaml)
-  [![codecov](https://codecov.io/gh/majerr/sqlhelper/graph/badge.svg?token=24TM252NTZ)](https://codecov.io/gh/majerr/sqlhelper)
+  [![codecov](https://app.codecov.io/gh/majerr/sqlhelper/graph/badge.svg?token=24TM252NTZ)](https://app.codecov.io/gh/majerr/sqlhelper)
   <!-- badges: end -->
