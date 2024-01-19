@@ -1,5 +1,10 @@
 # sqlhelper (development version)
 
+## submission fixes
+* quote 'SQL' in title and description
+* removed output via print()/cat(). Now only message()/warning()/stop() are used
+
+
 # sqlhelper 0.2.0
 
 ## Enhancements
