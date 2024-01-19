@@ -23,9 +23,7 @@ interactive.
 \examples{
 config_examples()
 
-\dontrun{
-# write the examples to a file called 'examples.yml'
-config_examples("examples.yml")
-}
+# write the examples to a temporary file called 'examples.yml'
+config_examples(file.path(tempdir(), "examples.yml"))
 
 }

@@ -14,7 +14,7 @@
 #' config_examples()
 #'
 #' # write the examples to a temporary file called 'examples.yml'
-#' config_examples(filename("examples.yml",path=tempdir()))
+#' config_examples(file.path(tempdir(), "examples.yml"))
 #'
 #' @export
 config_examples <- function(filename = NA){
