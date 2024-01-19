@@ -1,4 +1,4 @@
-# sqlhelper (development version)
+# sqlhelper 0.2.1
 
 ## submission fixes
 * quote 'SQL' in title and description
