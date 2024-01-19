@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">sqlhelper</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.1.2.9000</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.0.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -58,7 +58,15 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="sqlhelper-development-version">sqlhelper (development version)<a class="anchor" aria-label="anchor" href="#sqlhelper-development-version"></a></h2>
 <div class="section level3">
-<h3 id="enhancements-development-version">Enhancements<a class="anchor" aria-label="anchor" href="#enhancements-development-version"></a></h3>
+<h3 id="submission-fixes-development-version">submission fixes<a class="anchor" aria-label="anchor" href="#submission-fixes-development-version"></a></h3>
+<ul><li>quote ‘SQL’ in title and description</li>
+<li>removed output via print()/cat(). Now only message()/warning()/stop() are used</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.2.0" id="sqlhelper-020">sqlhelper 0.2.0<a class="anchor" aria-label="anchor" href="#sqlhelper-020"></a></h2>
+<div class="section level3">
+<h3 id="enhancements-0-2-0">Enhancements<a class="anchor" aria-label="anchor" href="#enhancements-0-2-0"></a></h3>
 <ul><li>connection configs now inherit characteristics from earlier configs with the same name (i.e. site-wide configs may be tweaked by users) (<a href="https://github.com/majerr/sqlhelper/issues/9" class="external-link">#9</a>)</li>
 <li>
 <code><a href="../reference/config_examples.html">config_examples()</a></code> added to provide example connection yaml strings</li>
@@ -84,7 +92,7 @@
 <code><a href="../reference/run_files.html">run_files()</a></code> and <code><a href="../reference/run_queries.html">run_queries()</a></code> now attempt to connect lazily using the config search path (<a href="https://github.com/majerr/sqlhelper/issues/8" class="external-link">#8</a>)</li>
 </ul></div>
 <div class="section level3">
-<h3 id="bug-fixes-development-version">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-development-version"></a></h3>
+<h3 id="bug-fixes-0-2-0">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-2-0"></a></h3>
 <ul><li>read/prep functions now pass dots instead of duplicating default values (<a href="https://github.com/majerr/sqlhelper/issues/6" class="external-link">#6</a>)</li>
 <li>
 <code><a href="../reference/is_connected.html">not_connected()</a></code> no longer errors when passed a missing connection name (<a href="https://github.com/majerr/sqlhelper/issues/10" class="external-link">#10</a>)</li>
