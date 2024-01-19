@@ -2,9 +2,13 @@
 #'
 #' @return `NULL`, invisibly
 #' @examples
-#' if(FALSE){
-#'  disconnect()
-#' }
+#' library(sqlhelper)
+#' connect(
+#'   system.file("examples",
+#'               "sqlhelper_db_conf.yml",
+#'               package="sqlhelper")
+#' )
+#' disconnect()
 #' @export
 disconnect <- function(){
   invisible(lapply(names(connection_cache),prune))

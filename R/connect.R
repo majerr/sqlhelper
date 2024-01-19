@@ -49,15 +49,19 @@ assign("defaults",
 #' @returns `NULL`, invisibly
 #' @export
 #' @examples
-#' if(FALSE){
-#' # Search for config files in rappdirs::site_config_dir(),
-#' # rappdirs::user_config_dir(), and read `my_connections.yml` in the current
-#' # working directory
-#' connect("my_connections.yml")
+#' library(sqlhelper)
 #'
-#' # Read only `my_connections.yml` in the current working directory
-#' connect("my_connections.yml", exclusive=TRUE)
-#' }
+#' example_filename <- system.file("examples",
+#'                                 "sqlhelper_db_conf.yml",
+#'                                 package = "sqlhelper")
+#'
+#' # Search for config files in rappdirs::site_config_dir(),
+#' # rappdirs::user_config_dir(), and read from example_filename
+#' connect(example_filename)
+#'
+#' # Read only the named example file
+#' connect(example_filename, exclusive=TRUE)
+#'
 connect <- function(config_filename=NA, exclusive=FALSE){
   disconnect()
 

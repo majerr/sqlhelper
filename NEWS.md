@@ -1,3 +1,11 @@
+# sqlhelper 0.2.1
+
+## submission fixes
+* quote 'SQL' in title and description
+* removed output via print()/cat(). Now only message()/warning()/stop() are used
+* removed if(FALSE) from examples
+* fixed codecov badge
+
 # sqlhelper 0.2.0
 
 ## Enhancements

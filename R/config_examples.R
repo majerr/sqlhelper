@@ -13,10 +13,8 @@
 #' @examples
 #' config_examples()
 #'
-#' if(FALSE){
-#'     # to write the examples to a file called 'examples.yml'
-#'     config_examples("examples.yml")
-#' }
+#' # write the examples to a temporary file called 'examples.yml'
+#' config_examples(filename("examples.yml",path=tempdir()))
 #'
 #' @export
 config_examples <- function(filename = NA){
@@ -30,11 +28,6 @@ config_examples <- function(filename = NA){
     writeLines(example_lines,filename)
   }
 
-  examples <- stringr::str_c(example_lines,
+  stringr::str_c(example_lines,
                  collapse = "\n")
-
-  if(interactive())
-    cat(examples)
-
-  invisible(examples)
 }
