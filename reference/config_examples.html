@@ -89,10 +89,9 @@ interactive.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">config_examples</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "sqlite_simple:\n  driver_type: sqlite\n  connection:\n    Server: \":memory:\"\n\nsqlite_pool:\n  driver_type: sqlite\n  pool: yes\n  connection:\n    Server: \":memory:\"\n\nsqlserver_simple:\n  driver_type: sqlserver\n  description: &gt;\n    A one line description to remind you what this server is for\n  connection:\n    Driver: \"{ODBC Driver 17 for SQL Server}\" # See https://connectionstrings.com for other examples\n    Server: \"the_server_hostname\"\n    Trusted_Connection: \"yes\""</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span><span class="co"># write the examples to a file called 'examples.yml'</span></span></span>
-<span class="r-in"><span><span class="fu">config_examples</span><span class="op">(</span><span class="st">"examples.yml"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span><span class="co"># write the examples to a temporary file called 'examples.yml'</span></span></span>
+<span class="r-in"><span><span class="fu">config_examples</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"examples.yml"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "sqlite_simple:\n  driver_type: sqlite\n  connection:\n    Server: \":memory:\"\n\nsqlite_pool:\n  driver_type: sqlite\n  pool: yes\n  connection:\n    Server: \":memory:\"\n\nsqlserver_simple:\n  driver_type: sqlserver\n  description: &gt;\n    A one line description to remind you what this server is for\n  connection:\n    Driver: \"{ODBC Driver 17 for SQL Server}\" # See https://connectionstrings.com for other examples\n    Server: \"the_server_hostname\"\n    Trusted_Connection: \"yes\""</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
