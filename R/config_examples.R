@@ -3,12 +3,11 @@
 #' Provides example configurations for several databases and a range of options
 #'
 #' Irrespective of whether a filename is supplied, yaml configuration examples
-#' will be returned invisibly as a single string and printed if the session is
-#' interactive.
+#' will be returned as a single string.
 #'
 #' @param filename A string. If supplied, examples are written to a file with this name.
 #'
-#' @returns A yaml string of database configuration examples, invisibly.
+#' @returns A yaml string of database configuration examples.
 #'
 #' @examples
 #' config_examples()
