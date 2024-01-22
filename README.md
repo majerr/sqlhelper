@@ -23,16 +23,13 @@ describes the setup for a specific motivating case.
 
 ## Installation
 
-A stable version of `sqlhelper` has not yet been released. The current
-development version is being prepared for submission to CRAN.
-
-Pending acceptance, the future stable version will be available from CRAN:
+The current stable version is available from CRAN:
 
 ```R
 install.packages("sqlhelper")
 ```
 
-Alternatively, you can install development versions from github:
+You can the install development version from github:
 
 ```R
 # install.packages("devtools")
