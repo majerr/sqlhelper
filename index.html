@@ -5,14 +5,14 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="description" content="Manage database connections and SQL execution.">
+<meta name="description" content="Execute files of SQL and manage database connections. SQL statements and queries may be interpolated with string literals. Execution of individual statements and queries may be controlled with keywords. Multiple connections may be defined with YAML and accessed by name. ">
 <title>Easier SQL integration with R • sqlhelper</title>
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="deps/bootstrap-5.1.3/bootstrap.min.css" rel="stylesheet">
-<script src="deps/bootstrap-5.1.3/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
+<script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Easier SQL integration with R">
-<meta property="og:description" content="Manage database connections and SQL execution.">
+<meta property="og:description" content="Execute files of SQL and manage database connections. SQL statements and queries may be interpolated with string literals. Execution of individual statements and queries may be controlled with keywords. Multiple connections may be defined with YAML and accessed by name. ">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="index.html">sqlhelper</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -45,7 +45,8 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="articles/connections.html">Managing Connections</a>
-    <a class="dropdown-item" href="articles/sql_execution.html">Executing SQL</a>
+    <a class="dropdown-item" href="articles/execution.html">Executing SQL</a>
+    <a class="dropdown-item" href="articles/use_case.html">Using sqlhelper in packages</a>
   </div>
 </li>
 <li class="nav-item">
@@ -58,7 +59,7 @@
 
       <ul class="navbar-nav">
 <li class="nav-item">
-  <a class="external-link nav-link" href="https://github.com/majr-red/sqlhelper/" aria-label="github">
+  <a class="external-link nav-link" href="https://github.com/majerr/sqlhelper/" aria-label="github">
     <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
@@ -77,38 +78,44 @@
 <div class="section level2">
 <h2 id="summary">Summary<a class="anchor" aria-label="anchor" href="#summary"></a>
 </h2>
-<p><code>sqlhelper</code> has two aims:</p>
+<p><code>sqlhelper</code> facilitates preparing and executing <em>files</em> of SQL code from R.</p>
+<p>In particular, <code>sqlhelper</code> does two things. It:</p>
 <ol style="list-style-type: decimal">
-<li>To make it easier for analysts who are not programmers to use SQL from R.</li>
-<li>To make it easier for analysts who are programmers to use SQL from R in larger, more complex projects such as Shiny apps and packages.</li>
+<li>provides <strong>functions for preparing and executing files of sql queries</strong>; and it</li>
+<li>provides <strong>functions to manage multiple RDBMS connections</strong>.</li>
 </ol>
-<p>To do this, <code>sqlhelper</code> does three things:</p>
-<ol style="list-style-type: decimal">
-<li>It <strong>manages connections to RDBMSs</strong>. Multiple DBI connections are configured with YAML and stored in the background for easy access by name.</li>
-<li>It <strong>provides functions for preparing and executing sql queries and files of sql queries</strong>. You simply provide a query or filename (or lists of queries or filenames).</li>
-<li>It <strong>provides helper functions to facilitate interactive use and defensive programming</strong>, e.g. to check a connection is live before executing some sql.</li>
-</ol>
-<p>There are, of course, many excellent ways to execute code against a database from R, often not involving SQL at all (e.g. <a href="https://dbplyr.tidyverse.org/" class="external-link">dbplyr</a>); <code>sqlhelper</code> is for the times when you <em>do</em> want to use SQL - perhaps you have inherited some legacy SQL, or need some specific functionality offered by your RDBMS, or simply prefer to write SQL.</p>
+<p>To do this <code>sqlhelper</code> defines a number of functions, many of which are also exported for convenience.</p>
+<p>There are, of course, many excellent ways to interact with a database from R, often not involving SQL at all (e.g. <a href="https://dbplyr.tidyverse.org/" class="external-link">dbplyr</a>); <code>sqlhelper</code> is for the times when you <em>do</em> want to use SQL - perhaps you have inherited some legacy SQL, or need some specific functionality offered by your RDBMS, or simply prefer to write SQL. The article <code>vignette("use-case")</code> describes the setup for a specific motivating case.</p>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>Install from github:</p>
+<p>The current stable version is available from CRAN:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"sqlhelper"</span><span class="op">)</span></span></code></pre></div>
+<p>You can the install development version from github:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("devtools")</span></span>
-<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/remotes/man/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"majr-red/sqlhelper"</span><span class="op">)</span></span></code></pre></div>
+<span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"majerr/sqlhelper@dev"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
+<h2 id="getting-started">Getting Started<a class="anchor" aria-label="anchor" href="#getting-started"></a>
 </h2>
-<p>See <a href="https://majr-red.github.io/sqlhelper/" class="uri">https://majr-red.github.io/sqlhelper/</a></p>
+<p>Basic functionality is described in <a href="https://majerr.github.io/sqlhelper/dev/articles/sqlhelper.html"><code>vignette("sqlhelper")</code></a></p>
+<p>Execution of SQL files is described in detail in <a href="https://majerr.github.io/sqlhelper/dev/articles/execution.html"><code>vignette("execution")</code></a></p>
+<p>Setup and management of database connections is described in <a href="https://majerr.github.io/sqlhelper/dev/articles/connections.html"><code>vignette("connections")</code></a></p>
+<p>There are some details about using <code>sqlhelper</code> within other packages in <a href="https://majerr.github.io/sqlhelper/dev/articles/use_case.html"><code>vignette("use_case")</code></a></p>
+<!-- badges: start -->
+
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li><a href="https://github.com/majr-red/sqlhelper/" class="external-link">Browse source code</a></li>
-<li><a href="https://github.com/majr-red/sqlhelper/issues" class="external-link">Report a bug</a></li>
+<li><a href="https://cloud.r-project.org/package=sqlhelper" class="external-link">View on CRAN</a></li>
+<li><a href="https://github.com/majerr/sqlhelper/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/majerr/sqlhelper/issues" class="external-link">Report a bug</a></li>
 </ul>
 </div>
 
@@ -131,7 +138,7 @@
 <div class="developers">
 <h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
-<li>Matthew Roberts <br><small class="roles"> Author, maintainer </small>  </li>
+<li>Matthew Roberts <br><small class="roles"> Author, maintainer, copyright holder </small>  </li>
 </ul>
 </div>
 
