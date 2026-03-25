@@ -1,4 +1,4 @@
-# sqlhelper (development version)
+# sqlhelper 0.2.2
 
 ## Bug fixes
 
