@@ -1,5 +1,20 @@
 # sqlhelper (development version)
 
+## Bug fixes
+
+* `validate_configs()` now correctly drops invalid configurations; previously
+  `!is.null()` applied to a list always returned `TRUE` so NULLs were never
+  filtered (#21)
+* `validate_config()` no longer requires a case-sensitive `Server` key;
+  the earlier case-insensitive check is sufficient (#22)
+* Fixed `conn_child_is_list` test fixture which was missing `driver_type`,
+  preventing it from reaching the intended code path (#22)
+* Driver-specific tests in `test-get_driver.R` now use `skip_if_not_installed()`
+  guards, fixing CRAN check failures on platforms where suggested packages
+  (e.g. `bigrquery`) are unavailable (#27)
+* Updated GitHub Actions workflows from v3 to v4 (`actions/checkout`,
+  `actions/upload-artifact`)
+
 # sqlhelper 0.2.1
 
 ## submission fixes
