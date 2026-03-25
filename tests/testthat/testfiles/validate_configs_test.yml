@@ -8,6 +8,7 @@ no_server_type:
     Server: ":memory:"
 
 conn_child_is_list:
+  driver_type: sqlite
   connection:
     server:
       - foo
