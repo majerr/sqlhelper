@@ -17,13 +17,12 @@ config_examples(filename = NA)
 
 ## Value
 
-A yaml string of database configuration examples, invisibly.
+A yaml string of database configuration examples.
 
 ## Details
 
 Irrespective of whether a filename is supplied, yaml configuration
-examples will be returned invisibly as a single string and printed if
-the session is interactive.
+examples will be returned as a single string.
 
 ## Examples
 

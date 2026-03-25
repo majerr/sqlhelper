@@ -195,5 +195,4 @@ results$n_longest_setosa_petal_lengths
 
 plot(results$get_congruent, border = "orange")
 plot(results$get_incongruent, border = "blue", add=TRUE)
-
 ```
