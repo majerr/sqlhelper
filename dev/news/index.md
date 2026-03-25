@@ -4,22 +4,15 @@
 
 ### Bug fixes
 
-- `validate_configs()` now correctly drops invalid configurations;
-  previously `!is.null()` applied to a list always returned `TRUE` so
-  NULLs were never filtered
+- `validate_configs()` now correctly drops invalid configurations
   ([\#21](https://github.com/majerr/sqlhelper/issues/21))
-- `validate_config()` no longer requires a case-sensitive `Server` key;
-  the earlier case-insensitive check is sufficient
+- `validate_config()` no longer requires a case-sensitive `Server` key
   ([\#22](https://github.com/majerr/sqlhelper/issues/22))
-- Fixed `conn_child_is_list` test fixture which was missing
-  `driver_type`, preventing it from reaching the intended code path
-  ([\#22](https://github.com/majerr/sqlhelper/issues/22))
-- Driver-specific tests in `test-get_driver.R` now use
-  `skip_if_not_installed()` guards, fixing CRAN check failures on
-  platforms where suggested packages (e.g. `bigrquery`) are unavailable
+- Fixed `conn_child_is_list` test fixture to reach the intended code
+  path ([\#22](https://github.com/majerr/sqlhelper/issues/22))
+- Driver tests now use `skip_if_not_installed()` guards, fixing CRAN
+  check failure on Fedora clang where `bigrquery` is not available
   ([\#27](https://github.com/majerr/sqlhelper/issues/27))
-- Updated GitHub Actions workflows from v3 to v4 (`actions/checkout`,
-  `actions/upload-artifact`)
 
 ## sqlhelper 0.2.1
 

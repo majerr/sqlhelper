@@ -44,12 +44,11 @@
 <div class="section level3">
 <h3 id="bug-fixes-development-version">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-development-version"></a></h3>
 <ul><li>
-<code>validate_configs()</code> now correctly drops invalid configurations; previously <code>!is.null()</code> applied to a list always returned <code>TRUE</code> so NULLs were never filtered (<a href="https://github.com/majerr/sqlhelper/issues/21" class="external-link">#21</a>)</li>
+<code>validate_configs()</code> now correctly drops invalid configurations (<a href="https://github.com/majerr/sqlhelper/issues/21" class="external-link">#21</a>)</li>
 <li>
-<code>validate_config()</code> no longer requires a case-sensitive <code>Server</code> key; the earlier case-insensitive check is sufficient (<a href="https://github.com/majerr/sqlhelper/issues/22" class="external-link">#22</a>)</li>
-<li>Fixed <code>conn_child_is_list</code> test fixture which was missing <code>driver_type</code>, preventing it from reaching the intended code path (<a href="https://github.com/majerr/sqlhelper/issues/22" class="external-link">#22</a>)</li>
-<li>Driver-specific tests in <code>test-get_driver.R</code> now use <code>skip_if_not_installed()</code> guards, fixing CRAN check failures on platforms where suggested packages (e.g. <code>bigrquery</code>) are unavailable (<a href="https://github.com/majerr/sqlhelper/issues/27" class="external-link">#27</a>)</li>
-<li>Updated GitHub Actions workflows from v3 to v4 (<code>actions/checkout</code>, <code>actions/upload-artifact</code>)</li>
+<code>validate_config()</code> no longer requires a case-sensitive <code>Server</code> key (<a href="https://github.com/majerr/sqlhelper/issues/22" class="external-link">#22</a>)</li>
+<li>Fixed <code>conn_child_is_list</code> test fixture to reach the intended code path (<a href="https://github.com/majerr/sqlhelper/issues/22" class="external-link">#22</a>)</li>
+<li>Driver tests now use <code>skip_if_not_installed()</code> guards, fixing CRAN check failure on Fedora clang where <code>bigrquery</code> is not available (<a href="https://github.com/majerr/sqlhelper/issues/27" class="external-link">#27</a>)</li>
 </ul></div>
 </div>
     <div class="section level2">
