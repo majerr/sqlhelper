@@ -66,6 +66,7 @@ meaning that if you want to use the same values throughout, you need only set
 them for the first query. See \code{read_sql()} for details.
 }
 \examples{
+\dontshow{if (requireNamespace("RSQLite", quietly = TRUE) && requireNamespace("spData", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 library(sqlhelper)
 
 config_filename <- system.file("examples/sqlhelper_db_conf.yml",
@@ -99,7 +100,7 @@ results$n_longest_setosa_petal_lengths
 
 plot(results$get_congruent, border = "orange")
 plot(results$get_incongruent, border = "blue", add=TRUE)
-
+\dontshow{\}) # examplesIf}
 }
 \seealso{
 \code{\link[=read_sql]{read_sql()}}, \code{\link[=prepare_sql]{prepare_sql()}}

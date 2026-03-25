@@ -10,15 +10,14 @@ config_examples(filename = NA)
 \item{filename}{A string. If supplied, examples are written to a file with this name.}
 }
 \value{
-A yaml string of database configuration examples, invisibly.
+A yaml string of database configuration examples.
 }
 \description{
 Provides example configurations for several databases and a range of options
 }
 \details{
 Irrespective of whether a filename is supplied, yaml configuration examples
-will be returned invisibly as a single string and printed if the session is
-interactive.
+will be returned as a single string.
 }
 \examples{
 config_examples()

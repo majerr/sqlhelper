@@ -1,6 +1,7 @@
 
 
 test_that("connections can be added and discovered",{
+  skip_if_not_installed("RSQLite")
   expect_null(connection_info())
 
   connect(config_filename = testthat::test_path("testfiles",
@@ -18,6 +19,7 @@ test_that("connections can be added and discovered",{
 })
 
 test_that("live_connection returns invisible nulls as expected",{
+  skip_if_not_installed("RSQLite")
   expect_null(
     live_connection("foo")
   )
@@ -30,6 +32,7 @@ test_that("live_connection returns invisible nulls as expected",{
 })
 
 test_that("default_conn returns the expected connection", {
+  skip_if_not_installed("RSQLite")
 
   defcon1 <- default_conn()
   defcon2 <- get_default_conn_name() |> live_connection()
@@ -38,6 +41,7 @@ test_that("default_conn returns the expected connection", {
 })
 
 test_that("pruning an unnamed connection raises the right error",{
+  skip_if_not_installed("RSQLite")
   expect_error(
     sqlhelper:::prune("foo"),
     "No connection named foo"
@@ -45,6 +49,7 @@ test_that("pruning an unnamed connection raises the right error",{
 })
 
 test_that("connections can be closed",{
+  skip_if_not_installed("RSQLite")
   expect_equal(connection_info()$name,
                c("single_mem2","single_mem","pool_mem","sqlite_dbi"))
   disconnect()
@@ -52,6 +57,7 @@ test_that("connections can be closed",{
 })
 
 test_that("messages and warnings are raised on failure", {
+  skip_if_not_installed("RSQLite")
   expect_message(
     suppressWarnings(
       connect(config_filename = testthat::test_path("testfiles",

@@ -5,7 +5,7 @@
 #' @return A database connection returned by `DBI::dbConnect()` or
 #'   `pool::dbPool()`
 #'
-#' @examples
+#' @examplesIf requireNamespace("RSQLite", quietly = TRUE)
 #' library(sqlhelper)
 #'
 #' connect(

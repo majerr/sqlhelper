@@ -20,6 +20,7 @@ get_default_conn_name()
 Set/get the name of the default connection to use
 }
 \examples{
+\dontshow{if (requireNamespace("RSQLite", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 library(sqlhelper)
 connect(
     system.file("examples/sqlhelper_db_conf.yml",
@@ -36,5 +37,5 @@ set_default_conn_name("pool_sqlite")
 connection_info()
 
 get_default_conn_name()
-
+\dontshow{\}) # examplesIf}
 }

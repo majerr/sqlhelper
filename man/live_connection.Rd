@@ -18,6 +18,7 @@ A live connection to a database, or NULL, invisibly, if
 Return the named connection or NULL
 }
 \examples{
+\dontshow{if (requireNamespace("RSQLite", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 library(sqlhelper)
 connect(
   system.file("examples/sqlhelper_db_conf.yml",
@@ -31,5 +32,5 @@ conn
 DBI::dbDisconnect(conn)
 is.null(live_connection("simple_sqlite"))
 is.null(live_connection("foo"))
-
+\dontshow{\}) # examplesIf}
 }

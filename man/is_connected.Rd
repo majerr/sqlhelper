@@ -21,6 +21,7 @@ connection
 Test whether a database is connected
 }
 \examples{
+\dontshow{if (requireNamespace("RSQLite", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 library(sqlhelper)
 
 connect(
@@ -37,4 +38,5 @@ not_connected("simple_sqlite")
 disconnect()
 is_connected("simple_sqlite")
 not_connected("simple_sqlite")
+\dontshow{\}) # examplesIf}
 }

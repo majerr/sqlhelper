@@ -5,7 +5,7 @@
 #' @return \code{get} returns the name of the default connection;
 #'      \code{set} returns \code{NULL}, invisibly.
 #'
-#' @examples
+#' @examplesIf requireNamespace("RSQLite", quietly = TRUE)
 #' library(sqlhelper)
 #' connect(
 #'     system.file("examples/sqlhelper_db_conf.yml",

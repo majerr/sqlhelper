@@ -56,7 +56,7 @@
 #'   to be executed, i.e. with interpolations and quoting in place}
 #'   }
 #'
-#' @examples
+#' @examplesIf requireNamespace("RSQLite", quietly = TRUE)
 #' library(sqlhelper)
 #' connect(
 #'     system.file("examples/sqlhelper_db_conf.yml",

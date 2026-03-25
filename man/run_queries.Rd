@@ -65,6 +65,7 @@ will be raised. See \code{vignette("connections")} for details about the
 configuration search path.
 }
 \examples{
+\dontshow{if (requireNamespace("RSQLite", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 library(sqlhelper)
 
 readLines(
@@ -110,7 +111,7 @@ run_queries("create table iris_setosa as select * from iris where species = 'set
           execmethod = 'execute')
 
 run_queries("select distinct species as species from iris_setosa")
-
+\dontshow{\}) # examplesIf}
 }
 \seealso{
 \code{\link[=read_sql]{read_sql()}}, \code{\link[=prepare_sql]{prepare_sql()}}

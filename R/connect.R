@@ -48,7 +48,7 @@ assign("defaults",
 #'
 #' @returns `NULL`, invisibly
 #' @export
-#' @examples
+#' @examplesIf requireNamespace("RSQLite", quietly = TRUE)
 #' library(sqlhelper)
 #'
 #' example_filename <- system.file("examples",
