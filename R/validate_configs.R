@@ -24,7 +24,7 @@ validate_configs <- function(configs){
 
   }
 
-  validated_configs[!is.null(validated_configs)]
+  validated_configs[!sapply(validated_configs, is.null)]
 }
 
 #' Perform minimal sanity checks on a configuration
