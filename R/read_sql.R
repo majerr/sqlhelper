@@ -124,6 +124,9 @@ extract_quoted_strings <- function(lines) {
     str_replacements <- replicate(n,
                                   tok())
 
+    # Names may contain duplicates when the same string appears more than once.
+    # str_replace_all replaces all occurrences using the first matching token;
+    # unused tokens are harmless no-ops during reinstatement.
     names(str_replacements) <- unlist(stringr::str_extract_all(string = all_ql,
                                                                pattern = string_pattern))
 

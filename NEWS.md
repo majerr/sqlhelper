@@ -1,3 +1,13 @@
+# sqlhelper (development version)
+
+## Bug fixes
+
+* `validate_configs()` now correctly drops invalid configurations (#21)
+* `validate_config()` no longer requires a case-sensitive `Server` key (#22)
+* Fixed `conn_child_is_list` test fixture to reach the intended code path (#22)
+* Driver tests now use `skip_if_not_installed()` guards, fixing CRAN check
+  failure on Fedora clang where `bigrquery` is not available (#27)
+
 # sqlhelper 0.2.1
 
 ## submission fixes

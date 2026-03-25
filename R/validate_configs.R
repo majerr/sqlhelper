@@ -24,7 +24,7 @@ validate_configs <- function(configs){
 
   }
 
-  validated_configs[!is.null(validated_configs)]
+  validated_configs[!sapply(validated_configs, is.null)]
 }
 
 #' Perform minimal sanity checks on a configuration
@@ -73,10 +73,6 @@ validate_config <- function(conf){
       return(NULL)
     }
   }
-
-  # conf$connection contains a Server element
-  if(!("Server" %in% names(conf$connection)))
-    return(NULL)
 
   valid_conf <- conf
 
