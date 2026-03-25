@@ -1,5 +1,6 @@
 # Check names of lists are properly transferred
 test_that("names are preserved", {
+  skip_if_not_installed("RSQLite")
   connect(config_filename = testthat::test_path("testfiles",
                                                 "sqlhelper_db_conf.yml"),
           exclusive=TRUE)
@@ -10,6 +11,7 @@ test_that("names are preserved", {
 
 # Check errors are raised for improperly formed inputs (wrong cols, wrong rows)
 test_that("inputs are validated", {
+  skip_if_not_installed("RSQLite")
   expect_error(prepare_sql(tibble::tibble(a=c(1,2),b=c(3,4))), "must have these columns")
   expect_error(prepare_sql(list(one="SELECT 1", two="SELECT2")), "must be a character vector or a tibble")
   expect_error(prepare_sql(c(one=1, two=2)), "must be a character vector or a tibble")
@@ -88,6 +90,7 @@ test_that("inputs are validated", {
 
 # Check that only NAs are replaced with defaults (and that they are properly replaced)
 test_that("NAs are replaced by defaults", {
+  skip_if_not_installed("RSQLite")
   n <- 5
   foo <- "bar"
   sql <- read_sql( testthat::test_path( "testfiles", "test_prepare.SQL")) |>
@@ -118,6 +121,7 @@ test_that("NAs are replaced by defaults", {
 
 # Check interpolations
 test_that("defaults are properly set", {
+  skip_if_not_installed("RSQLite")
   connect(config_filename = testthat::test_path("testfiles",
                                                 "sqlhelper_db_conf.yml"),
           exclusive=TRUE)
@@ -153,6 +157,7 @@ test_that("defaults are properly set", {
 })
 
 test_that("correct connections are used for interpolation",{
+  skip_if_not_installed("RSQLite")
   skip("Requires local SQL Server instance") # comment if local
   foo <- "noo"
   bar <- "baz"
@@ -190,6 +195,7 @@ test_that("correct connections are used for interpolation",{
 
 # interpolation is correct
 test_that("interpolation is correct", {
+  skip_if_not_installed("RSQLite")
 
   # connection specified in comment is bad
   expect_error(

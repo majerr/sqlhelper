@@ -1,4 +1,5 @@
 test_that("runqueries runs queries in sequence", {
+  skip_if_not_installed("RSQLite")
   connect( testthat::test_path("testfiles",
                                "sqlhelper_db_conf.yml"),
            exclusive = TRUE)
@@ -21,6 +22,7 @@ test_that("runqueries runs queries in sequence", {
 })
 
 test_that("runfiles runs files", {
+  skip_if_not_installed("RSQLite")
   results <- runfiles(
     c(
       testthat::test_path("testfiles",
@@ -40,6 +42,7 @@ test_that("runfiles runs files", {
 
 # test quoting
 test_that("quotesql works",{
+  skip_if_not_installed("RSQLite")
   species <- "'setosa'; DROP TABLE IRIS;"
   result <- runqueries(c(injection="SELECT * FROM IRIS WHERE species LIKE {species}",
                          survived="SELECT * FROM SQLITE_SCHEMA WHERE type='table' AND name='iris'"))
@@ -55,6 +58,8 @@ test_that("quotesql works",{
 
 ## Spatial read (geometry)
 test_that("spatial read works", {
+  skip_if_not_installed("RSQLite")
+  skip_if_not_installed("spData")
 
   sf::st_write(spData::congruent, default_conn(), "congruent")
 
@@ -94,6 +99,8 @@ test_that("spatial read works", {
 ## send-bind-fetch
 
 test_that("send-bind-fetch works", {
+  skip_if_not_installed("RSQLite")
+  skip_if_not_installed("dplyr")
   # Send-bind-fetch doesn't work with pool connections:
   # http://rstudio.github.io/pool/reference/DBI-custom.html
 
@@ -127,6 +134,7 @@ test_that("send-bind-fetch works", {
 
 # test connection
 test_that("correct connections are used", {
+  skip_if_not_installed("RSQLite")
   runqueries("DROP TABLE iris",execmethod="execute")
 
   iris_char <- iris
@@ -219,6 +227,7 @@ test_that("correct connections are used", {
 
 # test interpolate
 test_that("interpolation can be turned off", {
+  skip_if_not_installed("RSQLite")
 
   n <- 5
   expect_equal(runqueries("select {n} as 'n'"), data.frame(n))
@@ -252,6 +261,7 @@ test_that("interpolation can be turned off", {
 
 # test include_params
 test_that("parameters can be included when required", {
+  skip_if_not_installed("RSQLite")
 
   expect_equal(runqueries("select 1 as 'n'", include_params = TRUE),
                tibble::tibble(qname = as.character(NA),

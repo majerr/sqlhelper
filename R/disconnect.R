@@ -1,7 +1,7 @@
 #' Close all connections and remove them from the connections cache
 #'
 #' @return `NULL`, invisibly
-#' @examples
+#' @examplesIf requireNamespace("RSQLite", quietly = TRUE)
 #' library(sqlhelper)
 #' connect(
 #'   system.file("examples",

@@ -6,7 +6,7 @@
 #' @return Logical, or NULL if `conn_name` does not identify exactly 1
 #' connection
 #'
-#' @examples
+#' @examplesIf requireNamespace("RSQLite", quietly = TRUE)
 #' library(sqlhelper)
 #'
 #' connect(

@@ -1,5 +1,6 @@
 
 test_that("is_connected returns an appropriate value", {
+  skip_if_not_installed("RSQLite")
   connect(config_filename = testthat::test_path("testfiles",
                                                 "sqlhelper_db_conf.yml"),
           exclusive=TRUE)
@@ -17,6 +18,7 @@ test_that("is_connected returns an appropriate value", {
 })
 
 test_that("not_connected returns an appropriate value", {
+  skip_if_not_installed("RSQLite")
   connect(config_filename = testthat::test_path("testfiles",
                                                 "sqlhelper_db_conf.yml"),
           exclusive=TRUE)

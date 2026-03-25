@@ -51,6 +51,7 @@ connections in those files are invalid)
 config file and how to access the created connections.
 }
 \examples{
+\dontshow{if (requireNamespace("RSQLite", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 library(sqlhelper)
 
 example_filename <- system.file("examples",
@@ -63,5 +64,5 @@ connect(example_filename)
 
 # Read only the named example file
 connect(example_filename, exclusive=TRUE)
-
+\dontshow{\}) # examplesIf}
 }

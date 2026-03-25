@@ -14,6 +14,7 @@ A database connection returned by \code{DBI::dbConnect()} or
 A convenience wrapper around \code{live_connection()} and \code{get_default_conn_name()}
 }
 \examples{
+\dontshow{if (requireNamespace("RSQLite", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 library(sqlhelper)
 
 connect(
@@ -25,4 +26,5 @@ connect(
    )
 
 default_conn()
+\dontshow{\}) # examplesIf}
 }

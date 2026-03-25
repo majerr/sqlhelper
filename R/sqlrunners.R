@@ -50,7 +50,7 @@
 #'  \item{result}{The result of the query}
 #' }
 #'
-#' @examples
+#' @examplesIf requireNamespace("RSQLite", quietly = TRUE)
 #' library(sqlhelper)
 #'
 #' readLines(
@@ -259,7 +259,7 @@ runqueries <- run_queries
 #' meaning that if you want to use the same values throughout, you need only set
 #' them for the first query. See `read_sql()` for details.
 #'
-#' @examples
+#' @examplesIf requireNamespace("RSQLite", quietly = TRUE) && requireNamespace("spData", quietly = TRUE)
 #' library(sqlhelper)
 #'
 #' config_filename <- system.file("examples/sqlhelper_db_conf.yml",

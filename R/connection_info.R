@@ -25,7 +25,7 @@
 #' connections have been configured (e.g. `connect()` has not been called),
 #' `NULL` is returned.
 #'
-#' @examples
+#' @examplesIf requireNamespace("RSQLite", quietly = TRUE)
 #' library(sqlhelper)
 #'
 #' connect(

@@ -6,7 +6,7 @@
 #' @return A live connection to a database, or NULL, invisibly, if
 #'   `conn_name` is not the name of a live connection
 #'
-#' @examples
+#' @examplesIf requireNamespace("RSQLite", quietly = TRUE)
 #' library(sqlhelper)
 #' connect(
 #'   system.file("examples/sqlhelper_db_conf.yml",

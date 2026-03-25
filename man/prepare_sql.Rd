@@ -74,6 +74,7 @@ is not a configured sqlhelper connection which can then be used to
 interpolate quoted strings.
 }
 \examples{
+\dontshow{if (requireNamespace("RSQLite", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 library(sqlhelper)
 connect(
     system.file("examples/sqlhelper_db_conf.yml",
@@ -86,5 +87,5 @@ foo <- 'bar'
 prepped <- prepare_sql(c("select {`foo`}", "select {n}"))
 prepped
 prepped$prepared_sql
-
+\dontshow{\}) # examplesIf}
 }

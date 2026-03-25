@@ -36,6 +36,7 @@ connections have been configured (e.g. \code{connect()} has not been called),
 Provides information about created connections.
 }
 \examples{
+\dontshow{if (requireNamespace("RSQLite", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 library(sqlhelper)
 
 connect(
@@ -49,5 +50,5 @@ connect(
  connection_info()
 
  connection_info("pool_sqlite")
-
+\dontshow{\}) # examplesIf}
 }

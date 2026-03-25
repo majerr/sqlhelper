@@ -13,6 +13,7 @@ disconnect()
 Close all connections and remove them from the connections cache
 }
 \examples{
+\dontshow{if (requireNamespace("RSQLite", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 library(sqlhelper)
 connect(
   system.file("examples",
@@ -20,4 +21,5 @@ connect(
               package="sqlhelper")
 )
 disconnect()
+\dontshow{\}) # examplesIf}
 }
