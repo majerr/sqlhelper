@@ -1,0 +1,107 @@
+# sqlhelper
+
+Easier SQL integration with R
+
+## Summary
+
+`sqlhelper` facilitates preparing and executing *files* of SQL code from
+R.
+
+In particular, `sqlhelper` does two things. It:
+
+1.  provides **functions for preparing and executing files of sql
+    queries**; and it
+2.  provides **functions to manage multiple RDBMS connections**.
+
+To do this `sqlhelper` defines a number of functions, many of which are
+also exported for convenience.
+
+There are, of course, many excellent ways to interact with a database
+from R, often not involving SQL at all
+(e.g. [dbplyr](https://dbplyr.tidyverse.org/)); `sqlhelper` is for the
+times when you *do* want to use SQL - perhaps you have inherited some
+legacy SQL, or need some specific functionality offered by your RDBMS,
+or simply prefer to write SQL. The article `vignette("use-case")`
+describes the setup for a specific motivating case.
+
+## Installation
+
+The current stable version is available from CRAN:
+
+``` r
+install.packages("sqlhelper")
+```
+
+You can the install development version from github:
+
+``` r
+# install.packages("devtools")
+
+devtools::install_github("majerr/sqlhelper@dev")
+```
+
+## Getting Started
+
+Basic functionality is described in
+[`vignette("sqlhelper")`](https://majerr.github.io/sqlhelper/articles/sqlhelper.html)
+
+Execution of SQL files is described in detail in
+[`vignette("execution")`](https://majerr.github.io/sqlhelper/articles/execution.html)
+
+Setup and management of database connections is described in
+[`vignette("connections")`](https://majerr.github.io/sqlhelper/articles/connections.html)
+
+There are some details about using `sqlhelper` within other packages in
+[`vignette("use_case")`](https://majerr.github.io/sqlhelper/articles/use_case.html)
+
+# Package index
+
+## Execution
+
+Functions for reading, preparing and executing SQL
+
+- [`run_files()`](https://majerr.github.io/sqlhelper/reference/run_files.md)
+  [`runfiles()`](https://majerr.github.io/sqlhelper/reference/run_files.md)
+  : Read, prepare and execute .SQL files
+- [`run_queries()`](https://majerr.github.io/sqlhelper/reference/run_queries.md)
+  [`runqueries()`](https://majerr.github.io/sqlhelper/reference/run_queries.md)
+  : Execute a sequence of SQL queries
+- [`read_sql()`](https://majerr.github.io/sqlhelper/reference/read_sql.md)
+  : Read a sql file and return it's contents as a tibble
+- [`prepare_sql()`](https://majerr.github.io/sqlhelper/reference/prepare_sql.md)
+  : prepare queries and assemble meta data prior to execution
+
+## Connections
+
+Functions for creating and managing database connections
+
+- [`connect()`](https://majerr.github.io/sqlhelper/reference/connect.md)
+  : (Re-)Establish connections to databases
+- [`config_examples()`](https://majerr.github.io/sqlhelper/reference/config_examples.md)
+  : Examples of yaml configurations for database connections
+- [`connection_info()`](https://majerr.github.io/sqlhelper/reference/connection_info.md)
+  : Browse available connections
+- [`live_connection()`](https://majerr.github.io/sqlhelper/reference/live_connection.md)
+  : Return the named connection or NULL
+- [`set_default_conn_name()`](https://majerr.github.io/sqlhelper/reference/set_default_conn_name.md)
+  [`get_default_conn_name()`](https://majerr.github.io/sqlhelper/reference/set_default_conn_name.md)
+  : Set/get the name of the default connection to use
+- [`default_conn()`](https://majerr.github.io/sqlhelper/reference/default_conn.md)
+  : Return the default connection
+- [`is_connected()`](https://majerr.github.io/sqlhelper/reference/is_connected.md)
+  [`not_connected()`](https://majerr.github.io/sqlhelper/reference/is_connected.md)
+  : Test whether a database is connected
+- [`disconnect()`](https://majerr.github.io/sqlhelper/reference/disconnect.md)
+  : Close all connections and remove them from the connections cache
+
+# Articles
+
+### All vignettes
+
+- [Managing
+  Connections](https://majerr.github.io/sqlhelper/articles/connections.md):
+- [Executing
+  SQL](https://majerr.github.io/sqlhelper/articles/execution.md):
+- [sqlhelper](https://majerr.github.io/sqlhelper/articles/sqlhelper.md):
+- [Using sqlhelper in
+  packages](https://majerr.github.io/sqlhelper/articles/use_case.md):
