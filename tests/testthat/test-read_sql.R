@@ -98,6 +98,14 @@ test_that("Comments are correctly interpreted", {
 
 })
 
+test_that("Duplicate quoted strings are reinstated correctly", {
+  tmp <- tempfile(fileext = ".SQL")
+  writeLines("SELECT * FROM foo WHERE type = 'table' AND name = 'table';", tmp)
+  sql <- read_sql(tmp)
+  expect_equal(sql$sql,
+               "SELECT * FROM foo WHERE type = 'table' AND name = 'table'")
+})
+
 test_that("Errors will be raised for unknown interpreted comment values", {
   expect_error(read_sql(testthat::test_path("testfiles",
                                             "unknown_quotesql.SQL")))
