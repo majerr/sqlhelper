@@ -132,6 +132,36 @@ test_that("send-bind-fetch works", {
 
 })
 
+## send-query-fetch
+
+test_that("sendq returns a result that can be fetched", {
+  skip_if_not_installed("RSQLite")
+
+  sent <- runqueries("select * from iris where `Petal.Width` < 0.2",
+                     execmethod = "sendq")
+
+  expect_s4_class(sent, "DBIResult")
+
+  fetched <- DBI::dbFetch( sent ) |>
+    tibble::remove_rownames()
+
+  expected <- iris[iris$Petal.Width < 0.2,]
+  expected$Species <- as.character(expected$Species)
+
+  expect_identical(fetched, expected |> tibble::remove_rownames())
+
+  DBI::dbClearResult( sent )
+})
+
+test_that("a single unnamed query returns its result, not a list", {
+  skip_if_not_installed("RSQLite")
+
+  result <- runqueries("select 1 as n")
+
+  expect_s3_class(result, "data.frame")
+  expect_equal(result, data.frame(n = 1))
+})
+
 # test connection
 test_that("correct connections are used", {
   skip_if_not_installed("RSQLite")
