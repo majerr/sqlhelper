@@ -29,12 +29,14 @@ describes the setup for a specific motivating case.
 The current stable version is available from CRAN:
 
 ``` r
+
 install.packages("sqlhelper")
 ```
 
 You can the install development version from github:
 
 ``` r
+
 # install.packages("devtools")
 
 devtools::install_github("majerr/sqlhelper@dev")

@@ -13,6 +13,7 @@ function. For example, if your config file is called `my_db_config.yml`,
 you might run:
 
 ``` r
+
 library(sqlhelper)
 
 connect("examples/sqlhelper_db_conf.yml")
@@ -24,6 +25,7 @@ A config file can contain one or more connection definitions. The above
 example defines two simple connections:
 
 ``` r
+
 readLines("examples/sqlhelper_db_conf.yml") |>
   writeLines()
 #> #### sqlhelper_db_conf.yml ####
@@ -178,6 +180,7 @@ has been called, you may inspect the created connections with
 [`connection_info()`](https://majerr.github.io/sqlhelper/reference/connection_info.md).
 
 ``` r
+
 connection_info()
 #> # A tibble: 2 × 7
 #>   name          description                  live  default driver conn_str pool 
@@ -192,6 +195,7 @@ Connections may be accessed by name, with
 [`live_connection()`](https://majerr.github.io/sqlhelper/reference/live_connection.md)
 
 ``` r
+
 myconn <- live_connection("simple_sqlite")
 myconn
 #> <SQLiteConnection>
@@ -217,6 +221,7 @@ and change it with
 [`set_default_conn_name()`](https://majerr.github.io/sqlhelper/reference/set_default_conn_name.md).
 
 ``` r
+
 get_default_conn_name()
 #> [1] "simple_sqlite"
 
@@ -264,6 +269,7 @@ Individual connections may be closed with
 closes any open connections before reading config files.
 
 ``` r
+
 conn_name <- "simple_sqlite"
 
 is_connected(conn_name)

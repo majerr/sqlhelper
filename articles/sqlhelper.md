@@ -9,6 +9,7 @@ or place their specifications in a yaml file and use
 [`connect()`](https://majerr.github.io/sqlhelper/reference/connect.md):
 
 ``` r
+
 library(sqlhelper)
 
 conf_fn <- "examples/sqlhelper_db_conf.yml"
@@ -54,6 +55,7 @@ to set up your connections you can simply pass file names to
 [`run_files()`](https://majerr.github.io/sqlhelper/reference/run_files.md).
 
 ``` r
+
 
 # Write iris to sqlhelper's default connection
 DBI::dbWriteTable(default_conn(), name = "IRIS", value = iris)
@@ -120,6 +122,7 @@ interactively. Use the function
 for this.
 
 ``` r
+
 # write some queries
 my_queries <- c( 
   showtabs = "SELECT name FROM sqlite_schema WHERE type ='table' AND name NOT LIKE 'sqlite_%'",

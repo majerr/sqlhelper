@@ -1,12 +1,12 @@
-pandoc: 3.1.11
-pkgdown: 2.2.0
+pandoc: 3.8.3
+pkgdown: 2.2.1
 pkgdown_sha: ~
 articles:
   connections: connections.html
   execution: execution.html
   sqlhelper: sqlhelper.html
   use_case: use_case.html
-last_built: 2026-03-25T20:39Z
+last_built: 2026-11-10T15:27Z
 urls:
   reference: https://majerr.github.io/sqlhelper/reference
   article: https://majerr.github.io/sqlhelper/articles

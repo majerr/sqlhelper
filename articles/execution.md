@@ -26,6 +26,7 @@ Once connections are configured, the
 command can be used to execute files of SQL code.
 
 ``` r
+
 library(sqlhelper)
 connect("examples/sqlhelper_db_conf.yml", exclusive = TRUE)
 DBI::dbWriteTable( default_conn(), name = "IRIS", iris)
@@ -71,6 +72,7 @@ comments*, of the form `-- qname = my_query_name`. If queries are named,
 individual results can be accessed by the same name:
 
 ``` r
+
 results$short_petal_setosa
 #>   Species Petal.Length
 #> 1  setosa          1.1
@@ -133,6 +135,7 @@ Interpretable keywords are:
 - **conn_name** The name of a connection to execute this query against
 
 ``` r
+
 ## add combined standard/spatial example
 ```
 
@@ -154,6 +157,7 @@ and retain the defaults for the remainder you will need to either:
 You can prevent cascading by passing `cascade = FALSE`.
 
 ``` r
+
 ## cascaded comments example
 ```
 
@@ -165,6 +169,7 @@ using values from the current environment. This means that values from R
 can be easily inserted in your SQL code, or calculated in situ:
 
 ``` r
+
 readLines("examples/petal_length_params.sql") |>
   writeLines()
 #> -- qname = short_petal_setosa
@@ -235,6 +240,7 @@ and
 pass a populated environment as the `values` parameter.
 
 ``` r
+
 # reusing the petal length parameter example
 # A user may have a petal_length parameter in the globalenv already
 print(petal_length)
@@ -276,6 +282,7 @@ or
 They may then be bound and the result fetched.
 
 ``` r
+
 readLines("examples/binding.SQL") |>
   writeLines()
 #> -- execmethod = sendq
@@ -337,6 +344,7 @@ or
 [`run_queries()`](https://majerr.github.io/sqlhelper/reference/run_queries.md).
 
 ``` r
+
 
 con <- DBI::dbConnect(RSQLite::SQLite(), ":memory:")
 

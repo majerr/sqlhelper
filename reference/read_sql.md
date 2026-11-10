@@ -96,6 +96,7 @@ has further examples of using these parameters to control execution.
 ## Examples
 
 ``` r
+
 library(sqlhelper)
 
 fn <- system.file( "examples/read_sql_execution_params.SQL",

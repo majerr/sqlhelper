@@ -23,6 +23,7 @@ accessed with `devtools::system.file()` (see
 files).
 
 ``` r
+
 sqlhelper::connect( 
     system.file( "sqlhelper_connection_conf.yml" ),
     exclusive=TRUE
@@ -41,6 +42,7 @@ the namespace of that function and close it on or before the function
 exits, for example:
 
 ``` r
+
 get_some_data <- function(){
   conn <- DBI::dbConnect(a_driver, "a connection string")
   d <- sqlhelper::run_files( 

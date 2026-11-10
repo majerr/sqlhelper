@@ -2,6 +2,8 @@
 
 ## sqlhelper 0.2.2
 
+CRAN release: 2026-03-26
+
 ### Bug fixes
 
 - `validate_configs()` now correctly drops invalid configurations

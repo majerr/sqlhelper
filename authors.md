@@ -7,7 +7,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/majerr/sqlhelper/blob/main/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/majerr/sqlhelper/blob/dev/DESCRIPTION)
 
 Roberts M (2026). *sqlhelper: Easier 'SQL' Integration*. R package
 version 0.2.2, <https://majerr.github.io/sqlhelper/dev/>.
