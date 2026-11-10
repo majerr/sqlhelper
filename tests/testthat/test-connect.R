@@ -77,3 +77,19 @@ test_that("messages and warnings are raised on failure", {
   )
 })
 
+
+test_that("a warning is raised when no connections are configured", {
+  skip_if_not_installed("testthat", "3.1.7")
+  empty_dir <- tempfile("sqlhelper_empty_conf")
+  dir.create(empty_dir)
+  on.exit(unlink(empty_dir, recursive = TRUE), add = TRUE)
+
+  local_mocked_bindings(
+    site_config_dir = function(...) empty_dir,
+    user_config_dir = function(...) empty_dir,
+    .package = "rappdirs"
+  )
+
+  expect_warning(connect(), "No connections were configured")
+  expect_null(connection_info())
+})

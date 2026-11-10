@@ -17,5 +17,6 @@ test_that("set changes the default connection", {
   set_default_conn_name("pool_mem")
   expect_equal(get_default_conn_name(), "pool_mem")
   expect_true(connection_info("pool_mem")$default)
+  expect_false(connection_info("single_mem")$default)
 })
 
