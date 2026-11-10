@@ -27,6 +27,11 @@
         "github:pull_request_review.submitted"
       ],
       "when": {
+        "event.sender.id": {
+          "in": [
+            13980531
+          ]
+        },
         "event.pull_request.head.ref": {
           "matches": "^tessl/"
         },
@@ -48,6 +53,11 @@
         "github:pull_request_review_comment.created"
       ],
       "when": {
+        "event.sender.id": {
+          "in": [
+            13980531
+          ]
+        },
         "event.sender.type": {
           "not": {
             "equals": "Bot"
@@ -74,6 +84,11 @@
         "github:issue_comment.created"
       ],
       "when": {
+        "event.sender.id": {
+          "in": [
+            13980531
+          ]
+        },
         "isPullRequest": "true",
         "event.sender.type": {
           "not": {
